@@ -1,0 +1,541 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Contented Baby Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ground:#f8f7f4; --card:#ffffff; --card2:#f1f0ec;
+  --ink:#232025; --ink2:#615c66; --ink3:#98939d;
+  --accent:#7c62d6; --accent2:#5b46ad; --accent-ink:#ffffff; --accent-wash:#ece7fb;
+  --hairline:#eae8e4; --grid:#edece8; --baseline:#c9c6cf;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --serious:#c05a2e; --crit:#d03b3b;
+  --quote-bar:#7c62d6;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(35,32,37,.07);
+  --shadow:0 6px 20px rgba(35,32,37,.06);
+  --shadow-pop:0 10px 28px rgba(35,32,37,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#141216; --card:#1d1a21; --card2:#181519;
+    --ink:#efedf1; --ink2:#aca6b2; --ink3:#7b7581;
+    --accent:#a794f0; --accent2:#8a75dd; --accent-ink:#151022; --accent-wash:#262038;
+    --hairline:#2d2a31; --grid:#28252c; --baseline:#403c46;
+    --s1:#3987e5; --s2:#199e70;
+    --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#e05252;
+    --quote-bar:#a794f0;
+    --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+    --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+    --edge:rgba(255,255,255,.08);
+    --shadow:0 6px 20px rgba(0,0,0,.35);
+    --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="light"]{
+  --ground:#f8f7f4; --card:#ffffff; --card2:#f1f0ec;
+  --ink:#232025; --ink2:#615c66; --ink3:#98939d;
+  --accent:#7c62d6; --accent2:#5b46ad; --accent-ink:#ffffff; --accent-wash:#ece7fb;
+  --hairline:#eae8e4; --grid:#edece8; --baseline:#c9c6cf;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --serious:#c05a2e; --crit:#d03b3b;
+  --quote-bar:#7c62d6;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(35,32,37,.07);
+  --shadow:0 6px 20px rgba(35,32,37,.06);
+  --shadow-pop:0 10px 28px rgba(35,32,37,.12);
+}
+:root[data-theme="dark"]{
+  --ground:#141216; --card:#1d1a21; --card2:#181519;
+  --ink:#efedf1; --ink2:#aca6b2; --ink3:#7b7581;
+  --accent:#a794f0; --accent2:#8a75dd; --accent-ink:#151022; --accent-wash:#262038;
+  --hairline:#2d2a31; --grid:#28252c; --baseline:#403c46;
+  --s1:#3987e5; --s2:#199e70;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#e05252;
+  --quote-bar:#a794f0;
+  --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+  --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+  --edge:rgba(255,255,255,.08);
+  --shadow:0 6px 20px rgba(0,0,0,.35);
+  --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);
+  font:16px/1.55 ui-rounded,"SF Pro Rounded","Nunito","Quicksand",system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding-bottom:96px}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em}
+h1{font-size:1.75rem;line-height:1.18;margin:0;text-wrap:balance}
+h2{font-size:1.25rem;line-height:1.25;margin:0 0 .35rem;text-wrap:balance}
+h3{font-size:1.05rem;margin:0 0 .3rem}
+p{margin:.5rem 0;max-width:62ch}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.view.on>*{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.view.on>*:nth-child(2){animation-delay:.05s}
+.view.on>*:nth-child(3){animation-delay:.1s}
+.view.on>*:nth-child(4){animation-delay:.15s}
+.view.on>*:nth-child(5){animation-delay:.2s}
+.view.on>*:nth-child(n+6){animation-delay:.25s}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+header.app{padding:24px 0 6px}
+.eyebrow{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent2);font-weight:800;background:var(--accent-wash);border-radius:99px;padding:4px 12px;margin-bottom:10px}
+.thesis{color:var(--ink2);margin-top:8px}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:22px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card.wash{background:var(--accent-wash);border-color:transparent}
+.klabel{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:800;margin-bottom:4px}
+blockquote{margin:14px 0;padding:14px 16px;border-left:4px solid var(--quote-bar);
+  background:var(--tint-lemon);border-radius:6px 18px 18px 6px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:1.06rem;line-height:1.45;font-style:italic}
+blockquote footer{font:.78rem/1.4 ui-rounded,"SF Pro Rounded",system-ui,sans-serif;font-style:normal;color:var(--ink2);margin-top:8px;font-weight:600}
+.bottomline{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);
+  border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 30%,transparent)}
+.bottomline .klabel{color:var(--accent-ink);opacity:.8}
+.bottomline ul{margin:6px 0 0;padding-left:18px}
+.bottomline li{margin:6px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.tile{border-radius:18px;padding:14px}
+.tiles .tile:nth-child(4n+1){background:var(--tint-lav)}
+.tiles .tile:nth-child(4n+2){background:var(--tint-mint)}
+.tiles .tile:nth-child(4n+3){background:var(--tint-peach)}
+.tiles .tile:nth-child(4n+4){background:var(--tint-sky)}
+.tile .v{font-size:1.5rem;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.tile .d{font-size:.76rem;color:var(--ink2);margin-top:4px;line-height:1.35;font-weight:550}
+.btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:99px;padding:13px 18px;font-weight:750;width:100%;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)} .btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent);box-shadow:none}
+figure{margin:14px 0} figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:.78rem;color:var(--ink3);margin-top:6px;line-height:1.4}
+.legend{display:flex;gap:16px;font-size:.78rem;color:var(--ink2);margin-bottom:6px;flex-wrap:wrap;font-weight:600}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+
+/* age band pills */
+.bands{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.bands::-webkit-scrollbar{display:none}
+.bands button{flex-shrink:0;border:none;background:var(--card);color:var(--ink2);border-radius:99px;
+  padding:9px 15px;font-size:.82rem;font-weight:750;box-shadow:var(--shadow);transition:background .2s,color .2s,transform .15s}
+.bands button:active{transform:scale(.96)}
+.bands button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);
+  box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 35%,transparent)}
+
+/* timeline */
+.tl{list-style:none;margin:10px 0 0;padding:0}
+.tl li{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--hairline)}
+.tl li:last-child{border-bottom:none}
+.tl .tt{font-weight:800;font-variant-numeric:tabular-nums;min-width:74px;color:var(--accent2)}
+.tl .ic{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.tl .ic.feed{background:var(--tint-sky)} .tl .ic.nap{background:var(--tint-mint)}
+.tl .ic.bath{background:var(--tint-peach)} .tl .ic.bed{background:var(--tint-lav)}
+.tl .tx{flex:1;font-size:.92rem}
+.tl .tx small{display:block;color:var(--ink2)}
+
+details.acc{background:var(--card);border-radius:18px;margin:10px 0;padding:2px 14px;box-shadow:var(--shadow)}
+details.acc summary{display:flex;align-items:center;gap:12px;padding:13px 2px;cursor:pointer;list-style:none;font-weight:750}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .aic{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;background:var(--card2)}
+details.acc summary .chev{margin-left:auto;color:var(--ink3);transition:transform .25s;font-weight:800}
+details.acc[open] summary .chev{transform:rotate(90deg)}
+details.acc .abody{padding:0 2px 14px}
+details.acc .abody>*{animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+details.acc summary small{display:block;font-weight:600;color:var(--ink2);font-size:.76rem}
+.datap{font-size:.93rem}
+.progress{height:10px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.3,1);
+  background:linear-gradient(90deg,var(--accent),var(--s1))}
+.quiz-card{min-height:180px}
+.quiz-q{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-style:italic;font-size:1.28rem;line-height:1.35;margin:10px 0 18px;text-wrap:balance}
+.quiz-btns{display:flex;gap:10px}
+.quiz-btns button{flex:1;padding:14px 8px;border-radius:16px;border:2px solid transparent;color:var(--ink);font-weight:800;transition:transform .15s,border-color .15s}
+.quiz-btns button:first-child{background:var(--tint-rose)}
+.quiz-btns button:last-child{background:var(--tint-mint)}
+.quiz-btns button:hover{border-color:var(--accent);transform:translateY(-1px)}
+.quiz-btns button:disabled{opacity:.6;transform:none}
+.quiz-result{margin-top:14px;padding:14px 16px;border-radius:16px;font-size:.92rem;line-height:1.5;animation:pop .35s cubic-bezier(.2,.7,.3,1)}
+.quiz-result.right{background:color-mix(in srgb,var(--good) 13%,transparent)}
+.quiz-result.wrong{background:color-mix(in srgb,var(--crit) 11%,transparent)}
+.quiz-result .verdict{font-weight:800;letter-spacing:.04em;font-size:.75rem;text-transform:uppercase}
+.quiz-result.right .verdict{color:var(--good)}
+.quiz-result.wrong .verdict{color:var(--crit)}
+.quiz-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink3);font-weight:700}
+.quiz-score{text-align:center;padding:20px 0}
+.quiz-score .big{font-size:3.2rem;font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--accent),var(--s1));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav.tabs{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));left:14px;right:14px;max-width:612px;margin:0 auto;
+  background:var(--card);border:1px solid var(--edge);border-radius:26px;display:flex;z-index:10;box-shadow:var(--shadow-pop);padding:6px}
+nav.tabs a{flex:1;text-align:center;padding:7px 0 6px;text-decoration:none;color:var(--ink3);font-size:.7rem;font-weight:750;border-radius:20px;transition:background .2s,color .2s}
+nav.tabs a .ico{display:block;font-size:1.25rem;line-height:1.25;transition:transform .2s}
+nav.tabs a.on{color:var(--accent2);background:var(--accent-wash)}
+nav.tabs a.on .ico{transform:translateY(-1px) scale(1.08)}
+.view{display:none}
+.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.note{font-size:.8rem;color:var(--ink3);line-height:1.45}
+.chip{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.05em;border-radius:99px;padding:3px 10px;white-space:nowrap;vertical-align:middle}
+.chip.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+</style>
+
+<div class="wrap">
+
+<!-- ============ ROUTINES ============ -->
+<section id="view-routines" class="view">
+  <header class="app">
+    <div class="eyebrow">A companion to Gina Ford's <em>The New Contented Little Baby</em></div>
+    <h1>One day, nine ages, two anchors: 7am and 7pm.</h1>
+    <p class="thesis">The CLB method in one idea: structure daytime feeds and naps so the longest sleep happens at night — meeting needs before they become crying.</p>
+  </header>
+
+  <div class="bands" id="bands" role="group" aria-label="Age band"></div>
+
+  <div class="card">
+    <div class="klabel" id="bandtitle"></div>
+    <figure><div id="daybar"></div>
+    <figcaption>The day at a glance, 7am–11pm. <span style="color:var(--s2);font-weight:700">Green blocks</span> are naps, <span style="color:var(--s1);font-weight:700">blue dots</span> are milk feeds/meals.</figcaption></figure>
+    <div class="tiles" id="bandstats"></div>
+    <p class="note" id="bandnote"></p>
+  </div>
+
+  <div class="card">
+    <div class="klabel">The full day</div>
+    <ul class="tl" id="timeline"></ul>
+  </div>
+
+  <div class="card wash">
+    <div class="klabel">Move up to the next routine when…</div>
+    <p class="datap" style="margin:4px 0 0">Your baby regularly has to be woken from naps, finishes feeds faster and more efficiently, manages his current awake windows easily, and (for the earliest move) has regained his birth weight and is gaining steadily. In between? Ford's own advice: it's fine to straddle — feeding times from the next routine, sleep times from the current one.</p>
+  </div>
+
+  <div class="card" style="text-align:center">
+    <div class="klabel">Your library</div>
+    <a href="index.html" style="font-weight:750;text-decoration:none">📖 Also here: Cribsheet Companion (Emily Oster) ›</a>
+  </div>
+
+  <div class="card">
+    <h3>How daytime sleep shrinks over the year</h3>
+    <div id="sleepchart"></div>
+    <p class="note" style="margin-top:8px">The routines cap daytime sleep so night sleep grows — from 5½ daytime hours in week one to about 2 by the first birthday. The 12:00–2:30 lunchtime nap is the one constant: it's the backbone of the whole method.</p>
+  </div>
+</section>
+
+<!-- ============ LEARN ============ -->
+<section id="view-learn" class="view">
+  <header class="app">
+    <div class="eyebrow">The method behind the timetable</div>
+    <h1>Five ideas hold the whole book up</h1>
+    <p class="thesis">Master these and the routines stop being rules to obey and start being a machine you understand.</p>
+    <div class="progress" aria-hidden="true"><i id="progbar" style="width:0%"></i></div>
+    <p class="note" id="progtext">0 of 5 core topics absorbed</p>
+  </header>
+  <div id="learnlist"></div>
+
+  <blockquote>Use the routines and advice in this book as tools to help you be the parents that you want to be.
+  <footer>— Gina Ford, on the one non-negotiable: it has to work for <em>your</em> family</footer></blockquote>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="view-quiz" class="view">
+  <header class="app">
+    <div class="eyebrow">Would Gina approve?</div>
+    <h1>Test yourself on the method</h1>
+    <p class="thesis">Twelve statements — some are the CLB method, some are exactly what it warns against. Which is which?</p>
+  </header>
+  <div class="card quiz-card" id="quizbox"></div>
+</section>
+
+<!-- ============ SOLVE ============ -->
+<section id="view-solve" class="view">
+  <header class="app">
+    <div class="eyebrow">The troubleshooter</div>
+    <h1>When the day goes sideways</h1>
+    <p class="thesis">Ford's problem-solving chapter, condensed: find the symptom, get her read on the cause and fix.</p>
+  </header>
+  <div class="card wash">
+    <p class="datap" style="margin:0"><b>A caution:</b> this section relays one practitioner's methods from a 2006-revised book, not medical evidence — and a few of her remedies (sugar water for colic, for instance) are dated or contested. Anything involving illness, feeding failure, weight or persistent crying: pediatrician first.</p>
+  </div>
+  <div id="solvelist"></div>
+</section>
+
+</div>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#routines" id="tab-routines"><span class="ico" aria-hidden="true">🕖</span>Routines</a>
+  <a href="#learn" id="tab-learn"><span class="ico" aria-hidden="true">📖</span>Learn</a>
+  <a href="#quiz" id="tab-quiz"><span class="ico" aria-hidden="true">🎯</span>Quiz</a>
+  <a href="#solve" id="tab-solve"><span class="ico" aria-hidden="true">🛠️</span>Solve</a>
+</nav>
+
+<script>
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function fmt(h){const H=Math.floor(h),M=Math.round((h-H)*60);const ap=H>=12?"pm":"am";const hh=((H+11)%12)+1;return hh+(M?":"+String(M).padStart(2,"0"):"")+ap}
+
+/* ============ ROUTINE DATA (times from the book; labels condensed) ============ */
+const BANDS=[
+ {name:"1–2 wks", title:"Weeks one to two",
+  feeds:[7,10,11.25,14,17,18.25,22], naps:[[8.5,10],[11.5,14],[15.5,17]],
+  maxSleep:"5½ h", wake:"up to 1½ h", nightFeeds:"2 (wake by 2:30–3:30am by weight)",
+  note:"Night feeds are deliberate: a baby under 7 lbs is woken by ~2:30am, 7–8 lbs by 3:30am — never left longer than 5 hours. A top-up feed before the lunchtime nap helps him sleep through it."},
+ {name:"2–4 wks", title:"Weeks two to four",
+  feeds:[7,10,11.75,14,17,18.25,22], naps:[[8.75,10],[11.75,14],[16,17]],
+  maxSleep:"5 h", wake:"up to 2 h", nightFeeds:"1",
+  note:"By the end of week two most 7 lb+ babies need only one feed between midnight and 6am — if daytime feeds are full and the 10pm feed is taken properly awake."},
+ {name:"4–6 wks", title:"Weeks four to six",
+  feeds:[7,10.5,14.25,17,18.25,22.25], naps:[[9,10],[11.75,14.25],[16.25,17]],
+  maxSleep:"4¾ h", wake:"~2 h", nightFeeds:"1",
+  note:"Between 4 and 6 weeks all healthy, well-fed babies manage one longer stretch of 5–6 hours — the routines make sure it lands at night, not lunchtime."},
+ {name:"6–8 wks", title:"Weeks six to eight",
+  feeds:[7,10.75,14.25,17,18.25,22.25], naps:[[9,9.75],[11.75,14.25],[16.5,17]],
+  maxSleep:"4 h", wake:"up to 2 h", nightFeeds:"0–1",
+  note:"The morning nap shortens to 45 minutes. Some babies now sleep through after the late feed; others take until 10–12 weeks. Both are normal."},
+ {name:"8–12 wks", title:"Weeks eight to twelve",
+  feeds:[7,10.75,14,17,18.25,22.25], naps:[[9,9.75],[12,14.25],[16.75,17]],
+  maxSleep:"3½ h", wake:"~2 h", nightFeeds:"0",
+  note:"The milestone window: most CLB babies now sleep to 6–7am after the late feed. The late-afternoon nap is down to a 15-minute catnap."},
+ {name:"3–4 mo", title:"Months three to four",
+  feeds:[7,11,14.25,17,18.25,22.25], naps:[[9,9.75],[12,14.25]],
+  maxSleep:"3 h", wake:"~2 h", nightFeeds:"0",
+  note:"The catnap goes — two proper naps remain. If he's not sleeping to 7am by three months, Ford's fix is to split the late feed and keep him awake longer at it."},
+ {name:"4–6 mo", title:"Months four to six",
+  feeds:[7,11,14.25,18.25,22], naps:[[9,9.75],[12,14.25]],
+  maxSleep:"3 h", wake:"2–2½ h", nightFeeds:"0",
+  note:"The 5pm feed merges into one proper 6:15pm feed, and the 10pm feed starts shrinking. Watch for weaning-readiness signs — but no solids before 17 weeks, ever."},
+ {name:"6–9 mo", title:"Months six to nine",
+  feeds:[7,11.5,14.5,17,18.5], naps:[[9.25,10],[12.5,14.5]],
+  maxSleep:"2½–2¾ h", wake:"2–2½ h", nightFeeds:"0",
+  note:"Solids are established: breakfast after the 7am milk, lunch at 11:30, dinner at 5. Naps move slightly later; the sleeping bag and a truly dark room do the rest."},
+ {name:"9–12 mo", title:"Months nine to twelve",
+  feeds:[7,11.75,14.5,17,18.5], naps:[[9.5,10],[12.5,14.5]],
+  maxSleep:"2–2½ h", wake:"2½ h+", nightFeeds:"0",
+  note:"The morning nap shrinks to 15–30 minutes and may vanish entirely. Three proper meals, milk from a cup, and the same 7pm bedtime that started it all."},
+];
+
+function dayBar(b){
+  const W=340,H=64,x0=8,x1=W-8,t0=7,t1=23;
+  const X=t=>x0+(t-t0)/(t1-t0)*(x1-x0);
+  let s="";
+  for(let t=7;t<=23;t+=2){
+    s+=`<line x1="${X(t)}" y1="10" x2="${X(t)}" y2="${H-18}" stroke="var(--grid)"/>`;
+    s+=`<text x="${X(t)}" y="${H-6}" text-anchor="middle" font-size="8.5" fill="var(--ink3)">${fmt(t)}</text>`;
+  }
+  s+=`<rect x="${x0}" y="${H/2-9}" width="${x1-x0}" height="12" rx="6" fill="var(--card2)"/>`;
+  b.naps.forEach(n=>{
+    s+=`<rect x="${X(n[0])}" y="${H/2-9}" width="${X(n[1])-X(n[0])}" height="12" rx="6" fill="var(--s2)"><title>Nap ${fmt(n[0])}–${fmt(n[1])}</title></rect>`;
+  });
+  s+=`<rect x="${X(19)}" y="${H/2-9}" width="${x1-X(19)}" height="12" rx="6" fill="var(--s2)" opacity=".35"><title>Night sleep from 7pm</title></rect>`;
+  b.feeds.forEach(f=>{
+    s+=`<circle cx="${X(f)}" cy="${H/2-3}" r="4.5" fill="var(--s1)" stroke="var(--card)" stroke-width="1.5"><title>Feed ${fmt(f)}</title></circle>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily routine timeline">${s}</svg>`;
+}
+
+function renderBand(i){
+  const b=BANDS[i];
+  document.getElementById("bandtitle").textContent="Routine · "+b.title;
+  document.getElementById("daybar").innerHTML=dayBar(b);
+  document.getElementById("bandstats").innerHTML=`
+    <div class="tile"><div class="v">${b.feeds.length}</div><div class="d">daytime milk feeds / meals (7am–11pm)${b.nightFeeds!=="0"?" + "+b.nightFeeds+" night feed(s)":""}</div></div>
+    <div class="tile"><div class="v">${b.naps.length}</div><div class="d">naps between 7am and 7pm</div></div>
+    <div class="tile"><div class="v">${b.maxSleep}</div><div class="d">maximum daytime sleep — the cap that protects night sleep</div></div>
+    <div class="tile"><div class="v">${b.wake}</div><div class="d">awake window ("up to" — not "must")</div></div>`;
+  document.getElementById("bandnote").textContent=b.note;
+  const ev=[];
+  b.feeds.forEach(f=>ev.push([f,"feed","🍼",f===7?"Wake, change & milk feed":"Milk feed / meal",f===7?"Day starts at 7am sharp — always":""]));
+  b.naps.forEach(n=>ev.push([n[0],"nap","😴",`Nap until ${fmt(n[1])}`,"Dark room, wound down, settled drowsy-but-awake"]));
+  ev.push([17.75,"bath","🛁","Bath, massage & PJs","Same time every night — the bedtime cue"]);
+  ev.push([19,"bed","🌙","In bed by 7pm","Settled in the dark, learning to fall asleep alone"]);
+  ev.sort((a,c)=>a[0]-c[0]);
+  document.getElementById("timeline").innerHTML=ev.map(e=>
+    `<li><span class="tt">${fmt(e[0])}</span><span class="ic ${e[1]}" aria-hidden="true">${e[2]}</span>
+     <span class="tx">${esc(e[3])}${e[4]?`<small>${esc(e[4])}</small>`:""}</span></li>`).join("");
+  document.querySelectorAll("#bands button").forEach((x,j)=>x.setAttribute("aria-pressed",j===i?"true":"false"));
+}
+
+function buildBands(){
+  const host=document.getElementById("bands");
+  host.innerHTML=BANDS.map((b,i)=>`<button aria-pressed="${i===0}">${b.name}</button>`).join("");
+  host.querySelectorAll("button").forEach((x,i)=>x.addEventListener("click",()=>renderBand(i)));
+  renderBand(0);
+  /* daytime sleep decline chart */
+  const caps=[5.5,5,4.75,4,3.5,3,3,2.6,2.25];
+  const W=340,rH=14,gap=8;let y=4,s="";
+  BANDS.forEach((b,i)=>{
+    const w=caps[i]/5.5*(W-120);
+    s+=`<text x="78" y="${y+rH-3}" text-anchor="end" font-size="10.5" fill="var(--ink2)">${b.name}</text>`;
+    s+=`<rect x="86" y="${y}" width="${w}" height="${rH}" rx="6" fill="var(--accent)" opacity="${0.55+0.05*(9-i)/2}"><title>${b.name}: ${b.maxSleep} max daytime sleep</title></rect>`;
+    s+=`<text x="${90+w}" y="${y+rH-3}" font-size="10" font-weight="700" fill="var(--ink)">${b.maxSleep}</text>`;
+    y+=rH+gap;
+  });
+  document.getElementById("sleepchart").innerHTML=`<svg viewBox="0 0 ${W} ${y}" role="img">${s}</svg>`;
+}
+
+/* ============ LEARN ============ */
+const read=new Set(JSON.parse(localStorage.getItem("cb-read")||"[]"));
+function updProgress(){
+  document.getElementById("progbar").style.width=(read.size/5*100)+"%";
+  document.getElementById("progtext").textContent=`${read.size} of 5 core topics absorbed`;
+}
+const LEARN=[
+ {id:1,icon:"🧭",t:"The CLB philosophy",s:"Why structure — and why not the two extremes",
+  html:`<p class="datap">Ford's case rests on watching 300+ babies up close as a maternity nurse. The babies who settled fastest shared a pattern: calm first weeks, minimal passing-around by visitors, regular naps in a quiet dark room, short awake spells after daytime feeds, and a fixed bath-feed-bed ritual from day one. The routines bottle that pattern.</p>
+  <p class="datap">She rejects both classic approaches. <b>Rigid 4-hourly feeding</b> (the maternity-ward relic): six feeds a day is too few to establish milk supply, and cutting feeds to 10–15 minutes stops babies reaching the hind milk — which is roughly three times richer in fat and does the actual satisfying. <b>Pure demand feeding</b>: many newborns — especially small ones and twins — simply don't demand, risking dehydration and a supply that never gets built; and a baby who sleeps all day will do his demanding all night, then get fed to sleep, learning exactly the wrong association.</p>
+  <p class="datap">The CLB position is the middle path: feed little and often <em>by the clock during the day</em>, so night wakings shrink to quick feeds — and always feed a genuinely hungry baby regardless of what the clock says.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Structure the day so the longest sleep happens at night.</li>
+  <li>Never restrict a hungry baby — the routine's job is to prevent the hunger scramble, not enforce it.</li>
+  <li>The two anchors are fixed: wake at 7am, bed by 7pm.</li></ul></div>`},
+ {id:2,icon:"🍼",t:"Milk feeding, the CLB way",s:"Supply and demand, hind milk, and the evening dip",
+  html:`<p class="datap">Breast milk is supply-and-demand: the breasts make what gets taken. That's why the early weeks matter so much — six feeds a day won't build a supply, and a sleepy baby who "goes four hours, he's so good" is quietly ordering less milk for week three.</p>
+  <p class="datap">Key mechanics: allow <b>up to</b> 25 minutes on the first breast (young babies need ~30 minutes to reach the fatty hind milk) — but "up to" means efficient feeders can finish in far less. The "every 3 hours" is measured <b>start-to-start</b>, so the real gap is closer to two. Expressing small amounts in the morning buffers supply for growth spurts, and the classic cause of a fretful, cluster-feeding evening is the <b>evening supply dip</b> — Ford's fix is a small top-up of expressed milk after the bath.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Feed little and often by day; make the 10pm feed a proper, fully-awake one.</li>
+  <li>Fretful evenings usually mean hunger, not temperament — try a top-up before anything else.</li>
+  <li>"Up to 25 minutes" is a ceiling, not a target.</li></ul></div>`},
+ {id:3,icon:"😴",t:"How baby sleep actually works",s:"Cycles, associations, and the core night",
+  html:`<p class="datap">Newborns sleep about 16 hours a day (AAFP figure) in cycles of just 45–60 minutes — drifting from light to REM to deep sleep and surfacing between cycles. Around weeks 3–4 babies stop falling asleep straight after feeds, and this is where habits form: research Ford leans on shows <b>all babies surface equally often at night — the "poor sleepers" are just the ones who can't get back down without the help they've been trained to expect</b> (feeding, rocking, a pacifier in the mouth).</p>
+  <p class="datap">So the method's whole sleep game is: settle the baby <b>drowsy but awake</b>, in a genuinely dark room, and protect the "core night" — the one long stretch every well-fed baby can do by 4–6 weeks. Structured daytime feeding makes that stretch land at night; most CLB babies sleep to 6–7am somewhere between 8 and 12 weeks. And never push it: a baby sleeps through when physically ready, not when starved into it.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Self-settling is the skill; everything else is scaffolding for it.</li>
+  <li>Darkness is non-negotiable — even a chink of light can end the 5am cycle-surfacing in full wake-up.</li>
+  <li>Between 5–6am, help him back to sleep fast; an established 5am habit is far harder to break.</li></ul></div>`},
+ {id:4,icon:"🥣",t:"Weaning",s:"17 weeks, iron at six months, three stages",
+  html:`<p class="datap">Two hard rules: <b>no solids before 17 weeks</b>, and by <b>six months</b> iron-rich foods must arrive — that's when the iron stores a baby is born with run out. Readiness signs (from four months on): draining full feeds and still hungry long before the next, chewing hands constantly, waking earlier and earlier despite solid sleep habits. Under six months, any of this is a conversation with your pediatrician, not a green light.</p>
+  <p class="datap">The three stages: <b>6–7 months</b> — first tastes (baby rice, vegetable and fruit purées), milk still the main event. <b>7–9 months</b> — protein, iron-rich foods and real textures. <b>9–12 months</b> — finger foods, three proper meals, milk from a cup. Throughout: effectively no added sugar or salt, her two "worst culprits."</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>17 weeks is the floor, six months is the iron deadline.</li>
+  <li>A hungrier not-yet-six-months baby needs <em>more milk</em>, not early solids.</li>
+  <li>Sugar and salt are the two foods to actively police.</li></ul></div>`},
+ {id:5,icon:"⭐",t:"The golden rules",s:"Her own end-of-book distillation, condensed",
+  html:`<p class="datap">Ford closes the book with the misreadings she most wants to prevent — worth absorbing verbatim-in-spirit:</p>
+  <div class="bottomline"><div class="klabel">The golden rules, condensed</div><ul>
+  <li>"Up to two hours awake" means a <em>limit</em>, not a requirement — a baby who only manages an hour just needs more sleep.</li>
+  <li>Feed times are ceilings too: an efficient feeder who's gaining weight and settling well is fine on shorter feeds.</li>
+  <li>A crying baby in the early days is hungry until proven otherwise — feed first, then investigate why the routine isn't holding.</li>
+  <li>Don't advance routines on the calendar; advance on your baby's signs. Straddling two routines is normal.</li>
+  <li>Never push a baby through the night by cutting night feeds — night weaning happens when he's ready.</li>
+  <li>Guard 5–7am: feed and resettle quickly. Babies who lie awake in that window become toddlers who start the day in it.</li></ul></div>`},
+];
+function buildLearn(){
+  const host=document.getElementById("learnlist");
+  host.innerHTML="";
+  LEARN.forEach(m=>{
+    const d=document.createElement("details");
+    d.className="acc";
+    d.innerHTML=`<summary><span class="aic" aria-hidden="true">${m.icon}</span>
+      <span>${esc(m.t)}<small>${esc(m.s)}</small></span><span class="chev">›</span></summary>
+      <div class="abody">${m.html}
+      <button class="btn ghost" style="width:auto;padding:7px 16px;font-size:.8rem" data-m="${m.id}">
+      ${read.has(m.id)?"✓ Absorbed":"Mark as absorbed"}</button></div>`;
+    d.querySelector("[data-m]").addEventListener("click",e=>{
+      read.has(m.id)?read.delete(m.id):read.add(m.id);
+      localStorage.setItem("cb-read",JSON.stringify([...read]));
+      e.target.textContent=read.has(m.id)?"✓ Absorbed":"Mark as absorbed";
+      updProgress();
+    });
+    host.appendChild(d);
+  });
+  updProgress();
+}
+
+/* ============ QUIZ ============ */
+const QUIZ=[
+ {q:"You should wake a sleeping baby if it's time for a feed.",a:true,e:"Core CLB doctrine — born from her work with twins and premature babies, whose survival depended on scheduled feeds. Sleepy babies who aren't woken don't order enough milk supply, and do their catching up at 2am."},
+ {q:"The CLB routines are basically strict four-hourly feeding.",a:false,e:"She spends pages attacking four-hourly feeding: six daily feeds can't establish supply, and clock-limited feeds stop babies reaching the hind milk. Early CLB feeding is deliberately little-and-often."},
+ {q:"Babies must be kept awake for their full two-hour window.",a:false,e:"Golden rule number one: 'up to two hours' is a ceiling, not a quota. A baby who only lasts an hour simply needs more sleep."},
+ {q:"Hind milk is about three times fattier than fore milk.",a:true,e:"Her key feeding fact — it's why cutting feeds short (or switching breasts too fast) leaves a baby hungry an hour later."},
+ {q:"A crying baby in the early weeks should be assumed hungry and fed, whatever the clock says.",a:true,e:"Top of her crying checklist. The routine exists to prevent hunger, never to enforce it against a hungry baby."},
+ {q:"If a 12-week-old seems extra hungry, it's fine to start a little baby rice.",a:false,e:"Absolute rule: no solids before 17 weeks. A hungrier young baby needs more milk — and under six months, weaning is a pediatrician conversation."},
+ {q:"On the routines, most babies sleep to 6–7am by 8–12 weeks.",a:true,e:"Her stated experience across hundreds of babies — with the honest caveats that some do it earlier, some much later, and premature babies take longer."},
+ {q:"If a baby wakes at 5:30am, leave him to resettle himself for as long as it takes.",a:false,e:"The one time Ford says actively help: feed or cuddle him back down fast. A baby who habitually lies awake 5–7am is on track to become a permanent early riser."},
+ {q:"Baby sleep cycles last about 45–60 minutes.",a:true,e:"Which is why babies 'wake' mid-nap: they're surfacing between cycles. The skill of drifting back down is what the whole method tries to teach."},
+ {q:"Feeding or rocking a baby to sleep teaches him the wrong sleep associations.",a:true,e:"Her central sleep claim: all babies surface at night; only the ones trained to need help can't get back down alone. Settle drowsy-but-awake instead."},
+ {q:"'Every three hours' is measured from the end of one feed to the start of the next.",a:false,e:"Start-to-start — so the actual gap between feeds is closer to two hours. Misreading this makes the routines look far harsher than they are."},
+ {q:"To get a baby sleeping through faster, cut night feeds as early as possible.",a:false,e:"Explicitly against the method: 'a baby will sleep through the night as soon as he is physically and mentally able.' The routines arrange the day so it happens naturally — they never starve it into happening."},
+];
+let qIdx=0,qScore=0,qOrder=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQuiz(){qIdx=0;qScore=0;qOrder=shuffle([...QUIZ.keys()]);renderQuiz()}
+function renderQuiz(){
+  const box=document.getElementById("quizbox");
+  if(qIdx>=qOrder.length){
+    const msg=qScore===qOrder.length?"Flawless. You could run the 7am feed blindfolded."
+      :qScore>=9?"Strong — you've absorbed the method, ceilings and all."
+      :qScore>=6?"Decent — the 'up to, not must' traps get everyone."
+      :"Worth a spin through the Learn tab — the method is subtler than its reputation.";
+    box.innerHTML=`<div class="quiz-score"><div class="klabel">Your score</div>
+      <div class="big">${qScore}/${qOrder.length}</div>
+      <p style="margin:6px auto 16px;max-width:40ch">${msg}</p>
+      <button class="btn" style="width:auto;padding:11px 28px" id="qrestart">Play again</button></div>`;
+    document.getElementById("qrestart").addEventListener("click",startQuiz);
+    return;
+  }
+  const q=QUIZ[qOrder[qIdx]];
+  box.innerHTML=`<div class="quiz-meta"><span>Question ${qIdx+1} of ${qOrder.length}</span><span>Score: ${qScore}</span></div>
+    <p class="quiz-q">“${esc(q.q)}”</p>
+    <div class="quiz-btns">
+      <button data-ans="false">✗ Not the method</button>
+      <button data-ans="true">✓ That's the method</button>
+    </div><div id="qresult"></div>`;
+  box.querySelectorAll(".quiz-btns button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const right=(b.dataset.ans==="true")===q.a;
+      if(right)qScore++;
+      box.querySelectorAll(".quiz-btns button").forEach(x=>x.disabled=true);
+      document.getElementById("qresult").innerHTML=`
+        <div class="quiz-result ${right?"right":"wrong"}">
+          <div class="verdict">${right?"Correct":"Not quite"} — ${q.a?"this is the CLB method":"the method says otherwise"}</div>
+          <div style="margin-top:4px">${esc(q.e)}</div></div>
+        <button class="btn" style="margin-top:12px" id="qnext">${qIdx+1<qOrder.length?"Next question":"See my score"}</button>`;
+      document.getElementById("qnext").addEventListener("click",()=>{qIdx++;renderQuiz()});
+      document.getElementById("qnext").focus();
+    });
+  });
+}
+
+/* ============ SOLVE ============ */
+const SOLVE=[
+ {g:"Everyday niggles",items:[
+  {icon:"💨",t:"Burping",b:"Less is more: most babies need one burp mid-feed and one at the end — they'll usually pull off the breast or bottle themselves when ready. Endless back-thumping mid-feed upsets them into swallowing more air than the feed did. No burp after a few minutes? Lay him flat for the diaper change; it usually surfaces on its own. Excessive lower wind: check mom's citrus/chocolate/dairy intake (breast), overfeeding (bottle), or too much fore milk."},
+  {icon:"😖",t:"Colic",b:"Ford's contrarian take: in her hundreds of routine-fed babies she claims she never saw colic, and blames demand-feeding — new milk arriving on top of undigested milk. Her fix is the full routine plus structured evening feeds and, controversially, sugar-water for night wakings. That last remedy is dated — mention colic to your pediatrician before treating anything. The universal consolation: it peaks in the evenings and resolves by about four months."},
+  {icon:"😢",t:"Crying",b:"Calibration: the AAP says newborns routinely cry 1–4 hours a day, so some crying is normal. Her checklist, in order: hunger (always first — feed regardless of the clock), tiredness (under six weeks, wind down after just an hour awake), overtiredness (never let an under-three-month-old go past two hours), overstimulation (visitors!), boredom. Settling-related fussing of 10–12 minutes from a fed, winded, sleep-ready baby is the only crying she deliberately tolerates."},
+  {icon:"🍼",t:"Pacifiers",b:"A great tool with one iron rule: it never stays in the crib. Use it to calm, even to settle — but remove it before sleep. A baby who falls asleep sucking will surface between every 45-minute cycle demanding it back, which she rates among the worst association problems to fix. Sterilize obsessively; never clean it in your own mouth."},
+  {icon:"🤢",t:"Reflux",b:"The colic impersonator. Back-arching, screaming during feeds, misery when laid flat, sometimes without visible spit-up ('silent reflux'). Her advice is unusually firm: insist on a proper evaluation and don't let anyone wave it off as colic. Keep the baby upright during and after feeds, don't overfeed. Most babies outgrow it by one year."}]},
+ {g:"Feeding problems",items:[
+  {icon:"📉",t:"Low milk supply",b:"Her diagnosis of the classic fretful-evening baby. Frequent snack-feeding signals the breasts to make milk in small, unsatisfying dribbles — supply follows what's taken per feed, not how often. The evening dip is real and common: her fix is expressing in the morning (when supply is highest), topping up with expressed milk after the bath, and making sure feeds reach the hind milk. Exhaustion suppresses supply too — rest is a supply intervention."},
+  {icon:"🌙",t:"Excessive night feeding",b:"By the end of week two, a 7 lb+ baby feeding well by day needs only one feed between midnight and 6am. More than that and a vicious cycle starts: night calories displace day appetite, which recreates the night hunger. Fixes: a full, properly-awake 10pm feed; structure day feeds so the big ones land where needed; and use the 'core night' idea — once he's done a longer stretch once, don't feed before that hour again, resettle instead."}]},
+ {g:"Sleeping problems",items:[
+  {icon:"🛏️",t:"Won't settle",b:"Almost always overtiredness or overstimulation. Watch the awake-window ceiling (2h under three months), do a proper 20-minute wind-down away from visitors, and never let him fall asleep on the feed — rouse gently with a diaper adjustment first so he goes down drowsy-but-awake. If crying, check at 5–10 minute intervals; crying that's escalating rather than winding down means something needs attention."},
+  {icon:"🌅",t:"Early-morning waking",b:"All babies surface into light sleep between 5–6am; whether that becomes a lifestyle depends on two things. One: total darkness — her stated obsession — no night-light, no light leak, nothing visible to make waking interesting. Two: how you respond — treat any 5–6am feed as a night feed (dim, silent, no eye contact, skip the diaper if you can) and resettle to 7am. This is the one situation where she endorses actively helping a baby back to sleep."},
+  {icon:"🔁",t:"Excessive night waking",b:"Her diagnostic list, in order: sleeping too much by day; too few daytime feeds (six between 7am and 11pm — which requires the 7am start); feeds too small (not reaching hind milk); a weak 10pm feed; and kicked-off covers (tuck under-six-month-olds in securely). Fix the day and the night usually fixes itself."},
+  {icon:"🥪",t:"The lunchtime nap",b:"The backbone nap — research-backed, in her telling, and the one to protect. Classic failure: waking at the 45-minute cycle mark and refusing to resettle. Her playbook: allow 5–10 minutes of settling noise if he's fed; if crying hardens, offer half the 2pm feed like a night feed and resettle. If it keeps happening, bring the 10am feed later toward 10:30 plus a pre-nap top-up (hunger), or trim the morning nap (undertiredness)."},
+  {icon:"🦷",t:"Teething & sleep associations",b:"Her rule of thumb on teething: it gets blamed for far more than it causes — a routine-raised baby with real teething pain is unsettled by day too, not just conveniently at 3am. Persistent night waking traced to rocking/feeding/pacifier associations gets her 'crying down' method instead: settle drowsy, allow short checked intervals of protest, never more than 10 minutes unchecked."}]},
+];
+function buildSolve(){
+  const host=document.getElementById("solvelist");
+  host.innerHTML=SOLVE.map(g=>`<h2 style="margin:18px 0 4px">${esc(g.g)}</h2>`+
+    g.items.map(it=>`<details class="acc"><summary><span class="aic" aria-hidden="true">${it.icon}</span>
+      <span>${esc(it.t)}</span><span class="chev">›</span></summary>
+      <div class="abody"><p class="datap" style="margin:0">${esc(it.b)}</p></div></details>`).join("")).join("");
+}
+
+/* ============ ROUTER ============ */
+let quizStarted=false;
+function route(){
+  const h=location.hash.replace(/^#/,"")||"routines";
+  const v=["routines","learn","quiz","solve"].includes(h)?h:"routines";
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.classList.remove("on"));
+  document.getElementById("view-"+v).classList.add("on");
+  document.getElementById("tab-"+v).classList.add("on");
+  if(v==="quiz"&&!quizStarted){startQuiz();quizStarted=true}
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+buildBands();buildLearn();buildSolve();route();
+</script>
