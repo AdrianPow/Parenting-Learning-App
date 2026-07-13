@@ -131,6 +131,12 @@ details.acc summary small{display:block;font-weight:600;color:var(--ink2);font-s
 .scen-why .pr{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
   background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:3px 10px;margin-bottom:8px}
 .scen-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink3);font-weight:700;margin-bottom:8px}
+.scen-nav{display:flex;gap:10px;margin-top:14px}
+.scen-nav .btn{width:auto;flex:1;padding:10px 12px;font-size:.85rem}
+.scen-dots{display:flex;gap:5px;justify-content:center;margin-top:12px}
+.scen-dots i{width:8px;height:8px;border-radius:50%;background:var(--card2);cursor:pointer}
+.scen-dots i.did{background:var(--accent)}
+.scen-dots i.cur{outline:2px solid var(--accent);outline-offset:2px}
 
 /* phrasebook */
 .phrase{background:var(--card);border-radius:18px;padding:16px;margin:10px 0;box-shadow:var(--shadow)}
@@ -320,50 +326,80 @@ const SCEN=[
   pr:"Sleep nudging",
   why:"Perry's alternative to sleep training: move in the smallest steps your baby can tolerate — feed-to-drowsy, cuddle, into the cot, cot further away — returning to the baseline if they're distressed. Slower than cry-it-out, and bed stays a place of comfort rather than abandonment. (Not before six months.)"},
 ];
-let sIdx=0,sScore=0,sOrder=[];
-function startScen(){sIdx=0;sScore=0;sOrder=shuffle([...SCEN.keys()]);renderScen()}
+let sIdx=0,sOrder=[],sFlips=[],sAnswers=[];
+function startScen(){
+  sOrder=shuffle([...SCEN.keys()]);
+  sFlips=sOrder.map(()=>Math.random()<0.5);
+  sAnswers=sOrder.map(()=>null);
+  sIdx=0;renderScen();
+}
+const sScore=()=>sAnswers.filter(a=>a&&a.right).length;
+const sDone=()=>sAnswers.filter(a=>a).length;
+function scenDots(){
+  return `<div class="scen-dots" role="group" aria-label="Jump to scenario">`+
+    sOrder.map((_,i)=>`<i data-i="${i}" class="${sAnswers[i]?"did":""}${i===sIdx?" cur":""}" title="Scenario ${i+1}"></i>`).join("")+`</div>`;
+}
+function wireDots(box){
+  box.querySelectorAll(".scen-dots i").forEach(d=>d.addEventListener("click",()=>{sIdx=+d.dataset.i;renderScen()}));
+}
 function renderScen(){
   const box=document.getElementById("scenbox");
   document.getElementById("scen-count").textContent=sIdx<sOrder.length?`Scenario ${sIdx+1} of ${sOrder.length}`:"Done";
-  document.getElementById("scen-score").textContent=`Connected: ${sScore}/${sIdx>sOrder.length-1?sOrder.length:sIdx}`;
+  document.getElementById("scen-score").textContent=`Connected: ${sScore()}/${sDone()}`;
   if(sIdx>=sOrder.length){
-    const msg=sScore===sOrder.length?"Every single repair. Philippa would hand you the biscuit tin."
-      :sScore>=7?"Strong instincts — the reactive options barely tempted you."
-      :sScore>=5?"Halfway there. The tricky ones are where the 'firm' option sounds responsible."
+    const sc=sScore();
+    const msg=sc===sOrder.length?"Every single repair. Philippa would hand you the biscuit tin."
+      :sc>=7?"Strong instincts — the reactive options barely tempted you."
+      :sc>=5?"Halfway there. The tricky ones are where the 'firm' option sounds responsible."
       :"The reactive scripts run deep — that's rather the book's point. Another lap?";
     box.innerHTML=`<div class="quiz-score"><div class="klabel">Connection rate</div>
-      <div class="big">${sScore}/${sOrder.length}</div>
+      <div class="big">${sc}/${sOrder.length}</div>
       <p style="margin:6px auto 16px;max-width:40ch">${msg}</p>
-      <button class="btn" style="width:auto;padding:11px 28px" id="srestart">Practice again</button></div>`;
+      <div class="scen-nav" style="max-width:340px;margin:0 auto">
+        <button class="btn ghost" id="sreview">‹ Review answers</button>
+        <button class="btn" id="srestart">Practice again</button>
+      </div></div>`;
+    document.getElementById("sreview").addEventListener("click",()=>{sIdx=sOrder.length-1;renderScen()});
     document.getElementById("srestart").addEventListener("click",startScen);
     return;
   }
-  const sc=SCEN[sOrder[sIdx]];
-  const flip=Math.random()<0.5;
+  const sc=SCEN[sOrder[sIdx]], flip=sFlips[sIdx], ans=sAnswers[sIdx];
   const opts=flip?[sc.good,sc.bad]:[sc.bad,sc.good];
   box.innerHTML=`<div class="scen-situ">${esc(sc.s)}</div>
     <div class="scen-opts">
       <button data-g="${flip?1:0}">${esc(opts[0])}</button>
       <button data-g="${flip?0:1}">${esc(opts[1])}</button>
-    </div><div id="scen-why"></div>`;
-  box.querySelectorAll(".scen-opts button").forEach(b=>{
-    b.addEventListener("click",()=>{
-      const right=b.dataset.g==="1";
-      if(right)sScore++;
-      box.querySelectorAll(".scen-opts button").forEach(x=>{
-        x.disabled=true;
-        if(x.dataset.g==="1")x.classList.add("picked-right");
-        else if(x===b)x.classList.add("picked-wrong");
-      });
-      document.getElementById("scen-why").innerHTML=`<div class="scen-why">
-        <span class="pr">${esc(sc.pr)}</span>
-        <div>${esc(sc.why)}</div>
-        <button class="btn" style="margin-top:12px" id="snext">${sIdx+1<sOrder.length?"Next scenario":"Finish"}</button></div>`;
-      document.getElementById("scen-score").textContent=`Connected: ${sScore}/${sIdx+1}`;
-      document.getElementById("snext").addEventListener("click",()=>{sIdx++;renderScen()});
-      document.getElementById("snext").focus();
+    </div><div id="scen-why"></div><div class="scen-nav" id="scen-nav"></div>${scenDots()}`;
+  wireDots(box);
+  const btns=[...box.querySelectorAll(".scen-opts button")];
+  const renderNav=answered=>{
+    document.getElementById("scen-nav").innerHTML=
+      (sIdx>0?`<button class="btn ghost" id="sprev">‹ Back</button>`:"")+
+      (answered?`<button class="btn ghost" id="schange">Change answer</button>
+        <button class="btn" id="snext">${sIdx+1<sOrder.length?"Next ›":"Finish"}</button>`:"");
+    const pv=document.getElementById("sprev"); if(pv)pv.addEventListener("click",()=>{sIdx--;renderScen()});
+    const ch=document.getElementById("schange"); if(ch)ch.addEventListener("click",()=>{sAnswers[sIdx]=null;renderScen()});
+    const nx=document.getElementById("snext"); if(nx)nx.addEventListener("click",()=>{sIdx++;renderScen()});
+  };
+  const showAnswered=()=>{
+    btns.forEach((x,bi)=>{
+      x.disabled=true;
+      if(x.dataset.g==="1")x.classList.add("picked-right");
+      else if(bi===sAnswers[sIdx].pick&&!sAnswers[sIdx].right)x.classList.add("picked-wrong");
     });
-  });
+    document.getElementById("scen-why").innerHTML=`<div class="scen-why">
+      <span class="pr">${esc(sc.pr)}</span><div>${esc(sc.why)}</div></div>`;
+    renderNav(true);
+  };
+  if(ans){showAnswered();return}
+  renderNav(false);
+  btns.forEach((b,bi)=>b.addEventListener("click",()=>{
+    sAnswers[sIdx]={pick:bi,right:b.dataset.g==="1"};
+    document.getElementById("scen-score").textContent=`Connected: ${sScore()}/${sDone()}`;
+    box.querySelector(".scen-dots i.cur").classList.add("did");
+    showAnswered();
+    const nx=document.getElementById("snext"); if(nx)nx.focus();
+  }));
 }
 
 /* ============ LEARN ============ */
