@@ -6,6 +6,7 @@ on:
     paths:
       - index.html
       - contented-baby.html
+      - parenting-relationship.html
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -31,7 +32,7 @@ jobs:
       - name: Stage site
         run: |
           mkdir _site
-          cp index.html contented-baby.html _site/
+          cp index.html contented-baby.html parenting-relationship.html _site/
 
       - uses: actions/configure-pages@v5
         with:

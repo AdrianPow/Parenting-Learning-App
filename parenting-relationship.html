@@ -1,0 +1,517 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Relationship Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ground:#f9f6f5; --card:#ffffff; --card2:#f3efee;
+  --ink:#251f21; --ink2:#665c5f; --ink3:#9d9296;
+  --accent:#c94f74; --accent2:#9e3a58; --accent-ink:#ffffff; --accent-wash:#fbe7ee;
+  --hairline:#ece6e5; --grid:#efe9e8; --baseline:#cfc6c8;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --crit:#d03b3b;
+  --quote-bar:#c94f74;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(37,31,33,.07);
+  --shadow:0 6px 20px rgba(37,31,33,.06);
+  --shadow-pop:0 10px 28px rgba(37,31,33,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#171214; --card:#211a1d; --card2:#1b1517;
+    --ink:#f2edee; --ink2:#b3a8ac; --ink3:#82767a;
+    --accent:#ef8fac; --accent2:#d76d90; --accent-ink:#2a0f18; --accent-wash:#38222b;
+    --hairline:#332a2d; --grid:#2c2427; --baseline:#463c40;
+    --s1:#3987e5; --s2:#199e70;
+    --good:#0ca30c; --warn:#fab219; --crit:#e05252;
+    --quote-bar:#ef8fac;
+    --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+    --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+    --edge:rgba(255,255,255,.08);
+    --shadow:0 6px 20px rgba(0,0,0,.35);
+    --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="light"]{
+  --ground:#f9f6f5; --card:#ffffff; --card2:#f3efee;
+  --ink:#251f21; --ink2:#665c5f; --ink3:#9d9296;
+  --accent:#c94f74; --accent2:#9e3a58; --accent-ink:#ffffff; --accent-wash:#fbe7ee;
+  --hairline:#ece6e5; --grid:#efe9e8; --baseline:#cfc6c8;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --crit:#d03b3b;
+  --quote-bar:#c94f74;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(37,31,33,.07);
+  --shadow:0 6px 20px rgba(37,31,33,.06);
+  --shadow-pop:0 10px 28px rgba(37,31,33,.12);
+}
+:root[data-theme="dark"]{
+  --ground:#171214; --card:#211a1d; --card2:#1b1517;
+  --ink:#f2edee; --ink2:#b3a8ac; --ink3:#82767a;
+  --accent:#ef8fac; --accent2:#d76d90; --accent-ink:#2a0f18; --accent-wash:#38222b;
+  --hairline:#332a2d; --grid:#2c2427; --baseline:#463c40;
+  --s1:#3987e5; --s2:#199e70;
+  --good:#0ca30c; --warn:#fab219; --crit:#e05252;
+  --quote-bar:#ef8fac;
+  --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+  --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+  --edge:rgba(255,255,255,.08);
+  --shadow:0 6px 20px rgba(0,0,0,.35);
+  --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);
+  font:16px/1.55 ui-rounded,"SF Pro Rounded","Nunito","Quicksand",system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding-bottom:96px}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em}
+h1{font-size:1.75rem;line-height:1.18;margin:0;text-wrap:balance}
+h2{font-size:1.25rem;margin:0 0 .35rem;text-wrap:balance}
+h3{font-size:1.05rem;margin:0 0 .3rem}
+p{margin:.5rem 0;max-width:62ch}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.view.on>*{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.view.on>*:nth-child(2){animation-delay:.05s}
+.view.on>*:nth-child(3){animation-delay:.1s}
+.view.on>*:nth-child(4){animation-delay:.15s}
+.view.on>*:nth-child(n+5){animation-delay:.2s}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+header.app{padding:24px 0 6px}
+.eyebrow{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent2);font-weight:800;background:var(--accent-wash);border-radius:99px;padding:4px 12px;margin-bottom:10px}
+.thesis{color:var(--ink2);margin-top:8px}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:22px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card.wash{background:var(--accent-wash);border-color:transparent}
+.klabel{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:800;margin-bottom:4px}
+blockquote{margin:14px 0;padding:14px 16px;border-left:4px solid var(--quote-bar);
+  background:var(--tint-lemon);border-radius:6px 18px 18px 6px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:1.06rem;line-height:1.45;font-style:italic}
+blockquote footer{font:.78rem/1.4 ui-rounded,system-ui,sans-serif;font-style:normal;color:var(--ink2);margin-top:8px;font-weight:600}
+.bottomline{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);
+  border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 30%,transparent)}
+.bottomline .klabel{color:var(--accent-ink);opacity:.8}
+.bottomline ul{margin:6px 0 0;padding-left:18px}
+.bottomline li{margin:6px 0}
+.btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:99px;padding:13px 18px;font-weight:750;width:100%;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)} .btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent);box-shadow:none}
+.progress{height:10px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.3,1);
+  background:linear-gradient(90deg,var(--accent),var(--s1))}
+details.acc{background:var(--card);border-radius:18px;margin:10px 0;padding:2px 14px;box-shadow:var(--shadow)}
+details.acc summary{display:flex;align-items:center;gap:12px;padding:13px 2px;cursor:pointer;list-style:none;font-weight:750}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .aic{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;background:var(--card2)}
+details.acc summary .chev{margin-left:auto;color:var(--ink3);transition:transform .25s;font-weight:800}
+details.acc[open] summary .chev{transform:rotate(90deg)}
+details.acc .abody{padding:0 2px 14px}
+details.acc .abody>*{animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+details.acc summary small{display:block;font-weight:600;color:var(--ink2);font-size:.76rem}
+.datap{font-size:.93rem}
+
+/* scenario player */
+.scen-situ{background:var(--tint-sky);border-radius:16px;padding:14px 16px;font-size:.97rem;font-weight:600}
+.scen-opts{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.scen-opts button{text-align:left;border:2px solid transparent;background:var(--card2);border-radius:16px;
+  padding:13px 15px;font-size:.93rem;line-height:1.45;color:var(--ink);transition:border-color .15s,transform .15s}
+.scen-opts button:hover{border-color:var(--accent);transform:translateY(-1px)}
+.scen-opts button:disabled{opacity:.55}
+.scen-opts button.picked-right{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--card2));opacity:1}
+.scen-opts button.picked-wrong{border-color:var(--crit);background:color-mix(in srgb,var(--crit) 8%,var(--card2));opacity:1}
+.scen-why{margin-top:12px;padding:14px 16px;border-radius:16px;background:var(--accent-wash);font-size:.92rem;animation:pop .35s cubic-bezier(.2,.7,.3,1)}
+.scen-why .pr{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:3px 10px;margin-bottom:8px}
+.scen-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink3);font-weight:700;margin-bottom:8px}
+
+/* phrasebook */
+.phrase{background:var(--card);border-radius:18px;padding:16px;margin:10px 0;box-shadow:var(--shadow)}
+.phrase .no{font-size:.92rem;color:var(--crit);text-decoration:line-through;text-decoration-thickness:1.5px;font-weight:600}
+.phrase .yes{font-size:1.02rem;font-weight:750;margin-top:8px;color:var(--good)}
+.phrase .why{font-size:.8rem;color:var(--ink2);margin-top:8px;line-height:1.45}
+.phrase .tag{display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  background:var(--accent-wash);color:var(--accent2);border-radius:99px;padding:2px 9px;margin-bottom:8px}
+
+/* quiz */
+.quiz-card{min-height:180px}
+.quiz-q{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-style:italic;font-size:1.28rem;line-height:1.35;margin:10px 0 18px;text-wrap:balance}
+.quiz-btns{display:flex;gap:10px}
+.quiz-btns button{flex:1;padding:14px 8px;border-radius:16px;border:2px solid transparent;color:var(--ink);font-weight:800;transition:transform .15s,border-color .15s}
+.quiz-btns button:first-child{background:var(--tint-rose)}
+.quiz-btns button:last-child{background:var(--tint-mint)}
+.quiz-btns button:hover{border-color:var(--accent);transform:translateY(-1px)}
+.quiz-btns button:disabled{opacity:.6;transform:none}
+.quiz-result{margin-top:14px;padding:14px 16px;border-radius:16px;font-size:.92rem;line-height:1.5;animation:pop .35s cubic-bezier(.2,.7,.3,1)}
+.quiz-result.right{background:color-mix(in srgb,var(--good) 13%,transparent)}
+.quiz-result.wrong{background:color-mix(in srgb,var(--crit) 11%,transparent)}
+.quiz-result .verdict{font-weight:800;letter-spacing:.04em;font-size:.75rem;text-transform:uppercase}
+.quiz-result.right .verdict{color:var(--good)}
+.quiz-result.wrong .verdict{color:var(--crit)}
+.quiz-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink3);font-weight:700}
+.quiz-score{text-align:center;padding:20px 0}
+.quiz-score .big{font-size:3.2rem;font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--accent),var(--s1));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav.tabs{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));left:14px;right:14px;max-width:612px;margin:0 auto;
+  background:var(--card);border:1px solid var(--edge);border-radius:26px;display:flex;z-index:10;box-shadow:var(--shadow-pop);padding:6px}
+nav.tabs a{flex:1;text-align:center;padding:7px 0 6px;text-decoration:none;color:var(--ink3);font-size:.7rem;font-weight:750;border-radius:20px;transition:background .2s,color .2s}
+nav.tabs a .ico{display:block;font-size:1.25rem;line-height:1.25;transition:transform .2s}
+nav.tabs a.on{color:var(--accent2);background:var(--accent-wash)}
+nav.tabs a.on .ico{transform:translateY(-1px) scale(1.08)}
+.view{display:none}
+.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.note{font-size:.8rem;color:var(--ink3);line-height:1.45}
+</style>
+
+<div class="wrap">
+
+<!-- ============ PRACTICE ============ -->
+<section id="view-practice" class="view">
+  <header class="app">
+    <div class="eyebrow">A companion to Philippa Perry's <em>The Book You Wish Your Parents Had Read</em></div>
+    <h1>It's not the rupture that matters. It's the repair.</h1>
+    <p class="thesis">This book has no schedules and no scores — it's about the relationship. So this app makes you practice the moments where the relationship is actually made: what you say next.</p>
+  </header>
+
+  <div class="card">
+    <div class="scen-meta"><span id="scen-count"></span><span id="scen-score"></span></div>
+    <div id="scenbox"></div>
+  </div>
+
+  <div class="card wash">
+    <div class="klabel">The one big idea behind every scenario</div>
+    <p class="datap" style="margin:4px 0 0">All behaviour is communication. Find the feeling behind the behaviour, say it out loud, and hold your boundary kindly. You're not in a battle — you and your child are on the same side.</p>
+  </div>
+</section>
+
+<!-- ============ LEARN ============ -->
+<section id="view-learn" class="view">
+  <header class="app">
+    <div class="eyebrow">The six parts of the book</div>
+    <h1>Not a parenting manual — a relationship manual</h1>
+    <p class="thesis">Perry's own warning: no potty-training tips, no hacks. Just how the bond works, what breaks it, and how to mend it.</p>
+    <div class="progress" aria-hidden="true"><i id="progbar" style="width:0%"></i></div>
+    <p class="note" id="progtext">0 of 6 parts absorbed</p>
+  </header>
+  <div id="learnlist"></div>
+  <blockquote>What children need is for us to be real and authentic, not perfect.
+  <footer>— Philippa Perry, on why apologizing to your child makes them more secure, not less</footer></blockquote>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="view-quiz" class="view">
+  <header class="app">
+    <div class="eyebrow">Perry or not Perry?</div>
+    <h1>Test yourself on the approach</h1>
+    <p class="thesis">Twelve statements — some are the book's approach, some are the habits it's trying to break. Which is which?</p>
+  </header>
+  <div class="card quiz-card" id="quizbox"></div>
+</section>
+
+<!-- ============ PHRASEBOOK ============ -->
+<section id="view-phrases" class="view">
+  <header class="app">
+    <div class="eyebrow">Say instead</div>
+    <h1>The phrasebook</h1>
+    <p class="thesis">Small swaps, big difference. Each one follows the same rule: validate the feeling, define yourself — not the child.</p>
+  </header>
+  <div id="phraselist"></div>
+  <div class="card" style="text-align:center">
+    <div class="klabel">Your library</div>
+    <p style="margin:6px 0 0"><a href="index.html" style="font-weight:750;text-decoration:none">📖 Cribsheet Companion ›</a><br>
+    <a href="contented-baby.html" style="font-weight:750;text-decoration:none">👶 Contented Baby Companion ›</a></p>
+  </div>
+</section>
+
+</div>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#practice" id="tab-practice"><span class="ico" aria-hidden="true">💬</span>Practice</a>
+  <a href="#learn" id="tab-learn"><span class="ico" aria-hidden="true">📖</span>Learn</a>
+  <a href="#quiz" id="tab-quiz"><span class="ico" aria-hidden="true">🎯</span>Quiz</a>
+  <a href="#phrases" id="tab-phrases"><span class="ico" aria-hidden="true">🗣️</span>Phrases</a>
+</nav>
+
+<script>
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+/* ============ SCENARIOS ============ */
+const SCEN=[
+ {s:"Your eight-year-old announces: “I don't want to go to school.”",
+  bad:"“You're going, and that's that.”",
+  good:"“You really hate school right now, don't you?”",
+  pr:"Validate the feeling",
+  why:"Perry's own example. Denying the feeling shuts the conversation down; reflecting it back opens a dialogue — and they still go to school. You're never arguing about whether the feeling is real."},
+ {s:"You're in a rush. Your toddler refuses the coat. Again.",
+  bad:"Wrestle it on — there's no time for this today.",
+  good:"“You hate being too hot — that's why you don't want it. We'll put it on outside when you feel cold.”",
+  pr:"Respect is faster",
+  why:"Grabbing first is what creates the battle. Acknowledging the (real, reasonable) feeling and offering the compromise costs seconds; the fight costs minutes. Her honest addendum: if mornings are always a war, get up earlier."},
+ {s:"Full tantrum in the kitchen: you said no ice cream before lunch.",
+  bad:"Ignore it and walk away — attention will only reward the screaming.",
+  good:"Stay close, get down to their level: “You're very angry I can't allow you ice cream.”",
+  pr:"Name it, stay with it",
+  why:"For Perry, ignoring a tantrum is a form of retaliation — punishing a child for having feelings. A tantrum isn't a tactic; they're *being* their frustration. You keep the boundary (no ice cream) while keeping them company in the feeling."},
+ {s:"Your toddler has your keys and won't give them back.",
+  bad:"“I've told you before — you can't be trusted with keys!”",
+  good:"“I can't allow you to have my keys.” (And take them, calmly.)",
+  pr:"Define yourself, not the child",
+  why:"The wording matters: one sentence describes your boundary, the other defines the child as untrustworthy. Set the boundary before you hit your limit, mean what you say, and skip empty threats — they're scary until they're ignored."},
+ {s:"An afternoon of relentless whingeing. You can't find anything wrong.",
+  bad:"“Stop whining — you've got nothing to be sad about!”",
+  good:"Get curious: what's the feeling under the noise? And notice why it grates on you so much.",
+  pr:"Behaviour = communication",
+  why:"Perry's uncomfortable suggestion: whingeing irritates us partly because it echoes our own shut-down childhood sadness — or feels like a review of our parenting. The whinge is a message with bad production values; find the message."},
+ {s:"Halfway home, your three-year-old sits down on someone's front step and won't move.",
+  bad:"“Come ON. We don't have time for this.” It's her will against yours now.",
+  good:"Put the bags down, crouch next to her, and watch the ant she's watching.",
+  pr:"Same side, not a battle",
+  why:"Her own story. A passer-by asked “Is she winning?” — but the winning/losing game is something parents invent, and playing it teaches domination. The child was tired and resting. The imagined future (getting home) could wait two minutes."},
+ {s:"A small trip on the pavement. Huge tears. Barely a scratch.",
+  bad:"“You're OK! Up you get — nothing happened.”",
+  good:"“That looked like a shock. Come here — I'll hug you while it stings.”",
+  pr:"Felt with, not dealt with",
+  why:"Soothing isn't softness — it's how self-soothing gets built. In the book, years of taking small hurts seriously produced a six-year-old who says 'give me a hug while my knee stings, it'll stop in a minute.' Told-off tears give a child two things to cry about."},
+ {s:"This morning you lost it and shouted at your kid over something that wasn't their fault.",
+  bad:"Move on and say nothing — children need parents to seem right, or they'll feel insecure.",
+  good:"“I got that wrong this morning and I'm sorry. You didn't deserve that.”",
+  pr:"Rupture and repair",
+  why:"A parent asked Perry exactly this — isn't apologizing dangerous? 'No! What children need is for us to be real and authentic, not perfect.' Ruptures are inevitable in every close relationship; repair is the skill. It works even years late."},
+ {s:"You and your partner disagree about the washing-up, in front of the kids.",
+  bad:"Win it: hygiene facts, fly-attraction facts, time-efficiency facts. Deuce.",
+  good:"“I feel stressed when it piles up — how do you see it?”",
+  pr:"Feelings, not fact tennis",
+  why:"Perry's 'fact tennis': lobbing reasons to score points until somebody loses — and nobody feels warmly toward their opponent. Kids learn their conflict style from watching yours. Share how you feel about the thing, then ask how they do."},
+ {s:"Bedtime. Your six-month-old will only fall asleep while feeding, and you're exhausted.",
+  bad:"Tonight's the night: door shut, let them cry it out until morning.",
+  good:"One nudge from the comfort baseline: feed until drowsy, then cuddle to sleep instead. Repeat until that's the new normal, then nudge again.",
+  pr:"Sleep nudging",
+  why:"Perry's alternative to sleep training: move in the smallest steps your baby can tolerate — feed-to-drowsy, cuddle, into the cot, cot further away — returning to the baseline if they're distressed. Slower than cry-it-out, and bed stays a place of comfort rather than abandonment. (Not before six months.)"},
+];
+let sIdx=0,sScore=0,sOrder=[];
+function startScen(){sIdx=0;sScore=0;sOrder=shuffle([...SCEN.keys()]);renderScen()}
+function renderScen(){
+  const box=document.getElementById("scenbox");
+  document.getElementById("scen-count").textContent=sIdx<sOrder.length?`Scenario ${sIdx+1} of ${sOrder.length}`:"Done";
+  document.getElementById("scen-score").textContent=`Connected: ${sScore}/${sIdx>sOrder.length-1?sOrder.length:sIdx}`;
+  if(sIdx>=sOrder.length){
+    const msg=sScore===sOrder.length?"Every single repair. Philippa would hand you the biscuit tin."
+      :sScore>=7?"Strong instincts — the reactive options barely tempted you."
+      :sScore>=5?"Halfway there. The tricky ones are where the 'firm' option sounds responsible."
+      :"The reactive scripts run deep — that's rather the book's point. Another lap?";
+    box.innerHTML=`<div class="quiz-score"><div class="klabel">Connection rate</div>
+      <div class="big">${sScore}/${sOrder.length}</div>
+      <p style="margin:6px auto 16px;max-width:40ch">${msg}</p>
+      <button class="btn" style="width:auto;padding:11px 28px" id="srestart">Practice again</button></div>`;
+    document.getElementById("srestart").addEventListener("click",startScen);
+    return;
+  }
+  const sc=SCEN[sOrder[sIdx]];
+  const flip=Math.random()<0.5;
+  const opts=flip?[sc.good,sc.bad]:[sc.bad,sc.good];
+  box.innerHTML=`<div class="scen-situ">${esc(sc.s)}</div>
+    <div class="scen-opts">
+      <button data-g="${flip?1:0}">${esc(opts[0])}</button>
+      <button data-g="${flip?0:1}">${esc(opts[1])}</button>
+    </div><div id="scen-why"></div>`;
+  box.querySelectorAll(".scen-opts button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const right=b.dataset.g==="1";
+      if(right)sScore++;
+      box.querySelectorAll(".scen-opts button").forEach(x=>{
+        x.disabled=true;
+        if(x.dataset.g==="1")x.classList.add("picked-right");
+        else if(x===b)x.classList.add("picked-wrong");
+      });
+      document.getElementById("scen-why").innerHTML=`<div class="scen-why">
+        <span class="pr">${esc(sc.pr)}</span>
+        <div>${esc(sc.why)}</div>
+        <button class="btn" style="margin-top:12px" id="snext">${sIdx+1<sOrder.length?"Next scenario":"Finish"}</button></div>`;
+      document.getElementById("scen-score").textContent=`Connected: ${sScore}/${sIdx+1}`;
+      document.getElementById("snext").addEventListener("click",()=>{sIdx++;renderScen()});
+      document.getElementById("snext").focus();
+    });
+  });
+}
+
+/* ============ LEARN ============ */
+const read=new Set(JSON.parse(localStorage.getItem("pp-read")||"[]"));
+function updProgress(){
+  document.getElementById("progbar").style.width=(read.size/6*100)+"%";
+  document.getElementById("progtext").textContent=`${read.size} of 6 parts absorbed`;
+}
+const LEARN=[
+ {id:1,icon:"🧬",t:"Your parenting legacy",s:"The past bites — and repair heals it",
+  html:`<p class="datap">Part One's claim: your strongest overreactions to your child are rarely about your child. When a reaction feels too big for the moment, it's usually an old feeling from your own childhood being triggered — and unexamined, it gets passed down. The move is not to be a perfect parent but to notice: "how old does this feeling actually make me?"</p>
+  <p class="datap">The book's central mechanism is <b>rupture and repair</b>. Ruptures — misunderstandings, snapping, getting it wrong — are inevitable in every intimate relationship. What matters is the repair: recognizing your triggers, and apologizing in plain words when you got it wrong. Repair works even decades later, and it doesn't undermine authority — pretending to be infallible is what teaches children to distrust their own instincts.</p>
+  <p class="datap">Also here: watch your inner critic. How you talk to yourself becomes the voice your child hears — and eventually the voice they use on themselves.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Oversized reactions are usually old feelings — put them where they belong.</li>
+  <li>Ruptures are inevitable; repair is the skill. Apologize for real.</li>
+  <li>Real and authentic beats right and perfect.</li></ul></div>`},
+ {id:2,icon:"🏠",t:"Your child's environment",s:"It's not family structure — it's how you all get on",
+  html:`<p class="datap">Part Two: children don't need a particular family shape; they need the adults around them to relate decently — together or apart. Conflict itself isn't damaging. Functional families argue. What damages is <em>how</em>: contempt, point-scoring, or total avoidance (when everything becomes taboo, intimacy quietly dies too).</p>
+  <p class="datap">Her anatomy of a good argument: there's the <b>context</b> (the washing-up), the <b>feelings</b> each person has about it, and the <b>process</b> (how you work it out). Leave the feelings out and you get "fact tennis" — trading reasons to win points until someone loses and nobody feels loved. Lead with "here's how I feel about it," then genuinely ask how they feel. Your children are watching, and they're learning their own future conflict style from you.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Arguing is fine; contempt and fact tennis are not.</li>
+  <li>Feelings first, solutions second — understanding beats winning.</li>
+  <li>If parents are separated: the children do best when the adults manage their relationship civilly.</li></ul></div>`},
+ {id:3,icon:"💗",t:"Feelings",s:"Validate, contain, and never argue with a feeling",
+  html:`<p class="datap">The heart of the book. A child learns to handle feelings by having them <b>felt with, not dealt with</b> — accepted and named by an adult who stays calm and doesn't shame them. Dismissing feelings ("don't be silly," "you're fine") doesn't build resilience; it teaches children their inner signals are wrong. Perry's safety point is striking: the child who trusts her "icky" feeling is the one who leaves the pool when an older kid gets creepy.</p>
+  <p class="datap">Her one admitted "hack": <b>never get into a battle about what a child is feeling</b>. You can hold any boundary while still validating the feeling behind the protest. And soothing works: the toddler soothed through every minor catastrophe becomes the six-year-old who says "give me a hug while my knee stings — it'll stop in a minute." Language detail: say "it looks like you're feeling sad," not "you are sad" — define the feeling, not the child.</p>
+  <p class="datap">Beware the "demand to be happy" and reflexive distraction — jollying a child out of every sadness teaches them that some feelings are unacceptable freight.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Validate the feeling; hold the boundary. Both, always.</li>
+  <li>Soothing now builds self-soothing later.</li>
+  <li>Feelings that get disallowed don't disappear — they go underground.</li></ul></div>`},
+ {id:4,icon:"🌱",t:"Laying a foundation",s:"Pregnancy, birth, and the first bond",
+  html:`<p class="datap">Part Four covers the runway: how you imagine your baby in pregnancy, debriefing a difficult birth (tell the story, have it heard), and the earliest bond. A baby's cry is communication, never manipulation — responding doesn't spoil; it teaches them that signals bring help, which is the foundation of security.</p>
+  <p class="datap">Two honest warnings for parents themselves. First: to parent well, you need parenting in turn — support, company, people who look after <em>you</em>. Loneliness is an occupational hazard of new parenthood, not a personal failing. Second: watch for post-natal depression in either parent, and treat getting help as strength. The bond isn't a single magic moment at birth — it's built in thousands of small responsive exchanges, so a rocky start is recoverable.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Crying is communication. Answering it builds security, not habits.</li>
+  <li>You can't pour from an empty cup — get support, and take PND seriously.</li>
+  <li>Bonding is a process, not a moment. Late starts still work.</li></ul></div>`},
+ {id:5,icon:"🧠",t:"Conditions for good mental health",s:"Dialogue, presence, clinginess, and sleep nudging",
+  html:`<p class="datap">A child's mental health grows out of thousands of tiny back-and-forths — the "serve and return" of noises, faces and, later, words. Turn-taking is the first conversation. What blocks it: a parent who can't tolerate the baby's distress ("diaphobia," she calls it) — or one who's permanently down a phone. Engaged observation — actually watching who your child is — is the antidote.</p>
+  <p class="datap">"Clinginess" gets reframed: it's not a flaw but a security need not yet met — pushing a clingy child away makes them cling harder; filling the need lets them let go (her case study traces an eight-year-old's clinginess to a hospital stay at twenty months that everyone else had filed under 'fine'). And instead of sleep training she offers <b>sleep nudging</b> (from ~6 months): find the "comfort baseline" where your baby falls asleep securely, take the smallest step away from it, let that become the new baseline, repeat — returning to base whenever they're distressed. Slower, but bed stays a place of comfort.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Dialogue from day one: respond, take turns, put the phone down.</li>
+  <li>Clinginess is a need, not a defect — meet it and it resolves.</li>
+  <li>Nudge sleep in tolerable steps; never outside the child's tolerance.</li></ul></div>`},
+ {id:6,icon:"📣",t:"All behaviour is communication",s:"Tantrums, whingeing, lying, boundaries",
+  html:`<p class="datap">The lens for every "difficult" behaviour: what feeling is this communicating? A tantrum isn't a premeditated tactic — the child is <em>being</em> their frustration. Stay close, name the feeling ("you're really angry I can't allow that"), keep the boundary, and never retaliate — which includes ignoring them. The "winning and losing game" between parent and child is invented by adults; dominating a child mostly teaches domination.</p>
+  <p class="datap">Boundaries are the other half of love: set them <b>before</b> you reach your limit, calmly and firmly, and <b>define yourself, not the child</b> — "I can't allow you to have my keys," not "you can't be trusted." No empty threats: they're frightening right up until they become ignorable. Follow through respectfully (with toddlers, that's kindly picking them up and removing them), and by the time they're too big to carry, your word alone carries. With teenagers the same grammar works: "I need you home at ten, for my sake."</p>
+  <p class="datap">Children's lies are usually fear or wish, not villainy — make truth-telling safe. And parental lying (even the convenient kind) spends the trust you'll want later.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Find the feeling behind the behaviour; say it out loud.</li>
+  <li>Love plus boundaries — stated early, kept calmly, no empty threats.</li>
+  <li>You're on the same side. There is no game to win.</li></ul></div>`},
+];
+function buildLearn(){
+  const host=document.getElementById("learnlist");
+  host.innerHTML="";
+  LEARN.forEach(m=>{
+    const d=document.createElement("details");
+    d.className="acc";
+    d.innerHTML=`<summary><span class="aic" aria-hidden="true">${m.icon}</span>
+      <span>${esc(m.t)}<small>${esc(m.s)}</small></span><span class="chev">›</span></summary>
+      <div class="abody">${m.html}
+      <button class="btn ghost" style="width:auto;padding:7px 16px;font-size:.8rem" data-m="${m.id}">
+      ${read.has(m.id)?"✓ Absorbed":"Mark as absorbed"}</button></div>`;
+    d.querySelector("[data-m]").addEventListener("click",e=>{
+      read.has(m.id)?read.delete(m.id):read.add(m.id);
+      localStorage.setItem("pp-read",JSON.stringify([...read]));
+      e.target.textContent=read.has(m.id)?"✓ Absorbed":"Mark as absorbed";
+      updProgress();
+    });
+    host.appendChild(d);
+  });
+  updProgress();
+}
+
+/* ============ QUIZ ============ */
+const QUIZ=[
+ {q:"It's not the rupture that matters most — it's the repair.",a:true,e:"The book's engine. Getting it wrong is inevitable in every close relationship; noticing, owning it and mending it is the parenting skill. Repairs land even years later."},
+ {q:"Apologizing to your child undermines their sense of security.",a:false,e:"A parent asked Perry exactly this. Her answer: 'No! What children need is for us to be real and authentic, not perfect.' Fake infallibility teaches kids to override their own instincts."},
+ {q:"A tantrum is usually a premeditated tactic to get their way.",a:false,e:"Watch one: nobody's enjoying it. The child is being their frustration, not deploying it. Find the feeling, name it, keep the boundary, stay close."},
+ {q:"Ignoring a tantrum is a neutral, harmless response.",a:false,e:"Perry calls ignoring a form of retaliation — punishment for having feelings. Nobody likes dancing alone, 'even if it is a dance of war.'"},
+ {q:"“I can't allow you to have my keys” works better than “You can't be trusted with keys.”",a:true,e:"Define yourself, not the child. One states your boundary; the other writes an identity onto them. Same grammar scales to teenagers: 'I need you home at ten, for my sake.'"},
+ {q:"Validating a feeling means giving in to the demand behind it.",a:true===false,e:"You can be completely sympathetic that they're furious about no ice cream — and still not serve ice cream. Feeling validated and getting your way are different things; the book insists on the first, not the second."},
+ {q:"Telling a child “don't be silly” about their fears can dull instincts that keep them safe.",a:true,e:"Her pool story: the girl who trusted her 'icky' feeling left; friends trained out of 'making a fuss' stayed. Feelings and instincts are wired together."},
+ {q:"An empty threat is harmless as long as you never carry it out.",a:false,e:"Worst of both: frightening while believed, authority-destroying once decoded. Say only what you'll do, then do it — calmly."},
+ {q:"Sleep nudging means moving in small steps from the child's comfort baseline, never outside their tolerance.",a:true,e:"Her alternative to cry-it-out (not before six months): smallest possible step away from how they fall asleep securely, make it the new baseline, repeat — and retreat if distressed."},
+ {q:"Winning the argument with facts ('fact tennis') strengthens a relationship.",a:false,e:"The loser of fact tennis doesn't feel persuaded — they feel beaten. Share feelings about the issue first; children learn their entire conflict style from watching yours."},
+ {q:"Distraction is the healthiest default response to a sad child.",a:false,e:"'Look, squirrel!' teaches that some feelings are unwelcome. Sometimes fine tactically — but the default should be acknowledging the feeling, or it goes underground."},
+ {q:"You and your child are on the same side — the winning/losing game is made up.",a:true,e:"From the ant-watching story: 'Is she winning?' asked the passer-by. But the battle of wills is a parental invention — and dominating a child mostly teaches them to dominate."},
+];
+let qIdx=0,qScore=0,qOrder=[];
+function startQuiz(){qIdx=0;qScore=0;qOrder=shuffle([...QUIZ.keys()]);renderQuiz()}
+function renderQuiz(){
+  const box=document.getElementById("quizbox");
+  if(qIdx>=qOrder.length){
+    const msg=qScore===qOrder.length?"Perfect. Real and authentic AND right."
+      :qScore>=9?"Strong — you've got the relationship lens."
+      :qScore>=6?"Decent. The counter-instinctive ones (ignoring, apologizing) catch everyone."
+      :"The old scripts run deep — that's the book's whole point. Try the Learn tab.";
+    box.innerHTML=`<div class="quiz-score"><div class="klabel">Your score</div>
+      <div class="big">${qScore}/${qOrder.length}</div>
+      <p style="margin:6px auto 16px;max-width:40ch">${msg}</p>
+      <button class="btn" style="width:auto;padding:11px 28px" id="qrestart">Play again</button></div>`;
+    document.getElementById("qrestart").addEventListener("click",startQuiz);
+    return;
+  }
+  const q=QUIZ[qOrder[qIdx]];
+  box.innerHTML=`<div class="quiz-meta"><span>Question ${qIdx+1} of ${qOrder.length}</span><span>Score: ${qScore}</span></div>
+    <p class="quiz-q">“${esc(q.q)}”</p>
+    <div class="quiz-btns">
+      <button data-ans="false">✗ Not the approach</button>
+      <button data-ans="true">✓ That's the book</button>
+    </div><div id="qresult"></div>`;
+  box.querySelectorAll(".quiz-btns button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const right=(b.dataset.ans==="true")===q.a;
+      if(right)qScore++;
+      box.querySelectorAll(".quiz-btns button").forEach(x=>x.disabled=true);
+      document.getElementById("qresult").innerHTML=`
+        <div class="quiz-result ${right?"right":"wrong"}">
+          <div class="verdict">${right?"Correct":"Not quite"} — ${q.a?"this is Perry's approach":"this is what she's arguing against"}</div>
+          <div style="margin-top:4px">${esc(q.e)}</div></div>
+        <button class="btn" style="margin-top:12px" id="qnext">${qIdx+1<qOrder.length?"Next question":"See my score"}</button>`;
+      document.getElementById("qnext").addEventListener("click",()=>{qIdx++;renderQuiz()});
+      document.getElementById("qnext").focus();
+    });
+  });
+}
+
+/* ============ PHRASEBOOK ============ */
+const PHRASES=[
+ {tag:"After a fall",no:"You're OK! Nothing happened.",yes:"That looked like a shock. I'll hug you while it stings.",
+  why:"They know something happened — they were there. Overruling the feeling teaches them not to trust it; naming it builds self-soothing."},
+ {tag:"Fears & worries",no:"Don't be silly.",yes:"Something about it feels wrong to you. Tell me.",
+  why:"Instincts keep children safe. Train out the 'fuss' and you train out the alarm system."},
+ {tag:"Naming feelings",no:"You ARE sad.",yes:"It looks like you might be FEELING sad.",
+  why:"Perry's smallest, biggest swap: define the feeling, not the person — for your child and for yourself. Feelings visit; they aren't who you are."},
+ {tag:"Boundaries",no:"You can't be trusted with my keys!",yes:"I can't allow you to have my keys.",
+  why:"Define yourself, not the child. State the boundary calmly before you reach your limit — then follow through, kindly."},
+ {tag:"School refusal",no:"You're going, and that's that.",yes:"You really hate school right now, don't you?",
+  why:"Her own example. The first slams the door; the second opens a conversation that might tell you what's actually wrong. They still go to school."},
+ {tag:"The tantrum",no:"Stop screaming this instant!",yes:"You're really angry I can't allow that. You can tell me you're angry — it's easier to hear than screaming.",
+  why:"Name the feeling, keep the boundary, offer the words for next time. Eventually they use them: 'I'm getting angry,' said her daughter — a milestone."},
+ {tag:"Teenagers",no:"You're too young to be out after ten.",yes:"I need you home by ten — for my sake.",
+  why:"Same grammar as the keys: your limit, honestly owned, is hearable. A verdict on who they are is a fight."},
+ {tag:"The nag loop",no:"Brush your teeth! I've told you four times! I'll take your screen time!",yes:"I'm so tired of hearing my own voice nagging about teeth. Please go and do them?",
+  why:"From a reader's email in the book: she swapped threats for honesty — 'And he did. Love him.' Authenticity is more persuasive than escalation."},
+];
+function buildPhrases(){
+  document.getElementById("phraselist").innerHTML=PHRASES.map(p=>`
+    <div class="phrase"><span class="tag">${esc(p.tag)}</span>
+      <div class="no">“${esc(p.no)}”</div>
+      <div class="yes">“${esc(p.yes)}”</div>
+      <div class="why">${esc(p.why)}</div>
+    </div>`).join("");
+}
+
+/* ============ ROUTER ============ */
+let quizStarted=false,scenStarted=false;
+function route(){
+  const h=location.hash.replace(/^#/,"")||"practice";
+  const v=["practice","learn","quiz","phrases"].includes(h)?h:"practice";
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.classList.remove("on"));
+  document.getElementById("view-"+v).classList.add("on");
+  document.getElementById("tab-"+v).classList.add("on");
+  if(v==="quiz"&&!quizStarted){startQuiz();quizStarted=true}
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+buildLearn();buildPhrases();startScen();route();
+</script>
