@@ -1,0 +1,583 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Whole-Brain Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ground:#f9f7f3; --card:#ffffff; --card2:#f3f0ea;
+  --ink:#26211a; --ink2:#665e52; --ink3:#9c9385;
+  --accent:#b45309; --accent2:#8a3e06; --accent-ink:#ffffff; --accent-wash:#fbeddb;
+  --hairline:#ece7df; --grid:#efeae2; --baseline:#cfc7ba;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --crit:#d03b3b;
+  --quote-bar:#b45309;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(38,33,26,.07);
+  --shadow:0 6px 20px rgba(38,33,26,.06);
+  --shadow-pop:0 10px 28px rgba(38,33,26,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#171310; --card:#211b15; --card2:#1b1611;
+    --ink:#f1ede7; --ink2:#b0a798; --ink3:#7f7668;
+    --accent:#f0a04b; --accent2:#d68638; --accent-ink:#291503; --accent-wash:#382a18;
+    --hairline:#322b23; --grid:#2b241d; --baseline:#453d32;
+    --s1:#3987e5; --s2:#199e70;
+    --good:#0ca30c; --warn:#fab219; --crit:#e05252;
+    --quote-bar:#f0a04b;
+    --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+    --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+    --edge:rgba(255,255,255,.08);
+    --shadow:0 6px 20px rgba(0,0,0,.35);
+    --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="light"]{
+  --ground:#f9f7f3; --card:#ffffff; --card2:#f3f0ea;
+  --ink:#26211a; --ink2:#665e52; --ink3:#9c9385;
+  --accent:#b45309; --accent2:#8a3e06; --accent-ink:#ffffff; --accent-wash:#fbeddb;
+  --hairline:#ece7df; --grid:#efeae2; --baseline:#cfc7ba;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --crit:#d03b3b;
+  --quote-bar:#b45309;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(38,33,26,.07);
+  --shadow:0 6px 20px rgba(38,33,26,.06);
+  --shadow-pop:0 10px 28px rgba(38,33,26,.12);
+}
+:root[data-theme="dark"]{
+  --ground:#171310; --card:#211b15; --card2:#1b1611;
+  --ink:#f1ede7; --ink2:#b0a798; --ink3:#7f7668;
+  --accent:#f0a04b; --accent2:#d68638; --accent-ink:#291503; --accent-wash:#382a18;
+  --hairline:#322b23; --grid:#2b241d; --baseline:#453d32;
+  --s1:#3987e5; --s2:#199e70;
+  --good:#0ca30c; --warn:#fab219; --crit:#e05252;
+  --quote-bar:#f0a04b;
+  --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+  --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+  --edge:rgba(255,255,255,.08);
+  --shadow:0 6px 20px rgba(0,0,0,.35);
+  --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);
+  font:16px/1.55 ui-rounded,"SF Pro Rounded","Nunito","Quicksand",system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding-bottom:96px}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em}
+h1{font-size:1.75rem;line-height:1.18;margin:0;text-wrap:balance}
+h2{font-size:1.25rem;margin:0 0 .35rem;text-wrap:balance}
+h3{font-size:1.05rem;margin:0 0 .3rem}
+p{margin:.5rem 0;max-width:62ch}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.view.on>*{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.view.on>*:nth-child(2){animation-delay:.05s}
+.view.on>*:nth-child(3){animation-delay:.1s}
+.view.on>*:nth-child(4){animation-delay:.15s}
+.view.on>*:nth-child(n+5){animation-delay:.2s}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+header.app{padding:24px 0 6px;padding-right:52px}
+.eyebrow{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent2);font-weight:800;background:var(--accent-wash);border-radius:99px;padding:4px 12px;margin-bottom:10px}
+.thesis{color:var(--ink2);margin-top:8px}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:22px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card.wash{background:var(--accent-wash);border-color:transparent}
+.klabel{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:800;margin-bottom:4px}
+blockquote{margin:14px 0;padding:14px 16px;border-left:4px solid var(--quote-bar);
+  background:var(--tint-lemon);border-radius:6px 18px 18px 6px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:1.06rem;line-height:1.45;font-style:italic}
+blockquote footer{font:.78rem/1.4 ui-rounded,system-ui,sans-serif;font-style:normal;color:var(--ink2);margin-top:8px;font-weight:600}
+.bottomline{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);
+  border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 30%,transparent)}
+.bottomline .klabel{color:var(--accent-ink);opacity:.8}
+.bottomline ul{margin:6px 0 0;padding-left:18px}
+.bottomline li{margin:6px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.tile{border-radius:18px;padding:14px}
+.tiles .tile:nth-child(4n+1){background:var(--tint-peach)}
+.tiles .tile:nth-child(4n+2){background:var(--tint-sky)}
+.tiles .tile:nth-child(4n+3){background:var(--tint-mint)}
+.tiles .tile:nth-child(4n+4){background:var(--tint-lav)}
+.tile .v{font-size:1.5rem;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.tile .d{font-size:.76rem;color:var(--ink2);margin-top:4px;line-height:1.35;font-weight:550}
+.btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:99px;padding:13px 18px;font-weight:750;width:100%;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)} .btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent);box-shadow:none}
+.progress{height:10px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.3,1);
+  background:linear-gradient(90deg,var(--accent),var(--s2))}
+details.acc{background:var(--card);border-radius:18px;margin:10px 0;padding:2px 14px;box-shadow:var(--shadow)}
+details.acc summary{display:flex;align-items:center;gap:12px;padding:13px 2px;cursor:pointer;list-style:none;font-weight:750}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .aic{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;background:var(--card2)}
+details.acc summary .num{font-size:.68rem;font-weight:800;color:var(--accent2);background:var(--accent-wash);border-radius:99px;padding:2px 8px;flex-shrink:0}
+details.acc summary .chev{margin-left:auto;color:var(--ink3);transition:transform .25s;font-weight:800}
+details.acc[open] summary .chev{transform:rotate(90deg)}
+details.acc .abody{padding:0 2px 14px}
+details.acc .abody>*{animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+details.acc summary small{display:block;font-weight:600;color:var(--ink2);font-size:.76rem}
+.datap{font-size:.93rem}
+.srow{margin:8px 0;font-size:.9rem}
+.srow b{color:var(--accent2);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:block}
+
+/* brain map */
+.bchips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.bchips button{border:none;background:var(--card2);color:var(--ink2);border-radius:99px;padding:8px 14px;font-size:.8rem;font-weight:750;transition:background .2s,color .2s}
+.bchips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.bdesc{background:var(--card2);border-radius:16px;padding:14px 16px;font-size:.92rem;min-height:96px}
+.bdesc b{display:block;margin-bottom:4px}
+
+/* triage */
+.tri-btns{display:flex;gap:10px;margin-top:10px}
+.tri-btns button{flex:1;padding:12px 10px;border-radius:14px;border:2px solid transparent;background:var(--card2);font-weight:750;font-size:.85rem;color:var(--ink)}
+.tri-btns button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-wash)}
+.tri-ans{margin-top:10px;padding:13px 15px;border-radius:14px;background:var(--accent-wash);font-size:.9rem;animation:pop .3s}
+.schip{display:inline-block;font-size:.7rem;font-weight:800;background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:3px 10px;margin:0 4px 6px 0}
+
+/* age bands */
+.bands{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.bands::-webkit-scrollbar{display:none}
+.bands button{flex-shrink:0;border:none;background:var(--card);color:var(--ink2);border-radius:99px;
+  padding:9px 15px;font-size:.82rem;font-weight:750;box-shadow:var(--shadow);transition:background .2s,color .2s}
+.bands button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+
+/* quiz */
+.quiz-card{min-height:180px}
+.quiz-q{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-style:italic;font-size:1.28rem;line-height:1.35;margin:10px 0 18px;text-wrap:balance}
+.quiz-btns{display:flex;gap:10px}
+.quiz-btns button{flex:1;padding:14px 8px;border-radius:16px;border:2px solid transparent;color:var(--ink);font-weight:800;transition:transform .15s,border-color .15s}
+.quiz-btns button:first-child{background:var(--tint-rose)}
+.quiz-btns button:last-child{background:var(--tint-mint)}
+.quiz-btns button:hover{border-color:var(--accent);transform:translateY(-1px)}
+.quiz-btns button:disabled{opacity:.6;transform:none}
+.quiz-result{margin-top:14px;padding:14px 16px;border-radius:16px;font-size:.92rem;line-height:1.5;animation:pop .35s cubic-bezier(.2,.7,.3,1)}
+.quiz-result.right{background:color-mix(in srgb,var(--good) 13%,transparent)}
+.quiz-result.wrong{background:color-mix(in srgb,var(--crit) 11%,transparent)}
+.quiz-result .verdict{font-weight:800;letter-spacing:.04em;font-size:.75rem;text-transform:uppercase}
+.quiz-result.right .verdict{color:var(--good)}
+.quiz-result.wrong .verdict{color:var(--crit)}
+.quiz-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink3);font-weight:700}
+.quiz-score{text-align:center;padding:20px 0}
+.quiz-score .big{font-size:3.2rem;font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--accent),var(--s1));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav.tabs{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));left:14px;right:14px;max-width:612px;margin:0 auto;
+  background:var(--card);border:1px solid var(--edge);border-radius:26px;display:flex;z-index:10;box-shadow:var(--shadow-pop);padding:6px}
+nav.tabs a{flex:1;text-align:center;padding:7px 0 6px;text-decoration:none;color:var(--ink3);font-size:.7rem;font-weight:750;border-radius:20px;transition:background .2s,color .2s}
+nav.tabs a .ico{display:block;font-size:1.25rem;line-height:1.25;transition:transform .2s}
+nav.tabs a.on{color:var(--accent2);background:var(--accent-wash)}
+nav.tabs a.on .ico{transform:translateY(-1px) scale(1.08)}
+.view{display:none}
+.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.note{font-size:.8rem;color:var(--ink3);line-height:1.45}
+
+/* library switcher */
+.libbtn{position:fixed;top:12px;right:12px;z-index:20;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--edge);background:var(--card);box-shadow:var(--shadow-pop);font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.libbtn:hover{transform:translateY(-1px)} .libbtn:active{transform:scale(.94)}
+.libsheet{position:fixed;inset:0;z-index:30;background:rgba(15,15,15,.45);display:flex;align-items:flex-end;justify-content:center}
+.libsheet[hidden]{display:none}
+.libpanel{background:var(--ground);border-radius:24px 24px 0 0;padding:18px 16px calc(26px + env(safe-area-inset-bottom));
+  max-width:640px;width:100%;animation:libup .3s cubic-bezier(.2,.7,.3,1)}
+@keyframes libup{from{transform:translateY(48px);opacity:0}to{transform:none;opacity:1}}
+.libcard{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:13px 14px;margin:8px 0;
+  text-decoration:none;color:var(--ink);box-shadow:var(--shadow);border:2px solid transparent}
+.libcard.here{border-color:var(--accent)}
+.libcard .em{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.libcard b{display:block;font-size:.95rem}
+.libcard small{color:var(--ink2);font-size:.76rem;font-weight:600}
+.libcard .herechip{margin-left:auto;font-size:.64rem;font-weight:800;letter-spacing:.05em;color:var(--accent);white-space:nowrap}
+</style>
+
+<div class="wrap">
+
+<!-- ============ STRATEGIES ============ -->
+<section id="view-strategies" class="view">
+  <header class="app">
+    <div class="eyebrow">A companion to Siegel &amp; Bryson's <em>The Whole-Brain Child</em></div>
+    <h1>Survival moments are thriving moments in disguise.</h1>
+    <p class="thesis">The book's whole promise: understand the few big things about how your child's brain develops, and the meltdowns, fears and fights become chances to build a stronger brain.</p>
+    <div class="progress" aria-hidden="true"><i id="progbar" style="width:0%"></i></div>
+    <p class="note" id="progtext">0 of 12 strategies absorbed</p>
+  </header>
+
+  <div class="card">
+    <div class="klabel">The brain map — tap a region</div>
+    <div class="bchips" role="group" aria-label="Brain regions">
+      <button data-b="up" aria-pressed="true">🏠 Upstairs</button>
+      <button data-b="down" aria-pressed="false">🦎 Downstairs</button>
+      <button data-b="left" aria-pressed="false">📋 Left</button>
+      <button data-b="right" aria-pressed="false">🌊 Right</button>
+    </div>
+    <div class="bdesc" id="bdesc"></div>
+    <p class="note" style="margin-top:10px">The whole game is <b>integration</b> — building the staircase between floors and the bridge between hemispheres, so the parts work as a team. Every strategy below is an integration exercise.</p>
+  </div>
+
+  <div id="stratlist"></div>
+</section>
+
+<!-- ============ TRIAGE ============ -->
+<section id="view-triage" class="view">
+  <header class="app">
+    <div class="eyebrow">Right now</div>
+    <h1>What's happening? Here's your strategy.</h1>
+    <p class="thesis">The refrigerator sheet, made tappable. Find the situation; get the strategy, the why, and roughly what to say.</p>
+  </header>
+
+  <div class="card">
+    <h3>🌋 Full meltdown — first, which kind?</h3>
+    <p class="datap" style="margin-top:0">The book's most useful fork: not all tantrums are the same, and they need <b>opposite</b> responses.</p>
+    <div class="tri-btns" role="group">
+      <button data-t="down" aria-pressed="false">Genuinely out of control</button>
+      <button data-t="up" aria-pressed="false">In control, pushing</button>
+    </div>
+    <div id="tri-tantrum"></div>
+  </div>
+
+  <div id="triagelist"></div>
+</section>
+
+<!-- ============ AGES ============ -->
+<section id="view-ages" class="view">
+  <header class="app">
+    <div class="eyebrow">Ages &amp; stages</div>
+    <h1>The same strategies, growing with your child</h1>
+    <p class="thesis">From the book's ages-and-stages chart, condensed: what changes at each stage, and where to focus.</p>
+  </header>
+  <div class="bands" id="agebands" role="group" aria-label="Age band"></div>
+  <div class="card" id="agecard"></div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="view-quiz" class="view">
+  <header class="app">
+    <div class="eyebrow">Whole-brain or old-brain?</div>
+    <h1>Test yourself on the science</h1>
+    <p class="thesis">Twelve statements — some are the book's brain science, some are the instincts it's correcting.</p>
+  </header>
+  <div class="card quiz-card" id="quizbox"></div>
+</section>
+
+</div>
+
+<button class="libbtn" id="libbtn" aria-label="Switch book app" aria-expanded="false">📚</button>
+<div class="libsheet" id="libsheet" hidden><div class="libpanel">
+<div class="klabel" style="margin-bottom:8px">Your library — switch books</div>
+<a class="libcard" href="index.html"><span class="em" style="background:color-mix(in srgb,#0fa47e 20%,var(--card2))">📖</span><span><b>Cribsheet Companion</b><small>Emily Oster · the evidence</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
+<a class="libcard" href="contented-baby.html"><span class="em" style="background:color-mix(in srgb,#7c62d6 20%,var(--card2))">👶</span><span><b>Contented Baby Companion</b><small>Gina Ford · the routines</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
+<a class="libcard" href="parenting-relationship.html"><span class="em" style="background:color-mix(in srgb,#c94f74 20%,var(--card2))">💬</span><span><b>Relationship Companion</b><small>Philippa Perry · the connection</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
+<a class="libcard here" href="whole-brain.html"><span class="em" style="background:color-mix(in srgb,#b45309 20%,var(--card2))">🧠</span><span><b>Whole-Brain Companion</b><small>Siegel &amp; Bryson · the brain</small></span><span class="herechip">YOU’RE HERE</span></a>
+</div></div>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#strategies" id="tab-strategies"><span class="ico" aria-hidden="true">🧠</span>Strategies</a>
+  <a href="#triage" id="tab-triage"><span class="ico" aria-hidden="true">🚨</span>Right now</a>
+  <a href="#ages" id="tab-ages"><span class="ico" aria-hidden="true">👶</span>Ages</a>
+  <a href="#quiz" id="tab-quiz"><span class="ico" aria-hidden="true">🎯</span>Quiz</a>
+</nav>
+
+<script>
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+/* ============ BRAIN MAP ============ */
+const BRAIN={
+ up:["🏠 The upstairs brain","The thinking floor: planning, imagination, empathy, self-control, morality — the qualities you're hoping to raise. The catch that changes everything: it's under construction until the mid-twenties. Expecting consistent self-control from a four-year-old is expecting a finished room in a house that doesn't have its roof on yet."],
+ down:["🦎 The downstairs brain","The ground floor: breathing, instincts, strong emotions, fight-or-flight. Fully built at birth and staffed by the amygdala — a tiny watchdog that can slam the baby gate to the stairs and act before any thinking happens. When the gate is shut, no amount of reasoning gets upstairs."],
+ left:["📋 The left brain","The logical librarian: order, language, cause-and-effect, putting things in sequence. Toddlers barely use it — which is why 'because I said so' logic bounces off a small child mid-feeling."],
+ right:["🌊 The right brain","The emotional ocean: feelings, images, tone of voice, body signals, the gist of an experience. It dominates early childhood, and it's the door you have to knock on first when a child is upset — with touch, tone and empathy, not arguments."],
+};
+function wireBrain(){
+  const d=document.getElementById("bdesc");
+  const set=k=>{
+    document.querySelectorAll(".bchips button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.b===k));
+    d.innerHTML=`<b>${esc(BRAIN[k][0])}</b>${esc(BRAIN[k][1])}`;
+  };
+  document.querySelectorAll(".bchips button").forEach(b=>b.addEventListener("click",()=>set(b.dataset.b)));
+  set("up");
+}
+
+/* ============ STRATEGIES ============ */
+const GROUPS=[
+ ["Integrating left + right","When emotion and logic won't talk to each other",[1,2]],
+ ["Integrating upstairs + downstairs","Building the staircase to the thinking brain",[3,4,5]],
+ ["Integrating memory","Making sense of what happened",[6,7]],
+ ["Integrating the parts of me","The wheel of awareness",[8,9,10]],
+ ["Integrating me + we","Wiring kids for relationships",[11,12]],
+];
+const STRATS={
+ 1:{icon:"🤝",t:"Connect and Redirect",s:"Feelings first, lessons second",
+  what:"When a child is drowning in a right-brain emotional wave, logic can't reach them. Connect with the right brain first — physical touch, a warm tone, empathetic face, naming the feeling. Only once they're calmer and receptive do you bring in the left-brain part: the lesson, the logic, the plan.",
+  when:"Illogical outbursts, bedtime protests about nothing, big feelings that make no sense to you.",
+  say:"“Sometimes it's really hard, isn't it?” — then, once softened: “Let's figure out what to do about it.”",
+  sci:"The authors call the connection step attunement — helping a child 'feel felt.' Their example: a bedtime meltdown over never getting midnight notes was resolved in five minutes by connecting first, where arguing the logic would have escalated it."},
+ 2:{icon:"📖",t:"Name It to Tame It",s:"Retell the story of the scary thing",
+  what:"After a frightening or painful experience, help your child tell the story of what happened — in order, with the feelings included. Putting words and sequence (left brain) around raw emotion (right brain) is literally how the brain digests an experience.",
+  when:"After falls, scares, accidents, humiliations; lingering fears with a clear origin.",
+  say:"“So first we were walking, and then what happened? And how did that feel?”",
+  sci:"In the book, a nine-year-old scared to flush after a toilet flooded lost the fear after retelling the story a few times with her dad. Tip: kids open up more mid-activity — building, drawing, driving — than face-to-face."},
+ 3:{icon:"🧩",t:"Engage, Don't Enrage",s:"Invite thinking instead of triggering the reptile",
+  what:"In a standoff, command-and-demand ('because I said so') aims at the downstairs brain and triggers a fight. Instead, hand the problem upstairs: ask them to think, plan, negotiate, choose.",
+  when:"Defiance, restaurant standoffs, rule battles with a child who's still in control of themselves.",
+  say:"“That rule's not changing — but you're a good negotiator. What do you think would be fair?”",
+  sci:"Their restaurant story: a furious four-year-old making faces from behind a pillar was invited to negotiate his quesadilla quota with Dad — and walked back to the table a thinking person instead of a cornered reptile."},
+ 4:{icon:"🏋️",t:"Use It or Lose It",s:"Give the upstairs brain daily reps",
+  what:"The upstairs brain is a muscle — it grows with use. Deliberately hand over decisions, ask empathy questions, pose dilemmas, let them feel the weight of real (small) choices rather than deciding everything for them.",
+  when:"Everyday — this one's preventive, not for emergencies.",
+  say:"“Blue shoes or white shoes?” … up to … “Campout and the playoff are the same day. Your call — talk me through it.”",
+  sci:"Decision-making runs executive function through its paces. An allowance, a scheduling conflict, a moral 'what would you do?' at dinner — all reps for the same circuits self-control runs on."},
+ 5:{icon:"🏃",t:"Move It or Lose It",s:"Move the body to reset the brain",
+  what:"Movement changes brain chemistry directly. When a child is stuck in a downstairs state — hysterical, frozen, spiraling — getting the body moving (running, jumping, wrestling, bike riding) can restore balance faster than any words.",
+  when:"Stuck states: can't calm down, can't start the homework, wound tight after a hard day.",
+  say:"“Let's race to the corner and back before we try again.”",
+  sci:"Their story: an overwhelmed fifth-grader hiding under a beanbag bolted out the door, sprinted around the block, and came back calm and workable. He'd re-integrated himself — the strategy is just doing that on purpose."},
+ 6:{icon:"📼",t:"Use the Remote of the Mind",s:"Replay hard memories with a pause button",
+  what:"When a memory is too big to face straight through, give your child the controls: replay the event like a movie they can pause, rewind and fast-forward — skipping the hard part until they're ready, then coming back to it.",
+  when:"Avoidance and phobias with a known cause; a child who won't go near reminders of a bad event.",
+  say:"“Let's watch the story in your mind. You hold the remote — fast-forward past the scary bit for now, we'll come back to it.”",
+  sci:"In the book, a boy avoided woodworking tools for months after his friend's knife accident. Replaying the day with 'the remote' — control over the pacing — let him process it and rejoin the derby build."},
+ 7:{icon:"🗓️",t:"Remember to Remember",s:"Make recall a daily habit",
+  what:"Memory strengthens with exercise. Build remembering into ordinary life: ask specific questions about their day, revisit the week's highlights, encourage journaling in older kids.",
+  when:"Everyday — and especially after important experiences you want to become part of their story.",
+  say:"“What was the best bit of today? What happened right before that?”",
+  sci:"Recall knits implicit (felt) memory into explicit (told) memory — the same integration Name-It-to-Tame-It does for hard moments, applied to all of life. Journaling studies even link expressive recall to better immune and heart function."},
+ 8:{icon:"🌤️",t:"Let the Clouds of Emotion Roll By",s:"Feelings are weather, not climate",
+  what:"Teach that feelings are temporary states, not permanent traits. Rain is real — but so is the sun coming back. The language swap matters: 'I feel dumb right now,' never 'I am dumb.'",
+  when:"Global self-verdicts: 'I'm stupid,' 'Nobody likes me,' 'I'll never be good at this.'",
+  say:"“You feel that way right now — and feelings pass. Remember how angry you were this morning, and then it went?”",
+  sci:"The book's arresting number: a typical emotion physiologically rises and passes in about ninety seconds. What keeps it going longer is the story we attach — which is exactly what kids need help noticing."},
+ 9:{icon:"🔍",t:"SIFT",s:"Sensations, Images, Feelings, Thoughts",
+  what:"Teach kids to scan their inner world in four channels: body Sensations (butterflies, heavy shoulders), Images (pictures stuck in the mind), Feelings, and Thoughts. Naming what's actually in there is the first step to steering it.",
+  when:"Vague distress, mystery moods, psychosomatic tummy-aches, pre-bed worry spirals.",
+  say:"“What's your body doing right now? Any pictures in your head? Okay — and what are you telling yourself?”",
+  sci:"Their windshield trick: every splat on the glass is one thing you're feeling or thinking — the anger smudge, the disappointment bug, the excited-about-recess splat. Many things at once, none of them the whole windshield."},
+ 10:{icon:"🎡",t:"Exercise Mindsight",s:"Back to the hub of the wheel",
+  what:"Picture awareness as a wheel: the rim holds every sensation, worry and thought; the hub is the calm center that can observe them. Mindsight exercises — stillness, breath, guided attention — teach a child to return to the hub instead of living on one screaming rim-point.",
+  when:"Anxiety fixation: the recital, the test, the thing they cannot stop orbiting.",
+  say:"“Close your eyes. Notice your breath going in and out… now notice you're the one doing the noticing.”",
+  sci:"A nine-year-old's pre-recital panic was settled with a simple lying-down attention exercise — first moving her gaze around the room, then the same trick pointed inward. Even toddlers can do seconds of boat-on-the-tummy breathing."},
+ 11:{icon:"🎉",t:"Increase the Family Fun Factor",s:"Play is relational wiring",
+  what:"Deliberately protect silliness, games and shared laughter. Every genuinely fun family experience pays dopamine into the ledger marked 'being close to people feels good' — which is the expectation kids carry into every future relationship.",
+  when:"When family time has become logistics plus discipline; preventive, always.",
+  say:"(Nothing to say — die dramatically from the sword thrust.)",
+  sci:"Dopamine is the brain's reward chemical; play wires 'relationships are rewarding' at the hardware level. The authors' point: structure and fun aren't rivals — the fun is what makes the structure worth cooperating with."},
+ 12:{icon:"🕊️",t:"Connect Through Conflict",s:"Argue with a 'we' in mind",
+  what:"Don't referee fights — coach them. Three teachable skills: see it through the other person's eyes, read the nonverbal signals (the slumped shoulders, the wobbling chin), and make amends in a way that means something to the other person.",
+  when:"Sibling wars, friendship blowups, the daily 'he started it.'",
+  say:"“Before we sort out who did what — how do you think it felt to be Mark just then?”",
+  sci:"Conflict isn't a failure of family life; it's the practice arena for the relational skills adulthood runs on. Each quarrel survived well is a thriving rep."},
+};
+const read=new Set(JSON.parse(localStorage.getItem("wb-read")||"[]"));
+function updProgress(){
+  document.getElementById("progbar").style.width=(read.size/12*100)+"%";
+  document.getElementById("progtext").textContent=`${read.size} of 12 strategies absorbed`;
+}
+function buildStrats(){
+  const host=document.getElementById("stratlist");
+  host.innerHTML="";
+  GROUPS.forEach(([g,sub,ids])=>{
+    const h=document.createElement("div");
+    h.innerHTML=`<h2 style="margin:20px 0 2px">${esc(g)}</h2><p class="note" style="margin:0 0 6px">${esc(sub)}</p>`;
+    host.appendChild(h);
+    ids.forEach(id=>{
+      const m=STRATS[id];
+      const d=document.createElement("details");
+      d.className="acc";
+      d.innerHTML=`<summary><span class="aic" aria-hidden="true">${m.icon}</span>
+        <span>${esc(m.t)}<small>${esc(m.s)}</small></span><span class="num">#${id}</span><span class="chev">›</span></summary>
+        <div class="abody">
+          <div class="srow"><b>What it is</b>${esc(m.what)}</div>
+          <div class="srow"><b>Reach for it when</b>${esc(m.when)}</div>
+          <div class="srow"><b>Sounds roughly like</b>${esc(m.say)}</div>
+          <div class="srow"><b>The science & the story</b>${esc(m.sci)}</div>
+          <button class="btn ghost" style="width:auto;padding:7px 16px;font-size:.8rem;margin-top:8px" data-m="${id}">
+          ${read.has(id)?"✓ Absorbed":"Mark as absorbed"}</button>
+        </div>`;
+      d.querySelector("[data-m]").addEventListener("click",e=>{
+        read.has(id)?read.delete(id):read.add(id);
+        localStorage.setItem("wb-read",JSON.stringify([...read]));
+        e.target.textContent=read.has(id)?"✓ Absorbed":"Mark as absorbed";
+        updProgress();
+      });
+      host.appendChild(d);
+    });
+  });
+  updProgress();
+}
+
+/* ============ TRIAGE ============ */
+const TANTRUM={
+ down:`<div class="tri-ans"><span class="schip">#1 Connect & Redirect</span><span class="schip">#5 Move the body</span>
+  <b>A downstairs tantrum</b> — the amygdala has shut the baby gate; she genuinely cannot control herself right now. Discipline and consequences can't reach a brain that's offline. Connect first: get low, soothe, hold if it helps, name the feeling. Words and lessons wait until the storm passes. If they're stuck, movement helps reset the chemistry.</div>`,
+ up:`<div class="tri-ans"><span class="schip">Calm, firm boundary</span>
+  <b>An upstairs tantrum</b> — he's throwing it deliberately: watching your reaction, negotiating through the theatrics, able to stop the moment it works. The book is unusually blunt here: never negotiate with an upstairs tantrum. State the boundary kindly, hold it completely, and discuss the behaviour afterwards. Give in once and you've taught the tactic pays.</div>`,
+};
+const TRIAGE=[
+ {icon:"😱",t:"Scared or shaken after something happened",d:"A fall, a scary movie, a dog that jumped up, a hospital trip.",
+  chips:["#2 Name It to Tame It","#6 Remote of the Mind"],
+  b:"Retell the story together — in order, feelings included — as many times as they need. If they won't go near the memory, hand them the remote: pause, rewind, fast-forward past the hard part until they're ready. Avoidance that hardens is exactly what these two strategies exist to prevent."},
+ {icon:"😤",t:"Defiant standoff over a rule",d:"In control of themselves, but digging in hard.",
+  chips:["#3 Engage, Don't Enrage"],
+  b:"Skip command-and-demand — that's aimed at the reptile. Hand the problem upstairs instead: invite them to propose something fair, make a plan, choose between two acceptable options. The rule holds; the route to it becomes theirs."},
+ {icon:"😰",t:"Anxious about something coming up",d:"Recital, test, first day, the birthday party they suddenly dread.",
+  chips:["#10 Mindsight","#9 SIFT","#8 Clouds"],
+  b:"First SIFT it: what sensations, images, feelings, thoughts are actually there? Then a short back-to-the-hub exercise — slow breaths, guided attention. And frame it as weather: this feeling is real AND it will pass."},
+ {icon:"😔",t:"Global self-verdicts",d:"“I'm stupid.” “Nobody likes me.” “I ruin everything.”",
+  chips:["#8 Clouds of Emotion"],
+  b:"Catch the verb: gently reframe 'I am' to 'I feel right now.' States, not traits. Don't argue the verdict head-on (that's a left-brain response to a right-brain wave) — acknowledge the feeling, then help them notice feelings have always passed before."},
+ {icon:"🤐",t:"Won't talk about their day",d:"“Fine.” “Nothing.” “I don't remember.”",
+  chips:["#7 Remember to Remember","#2 tips"],
+  b:"Stop asking head-on at the dinner table. Ask specific, small questions (“what happened right after lunch?”) while something else is happening — in the car, building Lego, shooting hoops. Side-by-side beats face-to-face for getting kids talking."},
+ {icon:"⚔️",t:"Sibling war (again)",d:"Screaming, grabbing, 'he started it.'",
+  chips:["#12 Connect Through Conflict","#11 Fun Factor"],
+  b:"Once the heat drops, coach rather than judge: what did it look like from the other side? What did their face and body say? What would make it right — not a hostage 'sorry,' but real amends? Long-term, the fun factor is the prevention: kids fight less in a family that laughs together."},
+ {icon:"🌀",t:"Stuck, wound-up, can't settle",d:"Homework paralysis, bedtime zoomies, post-school static.",
+  chips:["#5 Move It or Lose It"],
+  b:"Don't talk them down — move them out. Race to the corner, twenty trampoline bounces, a wheelbarrow walk across the living room. Movement shifts brain chemistry directly; the conversation works afterwards."},
+ {icon:"🛡️",t:"Nothing's wrong — build for next time",d:"The everyday, preventive plays.",
+  chips:["#4 Use It or Lose It","#7 Remember","#11 Fun"],
+  b:"Hand over real decisions daily. Ask remembering questions. Protect family silliness like an appointment. The thriving strategies are all reps you bank before the next survival moment arrives."},
+];
+function buildTriage(){
+  document.querySelectorAll(".tri-btns button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      document.querySelectorAll(".tri-btns button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+      document.getElementById("tri-tantrum").innerHTML=TANTRUM[b.dataset.t];
+    });
+  });
+  document.getElementById("triagelist").innerHTML=TRIAGE.map(t=>`
+    <details class="acc"><summary><span class="aic" aria-hidden="true">${t.icon}</span>
+      <span>${esc(t.t)}<small>${esc(t.d)}</small></span><span class="chev">›</span></summary>
+      <div class="abody"><div style="margin-bottom:6px">${t.chips.map(c=>`<span class="schip">${esc(c)}</span>`).join("")}</div>
+      <p class="datap" style="margin:0">${esc(t.b)}</p></div></details>`).join("");
+}
+
+/* ============ AGES ============ */
+const AGES=[
+ {name:"0–3",t:"Infant & toddler",b:[
+  "The right brain and downstairs brain are running the show — expect feeling, not reasoning, and don't take either personally.",
+  "Start naming feelings from the very beginning: mirror the face, hug, then say what you saw — “you're frustrated, aren't you?” Connect first; the boundary comes second (“biting hurts — be gentle”), then move on.",
+  "Be the narrator: act out the tumble, tell the story of the scary bath, even make a little picture book for big transitions. Story is how their brain files experience.",
+  "Choices can start absurdly small (blue shoes or white?), and mindsight starts as seconds of boat-on-the-tummy breathing.",
+  "Play is the main event, not the break from it — every giggly exchange wires 'people = good.'"]},
+ {name:"3–6",t:"Preschooler",b:[
+  "The upstairs brain is barely framed — meltdowns are usually genuine downstairs floods. Connect-and-redirect is your daily driver; save the lessons for after the storm.",
+  "Sort tantrums honestly: comfort the flooded ones, hold a calm firm line on the strategic ones. This is the age where each tactic gets learned.",
+  "Storytelling peaks in power — retell scary moments, preview big changes, and let them fill in more of the story themselves each time.",
+  "Grow the choices ('this park or that one? you decide'), ask feeling-spotting questions about characters in books, and start 'what was your favourite bit of today?' as a ritual.",
+  "Movement is your fastest reset button at this age — races beat lectures."]},
+ {name:"6–9",t:"Early school age",b:[
+  "The upstairs brain can genuinely engage now: negotiate, pose dilemmas, hand over decisions with real stakes (allowance is the classic training ground).",
+  "Name-it-to-tame-it goes both directions: process playground injustices, and pre-tell the story of things they're dreading.",
+  "Teach SIFT explicitly — kids this age can learn that stomach butterflies are anxiety with a body, and that feelings are weather ('I feel dumb' vs 'I am dumb').",
+  "Short mindsight practices land well: a lying-down attention exercise before a recital, breath-counting before a test.",
+  "Coach conflicts instead of refereeing them — perspective-taking, reading nonverbals, real amends."]},
+ {name:"9–12",t:"Tween",b:[
+  "The upstairs brain is stronger but about to enter the teenage remodel — keep exercising it while the scaffolding's up: bigger decisions, real dilemmas, moral 'what would you do?' conversations.",
+  "Memory work matures into journaling and side-by-side conversations (the car remains the world's best therapy office).",
+  "Mindsight becomes a genuine skill they can own: SIFT-ing a worry spiral, getting back to the hub before performances, noticing when they're stuck on one rim-point.",
+  "Keep the fun factor deliberate — shared jokes and rituals are what keep the relationship's account funded before adolescence starts making withdrawals.",
+  "Conflict coaching pays double now: the 'we' skills they practice on siblings are the ones adolescent friendships will demand."]},
+];
+let curAge=0;
+function buildAges(){
+  const host=document.getElementById("agebands");
+  host.innerHTML=AGES.map((a,i)=>`<button aria-pressed="${i===0}">${a.name} yrs</button>`).join("");
+  host.querySelectorAll("button").forEach((b,i)=>b.addEventListener("click",()=>{curAge=i;renderAge()}));
+  renderAge();
+}
+function renderAge(){
+  const a=AGES[curAge];
+  document.querySelectorAll("#agebands button").forEach((b,i)=>b.setAttribute("aria-pressed",i===curAge));
+  document.getElementById("agecard").innerHTML=`<div class="klabel">${a.name} years · ${esc(a.t)}</div>
+    <ul style="padding-left:18px;margin:8px 0 0">${a.b.map(x=>`<li style="margin:8px 0;font-size:.93rem">${esc(x)}</li>`).join("")}</ul>`;
+}
+
+/* ============ QUIZ ============ */
+const QUIZ=[
+ {q:"A child mid-meltdown needs the logic explained first, feelings second.",a:false,e:"Backwards, per the book: a flooded right brain can't hear left-brain logic. Connect first (touch, tone, naming the feeling), redirect second — once they're actually receptive."},
+ {q:"The upstairs brain isn't finished being built until the mid-twenties.",a:true,e:"One of the book's foundation facts. Self-control, empathy and judgment live in a part of the brain that's under construction for your child's entire childhood — set expectations accordingly."},
+ {q:"All tantrums should be handled the same way.",a:false,e:"The book's sharpest practical fork: downstairs tantrums (genuinely flooded) need comfort and connection; upstairs tantrums (deliberate, in control) need a calm boundary and zero negotiation. Opposite responses."},
+ {q:"Retelling the story of a scary event helps a child's brain process it.",a:true,e:"Name it to tame it: words and sequence from the left brain digest the raw emotion held in the right. Their toilet-flood case study lost her fear after a few retellings."},
+ {q:"The amygdala can act before the thinking brain gets a vote.",a:true,e:"It's the brain's watchdog — great when a ball flies at your head, less great when it slams the baby gate over a cut sandwich. That's why 'think about what you're doing!' often can't land mid-fury."},
+ {q:"A typical emotion physiologically passes in about ninety seconds.",a:true,e:"The book's states-not-traits anchor: feelings are weather. What stretches them out is the story attached — which is what kids need help noticing."},
+ {q:"'I'm dumb' and 'I feel dumb right now' are basically the same statement.",a:false,e:"Trait versus state — the exact distinction strategy #8 exists to teach. One is an identity; the other is weather."},
+ {q:"Physical movement can directly shift a stuck emotional state.",a:true,e:"Move it or lose it: movement changes brain chemistry. Their fifth-grader sprinted around the block mid-homework-meltdown and came back calm — accidental integration."},
+ {q:"Making decisions for your kids protects their developing brain.",a:false,e:"Use it or lose it: the upstairs brain grows through reps. Choices, dilemmas and (supervised) mistakes are the workout; deciding everything for them cancels the gym membership."},
+ {q:"SIFT stands for Sensations, Images, Feelings, Thoughts.",a:true,e:"The four channels of the inner world. Teaching kids to scan them is how vague distress becomes something nameable — and therefore steerable."},
+ {q:"Family fun is pleasant but has no real developmental effect.",a:false,e:"Play pays dopamine into 'relationships feel good' at the wiring level. The authors rank deliberate family fun as a full strategy (#11), not a garnish."},
+ {q:"Ideally, children would grow up with no conflict at all.",a:false,e:"Conflict is the practice arena: perspective-taking, reading nonverbals, making amends. Strategy #12 treats every quarrel as a relational rep, not a failure."},
+];
+let qIdx=0,qScore=0,qOrder=[];
+function startQuiz(){qIdx=0;qScore=0;qOrder=shuffle([...QUIZ.keys()]);renderQuiz()}
+function renderQuiz(){
+  const box=document.getElementById("quizbox");
+  if(qIdx>=qOrder.length){
+    const msg=qScore===qOrder.length?"Fully integrated. Your upstairs brain is clearly finished."
+      :qScore>=9?"Strong — the staircase is built."
+      :qScore>=6?"Decent — the tantrum fork and the 90-second rule catch most people."
+      :"Downstairs brain got a few of those. The Strategies tab is the staircase.";
+    box.innerHTML=`<div class="quiz-score"><div class="klabel">Your score</div>
+      <div class="big">${qScore}/${qOrder.length}</div>
+      <p style="margin:6px auto 16px;max-width:40ch">${msg}</p>
+      <button class="btn" style="width:auto;padding:11px 28px" id="qrestart">Play again</button></div>`;
+    document.getElementById("qrestart").addEventListener("click",startQuiz);
+    return;
+  }
+  const q=QUIZ[qOrder[qIdx]];
+  box.innerHTML=`<div class="quiz-meta"><span>Question ${qIdx+1} of ${qOrder.length}</span><span>Score: ${qScore}</span></div>
+    <p class="quiz-q">“${esc(q.q)}”</p>
+    <div class="quiz-btns">
+      <button data-ans="false">✗ Not the science</button>
+      <button data-ans="true">✓ That's the book</button>
+    </div><div id="qresult"></div>`;
+  box.querySelectorAll(".quiz-btns button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const right=(b.dataset.ans==="true")===q.a;
+      if(right)qScore++;
+      box.querySelectorAll(".quiz-btns button").forEach(x=>x.disabled=true);
+      document.getElementById("qresult").innerHTML=`
+        <div class="quiz-result ${right?"right":"wrong"}">
+          <div class="verdict">${right?"Correct":"Not quite"} — ${q.a?"this is the book's science":"this is the instinct it corrects"}</div>
+          <div style="margin-top:4px">${esc(q.e)}</div></div>
+        <button class="btn" style="margin-top:12px" id="qnext">${qIdx+1<qOrder.length?"Next question":"See my score"}</button>`;
+      document.getElementById("qnext").addEventListener("click",()=>{qIdx++;renderQuiz()});
+      document.getElementById("qnext").focus();
+    });
+  });
+}
+
+/* ============ LIBRARY SWITCHER ============ */
+(function(){
+  const b=document.getElementById("libbtn"),s=document.getElementById("libsheet");
+  const set=o=>{s.hidden=!o;b.setAttribute("aria-expanded",o)};
+  b.addEventListener("click",()=>set(s.hidden));
+  s.addEventListener("click",e=>{if(e.target===s)set(false)});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")set(false)});
+})();
+
+/* ============ ROUTER ============ */
+let quizStarted=false;
+function route(){
+  const h=location.hash.replace(/^#/,"")||"strategies";
+  const v=["strategies","triage","ages","quiz"].includes(h)?h:"strategies";
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.classList.remove("on"));
+  document.getElementById("view-"+v).classList.add("on");
+  document.getElementById("tab-"+v).classList.add("on");
+  if(v==="quiz"&&!quizStarted){startQuiz();quizStarted=true}
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+wireBrain();buildStrats();buildTriage();buildAges();route();
+</script>
