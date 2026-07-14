@@ -8,6 +8,7 @@ on:
       - contented-baby.html
       - parenting-relationship.html
       - whole-brain.html
+      - baby-sleep-science.html
       - .github/workflows/pages.yml
   workflow_dispatch:
 
@@ -33,7 +34,7 @@ jobs:
       - name: Stage site
         run: |
           mkdir _site
-          cp index.html contented-baby.html parenting-relationship.html whole-brain.html _site/
+          cp index.html contented-baby.html parenting-relationship.html whole-brain.html baby-sleep-science.html _site/
 
       - uses: actions/configure-pages@v5
         with:
