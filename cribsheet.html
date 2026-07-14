@@ -1,0 +1,1284 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Cribsheet Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem("pl-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --ground:#f7f8f4; --card:#ffffff; --card2:#f0f3ec;
+  --ink:#1e2521; --ink2:#5b6660; --ink3:#939c94;
+  --accent:#0fa47e; --accent2:#067a5c; --accent-ink:#ffffff; --accent-wash:#e2f6ee;
+  --hairline:#eaede7; --grid:#edefe9; --baseline:#c9cec5;
+  --s1:#2a78d6; --s2:#1baf7a;            /* chart series */
+  --good:#0ca30c; --warn:#b97f00; --serious:#c05a2e; --crit:#d03b3b;
+  --quote-bar:#0fa47e;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(30,37,33,.07);
+  --shadow:0 6px 20px rgba(30,37,33,.06);
+  --shadow-pop:0 10px 28px rgba(30,37,33,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#121614; --card:#1b211e; --card2:#161c19;
+    --ink:#f0efe7; --ink2:#a8b0a6; --ink3:#78816f;
+    --accent:#3ecfa5; --accent2:#2aa583; --accent-ink:#0b1512; --accent-wash:#1d2e28;
+    --hairline:#2a302d; --grid:#252b28; --baseline:#3a413d;
+    --s1:#3987e5; --s2:#199e70;
+    --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#e05252;
+    --quote-bar:#3ecfa5;
+    --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+    --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+    --edge:rgba(255,255,255,.08);
+    --shadow:0 6px 20px rgba(0,0,0,.35);
+    --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="light"]{
+  --ground:#f7f8f4; --card:#ffffff; --card2:#f0f3ec;
+  --ink:#1e2521; --ink2:#5b6660; --ink3:#939c94;
+  --accent:#0fa47e; --accent2:#067a5c; --accent-ink:#ffffff; --accent-wash:#e2f6ee;
+  --hairline:#eaede7; --grid:#edefe9; --baseline:#c9cec5;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --serious:#c05a2e; --crit:#d03b3b;
+  --quote-bar:#0fa47e;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(30,37,33,.07);
+  --shadow:0 6px 20px rgba(30,37,33,.06);
+  --shadow-pop:0 10px 28px rgba(30,37,33,.12);
+}
+:root[data-theme="dark"]{
+  --ground:#121614; --card:#1b211e; --card2:#161c19;
+  --ink:#f0efe7; --ink2:#a8b0a6; --ink3:#78816f;
+  --accent:#3ecfa5; --accent2:#2aa583; --accent-ink:#0b1512; --accent-wash:#1d2e28;
+  --hairline:#2a302d; --grid:#252b28; --baseline:#3a413d;
+  --s1:#3987e5; --s2:#199e70;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#e05252;
+  --quote-bar:#3ecfa5;
+  --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+  --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+  --edge:rgba(255,255,255,.08);
+  --shadow:0 6px 20px rgba(0,0,0,.35);
+  --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ground); color:var(--ink);
+  font:16px/1.55 ui-rounded,"SF Pro Rounded","Nunito","Quicksand",system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding-bottom:96px;
+}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em}
+h1{font-size:1.75rem;line-height:1.18;margin:0;text-wrap:balance}
+h2{font-size:1.25rem;line-height:1.25;margin:0 0 .35rem;text-wrap:balance}
+h3{font-size:1.05rem;margin:0 0 .3rem}
+p{margin:.5rem 0;max-width:62ch}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+
+/* entrance motion: cards rise in with a gentle stagger */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.view.on>*{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.view.on>*:nth-child(2){animation-delay:.05s}
+.view.on>*:nth-child(3){animation-delay:.1s}
+.view.on>*:nth-child(4){animation-delay:.15s}
+.view.on>*:nth-child(5){animation-delay:.2s}
+.view.on>*:nth-child(6){animation-delay:.25s}
+.view.on>*:nth-child(n+7){animation-delay:.3s}
+
+/* ---------- header ---------- */
+header.app{padding:24px 0 6px}
+.eyebrow{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent2);font-weight:800;background:var(--accent-wash);
+  border-radius:99px;padding:4px 12px;margin-bottom:10px}
+.thesis{color:var(--ink2);margin-top:8px}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--edge);border-radius:22px;
+      padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card.wash{background:var(--accent-wash);border-color:transparent}
+.klabel{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:800;margin-bottom:4px}
+
+/* ---------- PART ACCORDIONS — each part gets its own colour ---------- */
+details.part{border:none;border-radius:24px;margin:12px 0;box-shadow:var(--shadow);overflow:hidden;
+  transition:box-shadow .25s}
+details.part:nth-of-type(1){background:var(--tint-peach)}
+details.part:nth-of-type(2){background:var(--tint-mint)}
+details.part:nth-of-type(3){background:var(--tint-sky)}
+details.part:nth-of-type(4){background:var(--tint-lav)}
+details.part[open]{box-shadow:var(--shadow-pop)}
+details.part>summary{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;list-style:none}
+details.part>summary::-webkit-details-marker{display:none}
+details.part>summary .picon{width:46px;height:46px;border-radius:16px;background:var(--card);
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(30,37,33,.08)}
+details.part>summary .pt{flex:1}
+details.part>summary .pt .pn{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);font-weight:800;opacity:.75}
+details.part>summary .pt b{display:block;font-size:1.12rem;font-weight:800;letter-spacing:-.01em}
+details.part>summary .pmeta{font-size:.72rem;color:var(--ink2);text-align:right;line-height:1.4;white-space:nowrap;font-weight:600}
+details.part>summary .chev{color:var(--ink2);transition:transform .25s;font-size:1.15rem;font-weight:800}
+details.part[open]>summary .chev{transform:rotate(90deg)}
+details.part .pbody{padding:2px 12px 14px}
+details.part .pbody>*{animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+
+/* module list */
+.mod{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+     background:var(--card);border:none;border-radius:18px;
+     padding:14px;margin:8px 0;color:var(--ink);box-shadow:0 2px 10px rgba(30,37,33,.06);
+     transition:transform .15s,box-shadow .15s}
+.mod:hover{transform:translateY(-2px);box-shadow:var(--shadow-pop)}
+.mod:active{transform:scale(.98)}
+.mod .num{font-weight:800;font-size:.95rem;color:var(--ink3);min-width:1.4em;text-align:right}
+.mod .t{flex:1}
+.mod .t b{display:block;font-weight:750}
+.mod .t small{color:var(--ink2)}
+.mod .go{color:var(--accent);font-weight:800}
+.mod.done .num{color:var(--good)}
+.badge-full{font-size:.64rem;font-weight:800;letter-spacing:.06em;color:var(--accent-ink);
+  background:var(--accent);border-radius:99px;padding:3px 10px}
+
+/* stubs */
+details.stub{background:var(--card);border-radius:18px;margin:8px 0;padding:2px 12px;
+  box-shadow:0 2px 10px rgba(30,37,33,.06)}
+details.stub summary{display:flex;align-items:center;gap:10px;padding:12px 2px;cursor:pointer;list-style:none;font-weight:650}
+details.stub summary::-webkit-details-marker{display:none}
+details.stub summary .num{font-weight:800;color:var(--ink3);min-width:1.4em;text-align:right}
+details.stub summary .chev{margin-left:auto;color:var(--ink3);transition:transform .25s}
+details.stub[open] summary .chev{transform:rotate(90deg)}
+.stub .bl{margin:0 0 12px 4px}
+.stub .bl>*{animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+
+/* progress */
+.progress{height:10px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.3,1);
+  background:linear-gradient(90deg,var(--accent),var(--s2))}
+
+/* quote — the one serif, bookish moment */
+blockquote{margin:14px 0;padding:14px 16px;border-left:4px solid var(--quote-bar);
+  background:var(--tint-lemon);border-radius:6px 18px 18px 6px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:1.06rem;line-height:1.45;color:var(--ink);font-style:italic}
+blockquote footer{font:0.78rem/1.4 ui-rounded,"SF Pro Rounded",system-ui,sans-serif;font-style:normal;color:var(--ink2);margin-top:8px;font-weight:600}
+
+/* bottom line flashcard */
+.bottomline{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);
+  border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 30%,transparent)}
+.bottomline .klabel{color:var(--accent-ink);opacity:.8}
+.bottomline ul{margin:6px 0 0;padding-left:18px}
+.bottomline li{margin:6px 0}
+
+/* evidence chips */
+.chip{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.05em;
+  border-radius:99px;padding:3px 10px;white-space:nowrap;vertical-align:middle}
+.chip.strong{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.chip.plaus{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.chip.weak{background:color-mix(in srgb,var(--serious) 18%,transparent);color:var(--serious)}
+.chip.none{background:var(--card2);color:var(--ink2)}
+.chip.refuted{background:color-mix(in srgb,var(--crit) 15%,transparent);color:var(--crit)}
+.evrow{display:flex;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--hairline)}
+.evrow:last-child{border-bottom:none}
+.evrow .c{flex:1}
+.evrow small{color:var(--ink2);display:block}
+
+/* charts */
+figure{margin:14px 0}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:.78rem;color:var(--ink3);margin-top:6px;line-height:1.4}
+.legend{display:flex;gap:16px;font-size:.78rem;color:var(--ink2);margin-bottom:6px;flex-wrap:wrap;font-weight:600}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+
+/* stat tiles — pastel rotation */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.tile{border-radius:18px;padding:14px}
+.tiles .tile:nth-child(4n+1){background:var(--tint-mint)}
+.tiles .tile:nth-child(4n+2){background:var(--tint-peach)}
+.tiles .tile:nth-child(4n+3){background:var(--tint-sky)}
+.tiles .tile:nth-child(4n+4){background:var(--tint-lemon)}
+.tile .v{font-size:1.55rem;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.tile .d{font-size:.76rem;color:var(--ink2);margin-top:4px;line-height:1.35;font-weight:550}
+.tile.warn .v{color:var(--serious)}
+.tile.ok .v{color:var(--good)}
+
+/* buttons */
+.btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:99px;
+  padding:13px 18px;font-weight:750;width:100%;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);
+  transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent);box-shadow:none}
+.btn.done{background:var(--card2);color:var(--good);border:2px solid var(--good);box-shadow:none}
+.back{background:none;border:none;color:var(--accent);font-weight:750;padding:14px 0 0;display:inline-flex;gap:6px;align-items:center}
+
+/* guess-the-number */
+.guess{background:var(--tint-lav);border-radius:20px;padding:16px;margin:14px 0}
+.guess .q{font-weight:750;font-size:.94rem}
+.guess .gval{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent2);min-width:2.6em;text-align:right}
+.guess .reveal{margin-top:10px;padding:12px 14px;border-radius:14px;background:var(--card);font-size:.9rem;
+  animation:pop .35s cubic-bezier(.2,.7,.3,1)}
+.guess .reveal b{font-size:1.25rem;font-weight:800}
+.guess button{margin-top:8px}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+
+/* quiz */
+.quiz-card{min-height:180px}
+.quiz-q{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-style:italic;font-size:1.28rem;line-height:1.35;margin:10px 0 18px;text-wrap:balance}
+.quiz-btns{display:flex;gap:10px}
+.quiz-btns button{flex:1;padding:14px 8px;border-radius:16px;border:2px solid transparent;
+  background:var(--card2);color:var(--ink);font-weight:800;transition:transform .15s,border-color .15s}
+.quiz-btns button:first-child{background:var(--tint-rose)}
+.quiz-btns button:last-child{background:var(--tint-mint)}
+.quiz-btns button:hover{border-color:var(--accent);transform:translateY(-1px)}
+.quiz-btns button:active{transform:scale(.97)}
+.quiz-btns button:disabled{opacity:.6;transform:none}
+.quiz-result{margin-top:14px;padding:14px 16px;border-radius:16px;font-size:.92rem;line-height:1.5;
+  animation:pop .35s cubic-bezier(.2,.7,.3,1)}
+.quiz-result.right{background:color-mix(in srgb,var(--good) 13%,transparent)}
+.quiz-result.wrong{background:color-mix(in srgb,var(--crit) 11%,transparent)}
+.quiz-result .verdict{font-weight:800;letter-spacing:.04em;font-size:.75rem;text-transform:uppercase}
+.quiz-result.right .verdict{color:var(--good)}
+.quiz-result.wrong .verdict{color:var(--crit)}
+.quiz-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink3);font-weight:700}
+.quiz-score{text-align:center;padding:20px 0}
+.quiz-score .big{font-size:3.2rem;font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--accent),var(--s1));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* slider explorer */
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0}
+.napviz{display:flex;gap:8px;align-items:flex-end;min-height:64px;margin:8px 0}
+.napblock{flex:1;background:linear-gradient(180deg,var(--s1),color-mix(in srgb,var(--s1) 75%,var(--ink) 10%));border-radius:10px 10px 6px 6px;position:relative;transition:height .3s cubic-bezier(.2,.7,.3,1)}
+.napblock.nap{background:linear-gradient(180deg,var(--s2),color-mix(in srgb,var(--s2) 80%,var(--ink) 10%))}
+.napblock span{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:.68rem;color:var(--ink2);white-space:nowrap;font-weight:700}
+.agehead{display:flex;justify-content:space-between;align-items:baseline}
+.agehead .v{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent2)}
+
+/* decide */
+.slider-row{margin:14px 0}
+.slider-row label{display:flex;justify-content:space-between;font-size:.85rem;color:var(--ink2);font-weight:600}
+.slider-row .ends{display:flex;justify-content:space-between;font-size:.7rem;color:var(--ink3)}
+.verdict{background:var(--accent-wash);border-radius:16px;padding:14px 16px;margin-top:14px}
+.seg{display:flex;background:var(--card2);border-radius:99px;padding:4px;gap:4px;margin:12px 0}
+.seg button{flex:1;border:none;background:transparent;color:var(--ink2);border-radius:99px;padding:9px 4px;font-size:.8rem;font-weight:750;transition:background .2s,color .2s}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:0 3px 10px color-mix(in srgb,var(--accent) 35%,transparent)}
+
+/* checklist */
+.check{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--hairline);font-size:.92rem}
+.check:last-child{border-bottom:none}
+.check input{margin-top:3px;accent-color:var(--accent);width:17px;height:17px;flex-shrink:0}
+.checkscore{font-size:.85rem;color:var(--ink2);margin-top:8px}
+
+/* bottom nav — floating pill */
+nav.tabs{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));left:14px;right:14px;
+  max-width:612px;margin:0 auto;background:var(--card);
+  border:1px solid var(--edge);border-radius:26px;display:flex;z-index:10;
+  box-shadow:var(--shadow-pop);padding:6px}
+nav.tabs a{flex:1;text-align:center;padding:7px 0 6px;text-decoration:none;color:var(--ink3);
+  font-size:.7rem;font-weight:750;border-radius:20px;transition:background .2s,color .2s}
+nav.tabs a .ico{display:block;font-size:1.25rem;line-height:1.25;transition:transform .2s}
+nav.tabs a.on{color:var(--accent2);background:var(--accent-wash)}
+nav.tabs a.on .ico{transform:translateY(-1px) scale(1.08)}
+
+.view{display:none}
+.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.note{font-size:.8rem;color:var(--ink3);line-height:1.45}
+hr.soft{border:none;border-top:1px solid var(--hairline);margin:18px 0}
+.datap{font-size:.92rem}
+
+</style>
+
+<div class="wrap">
+
+<!-- ============ LEARN (home) ============ -->
+<section id="view-learn" class="view">
+  <header class="app">
+    <div class="eyebrow">A companion to Emily Oster's <em>Cribsheet</em></div>
+    <h1>The data is the same for us all. The decisions are yours alone.</h1>
+    <p class="thesis">Good data + your family's preferences → your decision. That's the whole method.</p>
+    <div class="progress" aria-hidden="true"><i id="progbar" style="width:0%"></i></div>
+    <p class="note" id="progtext">0 of 21 chapters absorbed</p>
+  </header>
+
+  <div id="parts"></div>
+
+  
+
+<div class="card" style="margin-top:20px">
+    <div class="klabel">The most important bottom line in the book</div>
+    <blockquote style="margin:8px 0 0">Parents are people, too. Having a kid doesn't make you stop being a person with needs and desires and ambitions… Being a good parent isn't about completely subsuming your entire personhood into your children.
+      <footer>— Part Four, The Home Front</footer>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ MODULE VIEWS injected by JS ============ -->
+<section id="view-module" class="view"></section>
+
+<!-- ============ QUIZ ============ -->
+<section id="view-quiz" class="view">
+  <header class="app">
+    <div class="eyebrow">Myth or data?</div>
+    <h1>Test yourself against the evidence</h1>
+    <p class="thesis">Every statement below is something parents actually get told. Which ones does the data back?</p>
+  </header>
+  <div class="card quiz-card" id="quizbox"></div>
+</section>
+
+<!-- ============ DATA ============ -->
+<section id="view-data" class="view">
+  <header class="app">
+    <div class="eyebrow">The evidence, ranked</div>
+    <h1>How strong is the data, really?</h1>
+    <p class="thesis">Oster's core move: not every claim deserves the same confidence. Here's every major claim in the book, ranked by the quality of the evidence behind it.</p>
+  </header>
+
+  <div class="card">
+    <div class="legend" style="margin-bottom:10px">
+      <span><span class="chip strong">STRONG</span> randomized trials or convergent high-quality data</span>
+    </div>
+    <div class="legend" style="margin-bottom:10px">
+      <span><span class="chip plaus">PLAUSIBLE</span> good observational data, not settled</span>
+      <span><span class="chip weak">WEAK</span> sparse or conflicting</span>
+    </div>
+    <div class="legend">
+      <span><span class="chip none">NOT SUPPORTED</span> best data shows no effect</span>
+      <span><span class="chip refuted">REFUTED</span> actively disproven</span>
+    </div>
+  </div>
+
+  <div class="card" id="evdash"></div>
+
+  <hr class="soft">
+  <h2>Sleep schedule explorer</h2>
+  <p class="note">Drag through the first three years. Broad guidelines only — "there is tremendous variability across children, which you mostly cannot control."</p>
+  <div class="card">
+    <div class="agehead"><span class="klabel" style="margin:0">Your baby at</span> <span class="v" id="ageval">6 months</span></div>
+    <input type="range" id="ageslider" min="0" max="36" value="6" step="1" aria-label="Age in months">
+    <div class="napviz" id="napviz" aria-hidden="true"></div>
+    <p id="agedesc" style="margin:8px 0 0;font-size:.92rem"></p>
+  </div>
+</section>
+
+<!-- ============ DECIDE ============ -->
+<section id="view-decide" class="view">
+  <header class="app">
+    <div class="eyebrow">The framework, as a tool</div>
+    <h1>Weigh it like an economist</h1>
+    <p class="thesis">Oster never tells you what to choose. She tells you how to structure the choice: data in, preferences in, opportunity cost counted. This tool walks you through it.</p>
+  </header>
+
+  <div class="card wash">
+    <div class="klabel">The method in one story</div>
+    <p style="margin:0;font-size:.92rem">Post-baby, Oster couldn't cook dinner from scratch anymore. Take-out? Meal kit? Two dinners? She priced each option, <b>added the value of her own time</b> ("opportunity cost"), then let preferences break the tie. Same data, different families, different right answers. Breastfeeding and sleep training work exactly the same way.</p>
+  </div>
+
+  <div class="card">
+    <div class="klabel">Pick a decision</div>
+    <div class="seg" role="group" aria-label="Decision to weigh">
+      <button data-dec="sleep" aria-pressed="true">Sleep training</button>
+      <button data-dec="bf" aria-pressed="false">Breastfeeding</button>
+      <button data-dec="care" aria-pressed="false">Childcare</button>
+    </div>
+    <div id="dec-data" class="note" style="margin-bottom:4px"></div>
+    <div id="dec-sliders"></div>
+    <div class="verdict">
+      <div class="klabel">What your inputs suggest</div>
+      <p id="dec-verdict" style="margin:4px 0 0;font-size:.95rem"></p>
+    </div>
+    <p class="note" style="margin-top:12px">This mirrors the book's framework — it structures your thinking, it doesn't decide for you. "Your choices can be right for you but also not necessarily the best choices for other people. Why? You are not other people."</p>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<nav class="tabs" aria-label="Main">
+  <a href="#learn" id="tab-learn"><span class="ico" aria-hidden="true">📖</span>Learn</a>
+  <a href="#quiz" id="tab-quiz"><span class="ico" aria-hidden="true">🎯</span>Quiz</a>
+  <a href="#data" id="tab-data"><span class="ico" aria-hidden="true">📊</span>Data</a>
+  <a href="#decide" id="tab-decide"><span class="ico" aria-hidden="true">⚖️</span>Decide</a>
+</nav>
+
+<script>
+/* =================================================================
+   CHART HELPERS
+================================================================= */
+const NS="http://www.w3.org/2000/svg";
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+
+function hbars(rows, series, unit, max){
+  const W=340, labelW=110, pad=6, barH=16, gap=2, groupGap=14;
+  const n=series.length;
+  max = max || Math.max(...rows.flatMap(r=>r.vals))*1.15;
+  const plotW = W-labelW-pad-34;
+  let y=4, out="";
+  rows.forEach(r=>{
+    const groupH=n*barH+(n-1)*gap;
+    out+=`<text x="${labelW-8}" y="${y+groupH/2+4}" text-anchor="end" font-size="11" fill="var(--ink2)">${esc(r.label)}</text>`;
+    r.vals.forEach((v,i)=>{
+      const bw=Math.max(2, v/max*plotW);
+      const by=y+i*(barH+gap);
+      const col=i===0?"var(--s1)":"var(--s2)";
+      out+=`<rect x="${labelW}" y="${by}" width="${bw}" height="${barH}" rx="3" fill="${col}"><title>${esc(series[i])}: ${v}${unit}</title></rect>`;
+      out+=`<text x="${labelW+bw+5}" y="${by+barH-4}" font-size="11" font-weight="600" fill="var(--ink)" style="font-variant-numeric:tabular-nums">${v}${unit}</text>`;
+    });
+    y+=groupH+groupGap;
+  });
+  const H=y;
+  out+=`<line x1="${labelW}" y1="0" x2="${labelW}" y2="${H-groupGap+4}" stroke="var(--baseline)" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img">${out}</svg>`;
+}
+
+/* range (dumbbell) chart: rows [{label, lo, hi}], axis 0..maxV in months */
+function ranges(rows, maxV){
+  const W=340, labelW=118, barH=12, gap=16;
+  const plotW=W-labelW-28;
+  let y=16, out="";
+  /* gridlines every 3 months */
+  for(let m=0;m<=maxV;m+=3){
+    const x=labelW+m/maxV*plotW;
+    out+=`<line x1="${x}" y1="10" x2="${x}" y2="${16+rows.length*(barH+gap)-gap+4}" stroke="var(--grid)" stroke-width="1"/>`;
+    out+=`<text x="${x}" y="${16+rows.length*(barH+gap)-gap+16}" text-anchor="middle" font-size="9" fill="var(--ink3)">${m}</text>`;
+  }
+  rows.forEach(r=>{
+    const x1=labelW+r.lo/maxV*plotW, x2=labelW+r.hi/maxV*plotW;
+    out+=`<text x="${labelW-8}" y="${y+barH-2}" text-anchor="end" font-size="10.5" fill="var(--ink2)">${esc(r.label)}</text>`;
+    out+=`<rect x="${x1}" y="${y}" width="${x2-x1}" height="${barH}" rx="6" fill="var(--s1)" opacity="0.85"><title>${esc(r.label)}: ${r.lo}–${r.hi} months</title></rect>`;
+    out+=`<text x="${x1-3}" y="${y+barH-2}" text-anchor="end" font-size="9" fill="var(--ink3)" style="font-variant-numeric:tabular-nums">${r.lo}</text>`;
+    out+=`<text x="${x2+3}" y="${y+barH-2}" font-size="9" fill="var(--ink3)" style="font-variant-numeric:tabular-nums">${r.hi}</text>`;
+    y+=barH+gap;
+  });
+  return `<svg viewBox="0 0 ${W} ${y+14}" role="img">${out}</svg>`;
+}
+
+function legend(series){
+  const cols=["var(--s1)","var(--s2)"];
+  return `<div class="legend">${series.map((s,i)=>`<span><i style="background:${cols[i]}"></i>${esc(s)}</span>`).join("")}</div>`;
+}
+
+/* guess-the-number component */
+let GUESS_N=0;
+function guess(q, min, max, unit, actual, note){
+  const id="g"+(GUESS_N++);
+  return `<div class="guess" data-gid="${id}" data-actual="${actual}" data-unit="${esc(unit)}" data-note="${esc(note)}">
+    <div class="q">🎯 ${esc(q)}</div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <input type="range" min="${min}" max="${max}" value="${Math.round((min+max)/2)}" step="1" aria-label="Your guess">
+      <span class="gval">${Math.round((min+max)/2)}${esc(unit)}</span>
+    </div>
+    <button class="btn ghost" style="width:auto;padding:7px 16px;font-size:.82rem">Lock in my guess</button>
+    <div class="reveal" hidden></div>
+  </div>`;
+}
+function wireGuesses(root){
+  root.querySelectorAll(".guess").forEach(g=>{
+    const slider=g.querySelector("input"), val=g.querySelector(".gval"),
+          btn=g.querySelector("button"), rev=g.querySelector(".reveal"),
+          unit=g.dataset.unit, actual=+g.dataset.actual;
+    slider.addEventListener("input",()=>val.textContent=slider.value+unit);
+    btn.addEventListener("click",()=>{
+      const diff=Math.abs(+slider.value-actual);
+      const grade=diff===0?"Dead on.":diff<= (Math.abs(actual)||10)*0.2+2 ?"Close!":"Not quite —";
+      rev.innerHTML=`${grade} The answer is <b>${actual}${unit}</b>. ${esc(g.dataset.note)}`;
+      rev.hidden=false; btn.hidden=true; slider.disabled=true;
+    });
+  });
+}
+
+/* =================================================================
+   CHAPTER DATA  — stubs now carry a rich summary (datap + charts)
+================================================================= */
+const CHAPTERS = [
+ {id:1, part:1, title:"The First Three Days", full:false,
+  more:()=>`
+   <p class="datap">The delivery-room decisions, with denominators attached. Circumcision: real but small effects both ways — about 1% of uncircumcised boys get a urinary tract infection in the first year vs about 0.13% of circumcised boys; minor complications from the procedure run ~1.5%, serious ones are vanishingly rare. Oster's verdict: preference, not data, decides this one.</p>
+   <div class="tiles">
+     <div class="tile"><div class="v">4%</div><div class="d">of newborns fail the hearing screen — but only 0.1–0.3% actually have hearing loss. A failed first test is usually a false alarm</div></div>
+     <div class="tile"><div class="v">~50%</div><div class="d">of newborns have some jaundice. It's monitored with a blood test and very treatable — you can sanity-check numbers at bilitool.org</div></div>
+   </div>
+   <p class="datap">Newborn weight loss looks alarming but is expected: babies lose weight for the first days (formula-fed babies far less), and what counts as "too much" depends on hours since birth — 10% loss is within normal range at 72 hours but not at 12. Chart your own baby at newbornweight.org before panicking.</p>`,
+  bl:["Newborn baths early on are unnecessary, but not damaging. Tub baths are better than sponge baths.","Circumcision has some small benefits and also carries some small risks — the choice largely comes down to preference.","Rooming-in has no compelling effect on breastfeeding either way; be careful about falling asleep with your infant.","Monitor infant weight loss against expectations (newbornweight.org) and jaundice with a blood test (bilitool.org).","Vitamin K supplements: good idea. Delayed cord clamping: likely recommended, especially if premature."]},
+
+ {id:2, part:1, title:"Wait, You Want Me to Take It Home?", full:false,
+  more:()=>`
+   <p class="datap">Swaddling actually has lab evidence behind it: researchers measured how often a sleeping baby's sigh escalated into a full startle (the thing that wakes them up).</p>
+   ${legend(["Sigh escalates to a startle"])}
+   <figure>${hbars([{label:"Unswaddled",vals:[50]},{label:"Swaddled",vals:[20]}],["Sigh escalates to startle"],"%",60)}
+   <figcaption>Laboratory sleep study. Swaddle so the legs and hips can still move.</figcaption></figure>
+   <p class="datap">Colic is defined by the "rule of threes" — 3+ hours of crying, 3+ days a week, for weeks. By the strictest definition about 2% of one-month-olds qualify; loosen the definition and it's up to 20%. The important part: it peaks around 6 weeks and resolves on its own. It is not your fault and it does end.</p>`,
+  bl:["Swaddling has been shown to reduce crying and improve sleep.","Swaddle in a way that lets the baby move its legs and hips.","Colic is common, awful, self-resolving — and not caused by anything you did."]},
+
+ {id:3, part:1, title:"Trust Me, Take the Mesh Underwear", full:false,
+  more:()=>`
+   <p class="datap">The chapter nobody warns you about: your own recovery. Bleeding continues for several weeks. Most vaginal tears are minor, but roughly 1–5% of births involve serious (third/fourth-degree) tearing with a longer recovery. A C-section is major abdominal surgery — plan for real recovery time, not a long weekend.</p>
+   <div class="tiles">
+     <div class="tile warn"><div class="v">10–15%</div><div class="d">of new mothers experience postpartum depression. It's common, screenable (the Edinburgh scale is a 10-question checklist), and very treatable</div></div>
+     <div class="tile"><div class="v">~6 wks</div><div class="d">until most women can be back to a pre-pregnancy exercise routine; gentle return can start within a week or two</div></div>
+   </div>
+   <p class="datap">On sex: there's no evidence-based mandatory waiting period — readiness is the criterion (plus contraception, unless you want an accelerated second child).</p>`,
+  bl:["It takes time to recover from childbirth: bleeding for several weeks, tearing that takes weeks to heal; a C-section is major abdominal surgery.","Exercise can typically restart within a week or two; most women are back to pre-pregnancy routines by six weeks.","No set waiting time for sex — wait until you're ready.","Postpartum depression is common and treatable. Get help as soon as you need it."]},
+
+ {id:4, part:2, title:"Breast Is Best? Breast Is Better? Breast Is About the Same?", full:"bf"},
+
+ {id:5, part:2, title:"Breastfeeding: A How-To Guide", full:false,
+  more:()=>`
+   <p class="datap">The honest opener: breastfeeding is a learned skill for two people, and it can be genuinely hard — pain, latch trouble, and supply anxiety are the norm, not a failure. The evidence-backed levers are few but real: <b>skin-to-skin contact</b> right after birth measurably improves the odds of breastfeeding success, and <b>nipple shields</b> help some women with latch problems (with the caveat that babies can get attached to them — they're easier to start than to stop).</p>
+   <p class="datap">Most other how-to folklore (specific holds, foods that boost supply, pumping schedules) has little data behind it either way. Lactation consultants help; guilt does not.</p>`,
+  bl:["Breastfeeding can be very hard!","Skin-to-skin contact early on improves the likelihood of breastfeeding success.","Nipple shields work for some women, although they can be hard to quit."]},
+
+ {id:6, part:2, title:"Sleep Position and Location", full:"sids"},
+
+ {id:7, part:2, title:"Organize Your Baby", full:false,
+  more:()=>`
+   <p class="datap">When does the chaos organize itself? The broad pattern, from sleep-diary data: nighttime sleep consolidates first (around 2 months), naps organize later and drop off one at a time.</p>
+   <div class="tiles">
+     <div class="tile"><div class="v">2 mo</div><div class="d">longer nighttime stretches develop</div></div>
+     <div class="tile"><div class="v">4 mo</div><div class="d">three regular naps emerge</div></div>
+     <div class="tile"><div class="v">9 mo</div><div class="d">down to two naps</div></div>
+     <div class="tile"><div class="v">15–18 mo</div><div class="d">one midday nap; dropped entirely around age 3</div></div>
+   </div>
+   <p class="datap">Play with the interactive version in the <a href="#data">Data tab</a>. The key caveat is the bottom line below: the variation between children is enormous and mostly not something you control.</p>`,
+  bl:["Longer nighttime sleep develops around two months.","Three regular naps around four months; two around nine months; one around fifteen to eighteen months; drop napping around age three.","There is tremendous variability across children, which you mostly cannot control."]},
+
+ {id:8, part:2, title:"Vaccination: Yes, Please", full:"vax"},
+
+ {id:9, part:2, title:"Stay-at-Home Mom? Stay-at-Work Mom?", full:false,
+  more:()=>`
+   <p class="datap">The data splits this into two separate questions. <b>Parental leave:</b> babies measurably benefit from mothers taking some maternity leave — this is one of the clearer results in the literature. <b>After the leave period:</b> studies comparing children of working and stay-at-home parents find little credible evidence of different outcomes in either direction, once you account for who chooses each path.</p>
+   <p class="datap">Which makes this the purest "preferences" decision in the book: the honest inputs are money, career trajectory, and — the input parents are least willing to admit — which version of the week makes you a happier, more functional person. Oster is blunt that "I like my job" or "I want to be home" are each fully sufficient reasons.</p>`,
+  bl:["Babies benefit from their mothers taking some maternity leave.","There is little evidence that having a stay-at-home parent after the leave period has either good or bad consequences for children.","This is a preferences decision. Parents are people, too."]},
+
+ {id:10, part:2, title:"Who Should Take Care of the Baby?", full:"care"},
+ {id:11, part:2, title:"Sleep Training", full:"cio"},
+
+ {id:12, part:2, title:"Beyond the Boobs: Introducing Solid Food", full:false,
+  more:()=>`
+   <p class="datap">The star of this chapter is the peanut story — the clearest case in the book of official advice being exactly backwards. UK kids were ~10× more allergic to peanuts than Israeli kids (2% vs 0.2%), and Israeli babies eat peanut snacks early. So researchers ran a randomized trial (LEAP, 700 babies, published in the NEJM):</p>
+   ${legend(["Allergic to peanuts at age 5"])}
+   <figure>${hbars([{label:"Avoided peanuts",vals:[17]},{label:"Ate peanuts early",vals:[3]}],["Allergic at age 5"],"%",20)}
+   <figcaption>High-allergy-risk sample (hence the high baseline). Randomized, so the gap is causal. The old "wait until age one" advice likely helped drive the allergy epidemic.</figcaption></figure>
+   <p class="datap">Everything else about introducing solids is surprisingly evidence-free: the rice-cereal-first tradition, strict food orders, "wait three days between foods" — none of it has real data behind it. What does hold up: babies need repeated exposure to accept new flavors (keep offering the rejected broccoli), and early variety increases acceptance.</p>`,
+  bl:["Early exposure to allergens reduces the incidence of food allergies.","Keep offering a rejected food — kids take time to accept new flavors.","No need to start with rice cereal if you don't want to; the traditional introduction order has little evidence behind it.","Baby-led weaning has no magical properties, but no reason not to do it if you want.","Vitamin D supplementation is reasonable — don't freak out about missing a day."]},
+
+ {id:13, part:3, title:"Early Walking, Late Walking: Physical Milestones", full:false,
+  more:()=>`
+   <p class="datap">The single most anxiety-reducing chart in the book: the normal ranges for motor milestones are enormous. "Standing alone, for example, occurs any time between 7 and 17 months. This is an eternity in baby time!"</p>
+   <figure>${ranges([
+     {label:"Sits unsupported",lo:3.8,hi:9.2},
+     {label:"Stands with help",lo:4.8,hi:11.4},
+     {label:"Crawls*",lo:5.2,hi:13.5},
+     {label:"Walks with help",lo:5.9,hi:13.7},
+     {label:"Stands alone",lo:6.9,hi:16.9},
+     {label:"Walks alone",lo:8.2,hi:17.6},
+   ],18)}
+   <figcaption>Normal ranges in months (WHO data). *About 5% of kids never crawl at all — and that's fine. Doctors screen for walking at 18 months.</figcaption></figure>
+   <p class="datap">Early walking predicts nothing about athletic ability — there's simply no evidence. Late-but-in-range walking predicts nothing either. What doctors are genuinely watching for at the top of the ranges is rare: cerebral palsy affects 1.5–3 per 1,000 births (much lower for full-term, nontraumatic deliveries), and progressive neurological disease is rarer still (~0.2 per 1,000).</p>`,
+  bl:["The normal range for milestones is very wide — walking alone spans roughly 8 to 18 months.","Delayed motor development can signal more serious issues (most commonly cerebral palsy), but late-normal is usually just late-normal.","Early walking does not predict athletic stardom. Sorry."]},
+
+ {id:14, part:3, title:"Baby Einstein vs. the TV Habit", full:false,
+  more:()=>`
+   <p class="datap">Can babies learn from screens? This was tested directly with a randomized trial using an actual Baby Einstein vocabulary DVD ("Baby Wordsworth") on 12- to 15-month-olds: six weeks of regular watching, lab evaluations every two weeks. Result: <b>zero difference</b> in words learned. The best predictor of vocabulary growth in the study? Whether parents read books to the child.</p>
+   <div class="tiles">
+     <div class="tile warn"><div class="v">0</div><div class="d">extra words from the Baby Einstein DVD in the randomized trial — babies under ~2 don't learn from screens</div></div>
+     <div class="tile ok"><div class="v">3–5 yrs</div><div class="d">the age when TV learning switches on: randomized Sesame Street studies showed real gains in school readiness, with effects visible years later</div></div>
+   </div>
+   <p class="datap">On harms, the honest answer is the data is thin. The scary "TV causes attention problems" studies are weak correlations. Oster's framing: for under-2s, the realistic cost of some TV is just the time not spent on something more stimulating — which may be a price worth paying for a shower.</p>`,
+  bl:["Your zero- to two-year-old cannot learn from TV.","A three- to five-year-old can learn from TV — pay attention to what they watch.","The evidence is sparse overall. When in doubt, use your 'Bayesian priors' to complement the data."]},
+
+ {id:15, part:3, title:"Slow Talking, Fast Talking: Language Development", full:false,
+  more:()=>`
+   <p class="datap">Vocabulary is measurable — there's a standardized parent survey (the MacArthur-Bates inventory) with a public database — and the spread at every age is huge. Here's the distribution at 24 months:</p>
+   ${legend(["Words spoken at 24 months"])}
+   <figure>${hbars([
+     {label:"10th percentile",vals:[75]},
+     {label:"Average child",vals:[300]},
+     {label:"90th percentile",vals:[550]},
+   ],["Words at 24 months"],"",640)}
+   <figcaption>A two-year-old with 75 words and one with 550 are both normal. Language "explodes" after 14–16 months — even the most advanced one-year-old has only a few words.</figcaption></figure>
+   <p class="datap">Reliable patterns in the data: girls run ahead of boys (about 50 more words at 24 months, on average), later-born children talk a bit later, and bilingual kids start slower — then speak two languages. None of these early differences reliably predict long-term outcomes; virtually everyone learns to talk.</p>`,
+  bl:["Standard tools exist to measure vocabulary, and you can compare against percentiles yourself.","Girls develop language faster than boys on average, with a lot of overlap.","Early talking differences mostly don't predict later outcomes."]},
+
+ {id:16, part:3, title:"Potty Training: Stickers vs. M&M's", full:false,
+  more:()=>`
+   <p class="datap">Kids train later than they used to: in older cohorts virtually all children were day-trained by 36 months; in recent ones it's 40–60%. The driver isn't biology — it's that parents start later (better diapers, social norms). A 400-child study that tracked training found the trade-off clearly:</p>
+   <div class="tiles">
+     <div class="tile"><div class="v">~1 yr</div><div class="d">how long training takes if you start young (around 18 months) — starting earlier finishes earlier, but takes much longer</div></div>
+     <div class="tile"><div class="v">21–30 mo</div><div class="d">start anywhere in this window and the age of completion comes out about the same</div></div>
+   </div>
+   <p class="datap">Method-wise (child-led vs. intensive weekend boot camps, stickers vs. M&M's), the comparative evidence is basically absent — pick what suits your family. The one well-documented complication: stool toileting refusal (fine with pee, refuses to poop in the potty) is common, linked to constipation, and mostly resolves with patience and treating the constipation.</p>`,
+  bl:["Age at training has risen over time — largely because parents choose to train later.","Starting earlier finishes earlier on average but takes longer; intensive training before ~27 months doesn't finish sooner.","Little evidence favors child-led vs. goal-oriented methods.","Poop refusal is a common complication with limited solutions."]},
+
+ {id:17, part:3, title:"Toddler Discipline", full:false,
+  more:()=>`
+   <p class="datap">The programs with actual trial evidence — 1-2-3 Magic, The Incredible Years — share the same skeleton: <b>completely consistent</b> rewards and consequences, calm delivery, and no parental anger. Randomized evaluations show improved child behavior, and (like sleep training) much of the measured benefit lands on the parents: less stress, better relationship with the kid.</p>
+   <p class="datap">Spanking is used by at least half of American families, and Oster — flagging her own bias upfront — reports the careful longitudinal studies point one direction: spanking at age one predicts more behavior problems at five, controlling for the obvious confounds, with associations running into adulthood (a rare case where she notes even the researchers' bias runs against the practice, but no study supports a benefit). The alternative programs work better and cost nothing.</p>`,
+  bl:["Programs like 1-2-3 Magic and The Incredible Years improve behavior — the common core is consistent rewards and punishments, and no parental anger.","Spanking has not been shown to improve behavior, and is associated with worse behavior in the short term and even into adulthood."]},
+
+ {id:18, part:3, title:"Education", full:false,
+  more:()=>`
+   <p class="datap">Reading to your kid is the rare "obvious" advice that survives scrutiny. Beyond the (confounded) correlation, a clever 2018 within-family study — exploiting how much extra reading time firstborns get before a sibling arrives — found real, sizable effects of early reading on later school achievement. A randomized "read and play" video intervention also improved child behavior.</p>
+   <div class="tiles">
+     <div class="tile ok"><div class="v">✓</div><div class="d">reading to babies and toddlers: supported, and the best-evidenced thing in this chapter</div></div>
+     <div class="tile warn"><div class="v">✗</div><div class="d">"Your Baby Can Read" products: babies cannot learn to read. Memorizing word shapes isn't reading</div></div>
+   </div>
+   <p class="datap">On preschool philosophy (Montessori vs. Waldorf vs. play-based), the comparative evidence is too thin to rank them. What matters, as with day care: warm, responsive adults. Pick the one where the teachers are on the floor with the kids.</p>`,
+  bl:["There is some support for reading to your children starting in infancy.","Your baby cannot learn to read.","Evidence on preschool philosophies is limited — judge the classroom, not the brand."]},
+
+ {id:19, part:4, title:"Internal Politics", full:false,
+  more:()=>`
+   <p class="datap">The uncomfortable, well-replicated fact: kids are hard on marriages. In one long-running study, the share of mothers reporting low marital satisfaction rose from 12% before kids to 30% during the school-age years — with the sharpest drop in the baby's first year, and full recovery arriving only at grandparenthood. Meta-analyses agree, with two consolations: happier-before couples recover better, and planned kids sting less.</p>
+   ${legend(["Mothers reporting LOW marital satisfaction"])}
+   <figure>${hbars([{label:"Before children",vals:[12]},{label:"School-age kids",vals:[30]}],["Low marital satisfaction"],"%",40)}
+   <figcaption>The effects aren't enormous — most parents remain net-happy with their spouse. "Just, you know, slightly less."</figcaption></figure>
+   <p class="datap">The two usual suspects both check out in the data: unequal labor (even comparing full-time workers, women average ~1.5 hours more per day of housework and childcare) and less sex. Small trials suggest marriage "checkup" programs and counseling genuinely help — as does the unglamorous move of writing down who does what.</p>`,
+  bl:["Marital satisfaction declines, on average, after children.","Declines are smaller and briefer if you were happier before kids, and if the kids were planned.","Unequal division of labor and less sex likely play a role.","Small-scale evidence suggests marriage 'checkup' programs and counseling can help."]},
+
+ {id:20, part:4, title:"Expansions", full:false,
+  more:()=>`
+   <p class="datap">On family size, economists' "quantity-quality trade-off" theory mostly fails the data test: studies using surprise twins to isolate family size find the <b>number</b> of children matters little for education or IQ. <b>Birth order</b> matters slightly — later-borns do marginally worse on schooling and IQ measures — but a firstborn with two siblings does the same as a firstborn with one.</p>
+   <p class="datap">Only-child worries? A review of 140 studies found no personality differences — if anything, slightly more academic motivation (which is probably a firstborn effect anyway). On spacing, the data is thin: very short intervals (conceiving within ~a year) may carry some risks including preterm birth, but there is no evidence-backed "ideal gap." Have the number of kids you want, when you want them.</p>`,
+  bl:["The data doesn't say much about the ideal number of children or spacing.","Very short intervals may carry some risks, including preterm birth.","Family size doesn't drive child outcomes; birth order matters only slightly; only children turn out fine."]},
+
+ {id:21, part:4, title:"Growing Up and Letting Go", full:false,
+  more:()=>`
+   <p class="datap">The closing argument: the decisions never stop — school choice, screen rules, sleepovers — but the machinery for making them never changes. Get the best data you can, weigh your family's actual costs and preferences, decide, and don't relitigate it every time another parent makes a different choice.</p>
+   <p class="datap">And the theme the book opens and closes on: you have far less control than you think. The swaddle breaks when the power goes out, not when the plan says so. The kids turn out to be people. That's the point.</p>`,
+  bl:["The decisions keep coming — but the framework stays the same: data plus preferences.","You have way less control than you think you do. That's okay."]},
+];
+
+/* evidence dashboard rows */
+const EVIDENCE = [
+ {s:"strong", c:"Back-sleeping reduces SIDS risk", d:"Case-control studies (~8× stomach-sleep risk), Dutch natural experiment, Back-to-Sleep campaign results all converge.", m:"sids"},
+ {s:"strong", c:"'Cry it out' improves sleep — and doesn't harm kids", d:"Multiple RCTs; a 2006 review of 13 interventions found no adverse effects in any study; 5-year Australian follow-up found sleep-trained kids identical to controls.", m:"cio"},
+ {s:"strong", c:"Sleep training reduces maternal depression", d:"Consistent across randomized studies; one found depression rates falling from 70% to 10% after intervention.", m:"cio"},
+ {s:"strong", c:"Vaccines are safe and effective", d:"Institute of Medicine review; the serious risks are vanishingly rare and mostly limited to immune-compromised children.", m:"vax"},
+ {s:"strong", c:"Early allergen exposure reduces food allergies", d:"The LEAP randomized trial: 17% of peanut-avoiders allergic at five vs 3% of early eaters."},
+ {s:"strong", c:"Breastfeeding reduces infant diarrhea and eczema", d:"PROBIT randomized trial: diarrhea 13%→9%, rashes/eczema 6%→3% in the first year.", m:"bf"},
+ {s:"strong", c:"Reading to young children helps later achievement", d:"Within-family evidence plus a randomized behavior intervention — the rare obvious advice that holds up."},
+ {s:"plaus", c:"Breastfeeding reduces ear infections", d:"Not in PROBIT, but a careful 70,000-mom Danish study found 7%→5%. Oster calls it plausible.", m:"bf"},
+ {s:"plaus", c:"Breastfeeding lowers mom's breast cancer risk", d:"Consistent across many studies — perhaps a 20–30% reduction — with a concrete biological mechanism.", m:"bf"},
+ {s:"plaus", c:"Bed-sharing carries a small SIDS risk even done safely", d:"Meta-analysis: 0.08 vs 0.22 deaths per 1,000 in the lowest-risk group. Risk concentrates in the first 3 months — and explodes with smoking or alcohol.", m:"sids"},
+ {s:"plaus", c:"Spanking is associated with worse behavior", d:"Careful longitudinal studies point one way; Oster flags her own prior — but nothing in the data supports spanking."},
+ {s:"weak", c:"Room-sharing reduces SIDS", d:"Smaller, inconsistent studies; any benefit dies out within the first few months.", m:"sids"},
+ {s:"weak", c:"Day-care quality affects language development", d:"NICHD study: better day care correlates with better vocabulary — but parenting matters far more.", m:"care"},
+ {s:"weak", c:"Screen time harms toddlers", d:"'Precious little data.' Under 2 they don't learn from TV; 3–5 they can. Beyond that, sparse evidence either way."},
+ {s:"none", c:"Breastfeeding boosts IQ", d:"Best data (randomized + sibling comparisons) shows no convincing long-term cognitive effect.", m:"bf"},
+ {s:"none", c:"Breastfeeding prevents obesity", d:"PROBIT at ages 7 and 11: no effect. Sibling studies: no effect. Correlation is the family, not the milk.", m:"bf"},
+ {s:"none", c:"Stay-at-home parenting changes child outcomes", d:"After the parental-leave period, little evidence of good or bad consequences either way.", m:"care"},
+ {s:"none", c:"Not breastfeeding increases SIDS", d:"Effects shrink or vanish once studies control for smoking and prematurity; best-controlled studies show no link.", m:"bf"},
+ {s:"none", c:"Baby Einstein videos build vocabulary", d:"A randomized trial with an actual Baby Einstein DVD found zero effect. Parents reading books predicted vocabulary instead."},
+ {s:"refuted", c:"Vaccines cause autism", d:"537,000-child Danish study and many others: no link. No mechanism. The original Lancet paper was fraudulent.", m:"vax"},
+];
+
+/* quiz questions */
+const QUIZ=[
+ {q:"Letting a baby “cry it out” damages your bond with them.", a:false, e:"Randomized trials show the opposite: one found attachment increased after sleep training, and a 5-year follow-up found sleep-trained kids identical to controls on attachment, behavior, and closeness.", m:"cio"},
+ {q:"Breastfed babies grow up with higher IQs.", a:false, e:"The 17,000-family PROBIT randomized trial and sibling-comparison studies find no convincing long-term cognitive effect. The correlation comes from who breastfeeds, not the milk.", m:"bf"},
+ {q:"Giving babies peanut products early makes peanut allergies less likely.", a:true, e:"The LEAP randomized trial: 17% of peanut-avoiders were allergic at age five vs 3% of early peanut eaters. The old avoidance advice likely fueled the allergy epidemic."},
+ {q:"Babies who sleep on their backs are much less likely to die of SIDS.", a:true, e:"The strongest result in the book: stomach sleepers had ~8× the risk in case-control studies, and SIDS rates tracked national campaigns in both directions.", m:"sids"},
+ {q:"The MMR vaccine causes autism in a small number of children.", a:false, e:"A study of all 537,000 children born in Denmark 1991–98 found no link — if anything vaccinated kids had lower diagnosis rates. No mechanism exists; the original paper was fraudulent.", m:"vax"},
+ {q:"Baby Einstein videos boost a baby's vocabulary.", a:false, e:"A randomized trial with an actual Baby Einstein DVD found zero effect on words learned. The strongest predictor of vocabulary in the study was parents reading books."},
+ {q:"Breastfeeding meaningfully lowers the mother's breast-cancer risk.", a:true, e:"One of the more robust findings — perhaps a 20–30% risk reduction, consistent across many studies, with a concrete biological mechanism. Possibly breastfeeding's biggest long-term benefit.", m:"bf"},
+ {q:"Spanking improves a toddler's behavior.", a:false, e:"No study shows a benefit. Careful longitudinal work finds spanking at age one predicts more behavior problems at five, with associations persisting into adulthood."},
+ {q:"Sleep training measurably improves mothers' mental health.", a:true, e:"Consistent across randomized studies — less depression, lower stress, higher marital satisfaction. One study saw clinical-depression rates fall from 70% to 10%.", m:"cio"},
+ {q:"Co-sleeping is completely safe as long as nobody smokes or drinks.", a:false, e:"Safer, not safe: 0.08 vs 0.22 deaths per 1,000 births even in the lowest-risk group (≈7,100 families avoiding it to prevent one death). The risk fades after 3 months.", m:"sids"},
+ {q:"A child who isn't walking at 14 months is behind schedule.", a:false, e:"Walking alone spans 8.2–17.6 months in normal development. Doctors screen at 18 months — and late-normal walkers do just as well as early ones."},
+ {q:"Kids aged 3–5 can genuinely learn from television.", a:true, e:"Randomized Sesame Street evaluations showed real school-readiness gains, still visible years later. Under age two, though, screen learning is basically nil."},
+];
+
+/* =================================================================
+   LEARN LIST (accordion parts)
+================================================================= */
+const PARTS={1:"In the Beginning",2:"The First Year",3:"From Baby to Toddler",4:"The Home Front"};
+const PARTNUM={1:"Part One",2:"Part Two",3:"Part Three",4:"Part Four"};
+const PARTICON={1:"🐣",2:"🍼",3:"🧸",4:"🏡"};
+const read = new Set(JSON.parse(localStorage.getItem("cs-read")||"[]"));
+const openParts = new Set();
+function saveRead(){ localStorage.setItem("cs-read",JSON.stringify([...read])); updProgress(); }
+function updProgress(){
+  const pct=Math.round(read.size/21*100);
+  document.getElementById("progbar").style.width=pct+"%";
+  document.getElementById("progtext").textContent=`${read.size} of 21 chapters absorbed`;
+}
+
+const MODULES={}; /* filled below */
+
+function buildLearn(){
+  const host=document.getElementById("parts");
+  host.innerHTML="";
+  [1,2,3,4].forEach(p=>{
+    const chs=CHAPTERS.filter(c=>c.part===p);
+    const done=chs.filter(c=>read.has(c.id)).length;
+    const nFull=chs.filter(c=>c.full).length;
+    const d=document.createElement("details");
+    d.className="part";
+    if(openParts.has(p)) d.open=true;
+    d.innerHTML=`<summary>
+        <span class="picon" aria-hidden="true">${PARTICON[p]}</span>
+        <span class="pt"><span class="pn">${PARTNUM[p]}</span><b>${PARTS[p]}</b></span>
+        <span class="pmeta">${chs.length} chapters${nFull?` · ${nFull} full`:""}<br>${done}/${chs.length} absorbed</span>
+        <span class="chev">›</span></summary>
+      <div class="pbody"></div>`;
+    d.addEventListener("toggle",()=>{d.open?openParts.add(p):openParts.delete(p)});
+    const body=d.querySelector(".pbody");
+    chs.forEach(c=>{
+      if(c.full){
+        const m=MODULES[c.full];
+        const b=document.createElement("button");
+        b.className="mod"+(read.has(c.id)?" done":"");
+        b.innerHTML=`<span class="num">${read.has(c.id)?"✓":c.id}</span>
+          <span class="t"><b>${esc(c.title)}</b><small>${esc(m.sub)}</small></span>
+          <span class="badge-full">FULL</span><span class="go">›</span>`;
+        b.addEventListener("click",()=>{location.hash="m/"+c.full});
+        body.appendChild(b);
+      } else {
+        const s=document.createElement("details");
+        s.className="stub";
+        s.innerHTML=`<summary><span class="num">${read.has(c.id)?"✓":c.id}</span>
+            <span>${esc(c.title)}</span><span class="chev">›</span></summary>
+          <div class="bl">
+          <div class="stub-more">${c.more?c.more():""}</div>
+          <div class="bottomline" style="margin:4px 0 10px">
+            <div class="klabel">The Bottom Line</div>
+            <ul>${c.bl.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+          <button class="btn ghost" style="width:auto;padding:7px 14px;font-size:.8rem" data-mark="${c.id}">
+            ${read.has(c.id)?"✓ Absorbed":"Mark as absorbed"}</button></div>`;
+        s.querySelector("[data-mark]").addEventListener("click",()=>{
+          read.has(c.id)?read.delete(c.id):read.add(c.id);
+          saveRead(); buildLearn();
+          /* restore open state of this stub's parent part happens via openParts */
+        });
+        body.appendChild(s);
+      }
+    });
+    host.appendChild(d);
+  });
+  updProgress();
+}
+
+/* =================================================================
+   FULL MODULES
+================================================================= */
+Object.assign(MODULES,{
+
+bf: {
+ num:4, title:"Breast Is Best? Breast Is Better? Breast Is About the Same?",
+ sub:"What the best data actually shows about breastfeeding",
+ render(){ return `
+  <blockquote>One woman told me her doctor had told her that by quitting breastfeeding, she was costing her child three IQ points.
+  <footer>— Chapter 4</footer></blockquote>
+
+  ${guess("Guess: how many IQ points does the BEST evidence attach to breastfeeding?",0,10," pts",0,"PROBIT (randomized, 17,000 families) and sibling studies find no convincing long-term cognitive effect at all. The correlation in casual studies comes from who breastfeeds, not the milk.")}
+
+  <div class="card">
+    <h3>Why this is so hard to study</h3>
+    <p style="font-size:.94rem">Women who breastfeed differ systematically — more education, higher income, more support. So "breastfed kids do better" studies mostly measure <b>who the mothers are</b>, not what the milk does. Oster's move: lean on the one big randomized trial, plus sibling comparisons.</p>
+  </div>
+
+  <div class="card">
+    <h3>The PROBIT trial — 17,000 mothers, randomized</h3>
+    <p style="font-size:.94rem">Belarus, 1990s. Half of mothers were randomly given breastfeeding encouragement and support. At 3 months, <b>43%</b> of encouraged moms were exclusively breastfeeding vs <b>6%</b> of the others — a clean natural experiment. What differed for the babies in the first year:</p>
+    ${legend(["Less breastfeeding","More breastfeeding"])}
+    <figure>
+      ${hbars([
+        {label:"≥1 diarrhea episode", vals:[13,9]},
+        {label:"Rashes & eczema", vals:[6,3]},
+        {label:"Ear infections*", vals:[7,5]},
+      ],["Less breastfeeding","More breastfeeding"],"%",16)}
+      <figcaption>Share of infants affected, first year. *Ear-infection numbers are from a separate 70,000-mother Danish study — PROBIT found no ear-infection effect; Oster rates this one "plausible," not proven.</figcaption>
+    </figure>
+    <p style="font-size:.94rem">No effect found on: respiratory infections, croup, wheezing — and at ages 7 and 11, <b>no effect on obesity, allergies, asthma, height, blood pressure, or IQ</b>. Sibling studies agree: the long-term correlations belong to the family, not the milk.</p>
+  </div>
+
+  <div class="card">
+    <h3>The benefit nobody mentions: it's for Mom</h3>
+    <div class="tiles">
+      <div class="tile ok"><div class="v">20–30%</div><div class="d">possible reduction in mother's breast-cancer risk — consistent across many studies, with a real biological mechanism</div></div>
+      <div class="tile"><div class="v">1 in 8</div><div class="d">women get breast cancer at some point, so this reduction is big in absolute terms</div></div>
+    </div>
+    <p style="font-size:.94rem">"After all that focus on the benefits of breastfeeding for kids, it may be that the most important long-term impact is actually on Mom's health."</p>
+  </div>
+
+  <div class="card">
+    <h3>Evidence meter</h3>
+    <div class="evrow"><span class="chip strong">STRONG</span><span class="c">Less infant diarrhea & eczema in year one</span></div>
+    <div class="evrow"><span class="chip plaus">PLAUSIBLE</span><span class="c">Fewer ear infections; lower breast-cancer risk for Mom</span></div>
+    <div class="evrow"><span class="chip none">NOT SUPPORTED</span><span class="c">IQ, obesity, allergies, asthma, long-term health; SIDS reduction; meaningful postpartum weight loss</span></div>
+  </div>
+
+  <div class="bottomline">
+    <div class="klabel">The Bottom Line</div>
+    <ul>
+      <li>There are some health benefits to breastfeeding early on, although the evidence supporting them is more limited than is commonly stated.</li>
+      <li>There are likely some long-term health benefits, related to breast cancer, for Mom.</li>
+      <li>The data does not provide strong evidence for long-term health or cognitive benefits of breastfeeding for your child.</li>
+    </ul>
+  </div>
+
+  <p class="note">Translation for 3 a.m.: if breastfeeding is working for you, great — real early benefits. If it isn't, formula is not costing your child their future. Decide on your costs, not on guilt.</p>
+ `}
+},
+
+sids: {
+ num:6, title:"Sleep Position and Location",
+ sub:"Back to sleep, bed-sharing, and honest risk numbers",
+ render(){ return `
+  <blockquote>I think it is preferable to accustom babies to sleep on the stomach from the start.
+  <footer>— Dr. Spock's <em>Baby and Child Care</em>, the edition Oster's parents used. The advice flipped completely — and the data is why.</footer></blockquote>
+
+  ${guess("Guess: in 1992, what share of US babies were put to sleep on their stomachs?",0,100,"%",70,"By 1996 — four years into the Back to Sleep campaign — it was 20%, and SIDS rates fell alongside it.")}
+
+  <div class="card">
+    <h3>1. Back-sleeping: the strongest result in the book</h3>
+    <p style="font-size:.94rem">The 1990 Avon study: of 67 SIDS deaths, <b>92%</b> were stomach-sleepers — vs 56% of surviving control infants. That's roughly <b>8× the risk</b>. The Netherlands flipped its advice twice and SIDS rates tracked the advice both times.</p>
+    ${legend(["Babies put to sleep on stomach (US)"])}
+    <figure>
+      ${hbars([
+        {label:"1992 — campaign starts", vals:[70]},
+        {label:"1996", vals:[20]},
+      ],["Babies put to sleep on stomach"],"%",100)}
+      <figcaption>The "Back to Sleep" campaign, 1992–1996. SIDS rates fell alongside it.</figcaption>
+    </figure>
+    <p style="font-size:.94rem">If your baby rolls over on their own — no need to flip them back. Once they can roll, the highest-risk window has passed. One real side effect of back-sleeping: flat head. It's cosmetic, and tummy time helps.</p>
+  </div>
+
+  <div class="card">
+    <h3>2. Bed-sharing: small risk done safely, big risk done badly</h3>
+    <p style="font-size:.94rem">From a 2013 BMJ meta-analysis — SIDS deaths per 1,000 births, breastfed non-premature infant:</p>
+    ${legend(["Baby sleeps separately","Baby shares the bed"])}
+    <figure>
+      ${hbars([
+        {label:"No risk factors", vals:[0.08,0.22]},
+      ],["Sleeps separately","Shares the bed"]," ",0.3)}
+      <figcaption>Parents don't smoke, mother doesn't drink. Deaths per 1,000 births.</figcaption>
+    </figure>
+    <figure>
+      ${hbars([
+        {label:"Smoke + drink", vals:[1.7,27]},
+      ],["Sleeps separately","Shares the bed"]," ",30)}
+      <figcaption>Note the scale — this chart's axis is 100× the one above. Smoking and alcohol are what turn bed-sharing dangerous: 27 deaths per 1,000, ~16× the comparable separate-sleeper.</figcaption>
+    </figure>
+    <div class="tiles">
+      <div class="tile"><div class="v">7,100</div><div class="d">lowest-risk families would need to avoid co-sleeping to prevent one death</div></div>
+      <div class="tile"><div class="v">3 mo</div><div class="d">after this age, no elevated risk detected from co-sleeping if nobody smokes or drinks</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3. The rest of the picture</h3>
+    <div class="evrow"><span class="chip strong">STRONG</span><span class="c">Back-sleeping reduces SIDS<small>Multiple converging lines of evidence</small></span></div>
+    <div class="evrow"><span class="chip plaus">MODERATE</span><span class="c">Bed-sharing carries some risk even done safely<small>Consistent across studies; risk is small in absolute terms</small></span></div>
+    <div class="evrow"><span class="chip weak">WEAK</span><span class="c">Room-sharing helps<small>Smaller, inconsistent studies; benefit fades after the first months — and kids may sleep better alone after that</small></span></div>
+    <div class="evrow"><span class="chip strong">STRONG</span><span class="c">Never sleep with an infant on a sofa<small>"Extremely dangerous" — the one unambiguous no</small></span></div>
+  </div>
+
+  <div class="bottomline">
+    <div class="klabel">The Bottom Line</div>
+    <ul>
+      <li>Good evidence: infants who sleep on their back are at lower risk for SIDS.</li>
+      <li>Moderate evidence: bed sharing is risky — much riskier if you or your partner smokes or drinks.</li>
+      <li>Room sharing: some less-good evidence of benefit, and it dies out in the first few months.</li>
+      <li>In the crib — wearable blanket: check! Bumpers: very small risk, small benefits.</li>
+      <li>Sleeping on a sofa with an infant is extremely dangerous.</li>
+    </ul>
+  </div>
+ `}
+},
+
+cio: {
+ num:11, title:"Sleep Training",
+ sub:"'Cry it out': what it does, what it doesn't",
+ render(){ return `
+  <blockquote>Mom, whatever you do, you can't go in. He needs to learn to sleep on his own. We have to help him do that.
+  <footer>— Penelope, age 4, supervising her baby brother's sleep training</footer></blockquote>
+
+  ${guess("Guess: in one study, 70% of moms met clinical-depression criteria before sleep training. What % did after?",0,70,"%",10,"A small non-randomized study, but the direction is echoed by RCTs: an Australian trial of 328 families found less depression, better physical health, and higher marital satisfaction in the sleep-training arm.")}
+
+  <div class="card">
+    <h3>Does it work?</h3>
+    <p style="font-size:.94rem">Yes. Randomized trials consistently show "cry it out" methods improve night sleep. And the biggest measured effect isn't on the baby:</p>
+    ${legend(["Mothers meeting clinical-depression criteria"])}
+    <figure>
+      ${hbars([
+        {label:"Before", vals:[70]},
+        {label:"After", vals:[10]},
+      ],["Mothers meeting depression criteria"],"%",100)}
+      <figcaption>Before vs. after a sleep-training intervention (small non-randomized study; direction confirmed by RCTs).</figcaption>
+    </figure>
+  </div>
+
+  <div class="card">
+    <h3>Does it harm the baby?</h3>
+    <p style="font-size:.94rem">The question everyone actually loses sleep over. The data is unusually reassuring:</p>
+    <blockquote style="font-size:.95rem">Adverse secondary effects…were not identified in any of the studies. On the contrary, infants who participated in sleep interventions were found to be more secure, predictable, less irritable, and to cry and fuss less following treatment.
+    <footer>— 2006 review of 13 sleep-training interventions</footer></blockquote>
+    <p style="font-size:.94rem">A Swedish RCT found infant attachment <b>increased</b> after sleep training. The Australian trial followed kids to <b>age six</b>: no difference in emotional stability, conduct, stress, parent-child closeness, or attachment. "Basically, the kids who were sleep trained looked exactly like those who were not."</p>
+    <p style="font-size:.94rem">The opposing case is theoretical (crying = distress signal), leaning on a 25-infant cortisol study. Oster's read: nothing in the data shows harm — "it would be a mistake to say that not sleep training is the 'safest option.'"</p>
+  </div>
+
+  <div class="card">
+    <h3>Which method? The one you can stick to</h3>
+    <div class="evrow"><b style="min-width:86px">Extinction</b><span class="c">Say goodnight, leave, don't return. (Weissbluth)</span></div>
+    <div class="evrow"><b style="min-width:86px">Graduated</b><span class="c">Return to check at lengthening intervals. (Ferber)</span></div>
+    <div class="evrow"><b style="min-width:86px">Presence</b><span class="c">Sit in the room; don't intervene.</span></div>
+    <p style="font-size:.94rem;margin-top:10px">All three work. The evidence doesn't crown a winner — <b>consistency is what predicts success</b>. Pick the one you can actually follow through on, write the plan down with your partner, and stick to it.</p>
+  </div>
+
+  <div class="card wash">
+    <div class="klabel">A real plan — Oster's actual written plan for Finn (10 weeks)</div>
+    <ul style="font-size:.9rem;padding-left:18px;margin:6px 0 0">
+      <li><b>Bedtime:</b> PJs, book, nurse, down at ~6:45. No returning before 10:45pm.</li>
+      <li><b>Overnight:</b> feed at first cry after 10:45; then wait ≥2h after each feeding ends before responding again.</li>
+      <li><b>Morning:</b> up between 6:30 and 7:30, whichever comes first.</li>
+    </ul>
+    <p class="note" style="margin:10px 0 0">Result: 25 minutes of crying the first night, a few the second, then very little. Goal at this age is falling asleep independently — <b>not</b> going all night unfed. A ten-week-old still needs night feeds; a ten-month-old usually doesn't.</p>
+  </div>
+
+  <div class="bottomline">
+    <div class="klabel">The Bottom Line</div>
+    <ul>
+      <li>"Cry it out" methods are effective at encouraging nighttime sleep.</li>
+      <li>They improve parental mental health — less depression, lower stress, higher marital satisfaction.</li>
+      <li>Randomized evidence, including five-year follow-ups, shows no short- or long-term harm to children.</li>
+      <li>Pick a method you can be consistent with, make a written plan, expect naps to be harder than nights.</li>
+    </ul>
+  </div>
+ `}
+},
+
+vax: {
+ num:8, title:"Vaccination: Yes, Please",
+ sub:"The rare real risks vs. the diseases themselves",
+ render(){ return `
+  <blockquote>Vaccines prevent disease, suffering, and death.
+  <footer>— Chapter 8. The book's least hedged sentence.</footer></blockquote>
+
+  ${guess("Guess: what % of ALL children have a febrile seizure by age five (vaccinated or not)?",0,25,"%",3,"2–3% of all kids. The MMR vaccine roughly doubles the odds in the ~10 days after the shot — scary in the moment, no long-term consequences, and the risk is HIGHER if you delay the shot.")}
+
+  <div class="card">
+    <h3>The real, documented risks — with denominators</h3>
+    <div class="tiles">
+      <div class="tile"><div class="v">1 in 450,000</div><div class="d">doses cause an allergic reaction (0.22 per 100,000) — treatable with Benadryl or an EpiPen</div></div>
+      <div class="tile"><div class="v">~2×</div><div class="d">febrile-seizure risk in the ~10 days after MMR. Scary, no long-term consequences — and 2–3% of ALL kids have one by age five anyway</div></div>
+    </div>
+    <p style="font-size:.94rem">The genuinely serious documented events (like measles-inclusion encephalitis after vaccination) exist as a <b>handful of case reports in the entire history of vaccination</b>, essentially all in immune-compromised children. Expect a cranky, feverish baby for a day — stock infant Tylenol.</p>
+  </div>
+
+  <div class="card">
+    <h3>The claim that won't die</h3>
+    <div class="evrow"><span class="chip refuted">REFUTED</span><span class="c"><b>MMR causes autism</b><small>A study of all 537,000 children born in Denmark 1991–98 found no link — if anything, vaccinated kids were <em>less</em> likely to be diagnosed. Sibling studies, monkey studies: nothing. No mechanism exists.</small></span></div>
+  </div>
+
+  <div class="card">
+    <h3>What the diseases do, for scale</h3>
+    <div class="tiles">
+      <div class="tile warn"><div class="v">100 + 9,000</div><div class="d">deaths + hospitalizations per year from chicken pox in the US, before the vaccine — the "harmless" one</div></div>
+      <div class="tile warn"><div class="v">10–20</div><div class="d">pertussis deaths per year even now — mostly babies too young to be vaccinated, relying on everyone else's shots</div></div>
+    </div>
+    <p style="font-size:.94rem">Counting on herd immunity? MMR coverage is ~80% in some US pockets; herd immunity needs 90%+. About half of US counties see at least one pertussis case every year.</p>
+  </div>
+
+  <div class="card">
+    <h3>Delayed schedules</h3>
+    <p style="font-size:.94rem;margin-top:0">No benefit, real costs: <b>delaying MMR increases</b> the febrile-seizure risk, hep-B at birth guards against a rare but grave scenario, and it's more shots-visits for a kid who hates them. "From an individual parent standpoint, the bottom line is that there is simply no reason for delay."</p>
+  </div>
+
+  <div class="bottomline">
+    <div class="klabel">The Bottom Line</div>
+    <ul>
+      <li>Vaccinations are safe.</li>
+      <li>A very small share of people have allergic reactions, which are treatable.</li>
+      <li>The extremely rare adverse events mostly occur in immune-compromised children.</li>
+      <li>The only more common risks — fever and febrile seizures — are also rare and do no long-term damage.</li>
+      <li>Vaccinate on time; delay helps no one.</li>
+    </ul>
+  </div>
+ `}
+},
+
+care: {
+ num:10, title:"Who Should Take Care of the Baby?",
+ sub:"Parent, day care, or nanny — and how to judge quality",
+ render(){ return `
+  <blockquote>Parenting matters a lot — way more than day care.
+  <footer>— Chapter 10, on the NICHD study's clearest finding</footer></blockquote>
+
+  ${guess("Guess: what % of the researchers' day-care quality score is about 'fancy' features (Mandarin lessons, organic snacks)?",0,100,"%",0,"Zero. The entire evaluation is about how providers interact with children — warmth, responsiveness, talking back to babbling. Which also means you can assess it yourself on a tour.")}
+
+  <div class="card">
+    <h3>First: does a parent staying home matter?</h3>
+    <p style="font-size:.94rem;margin-top:0">Babies benefit from mothers taking <b>some maternity leave</b>. After the leave period, the data shows little evidence that a stay-at-home parent produces either better or worse child outcomes. Translation: this is a <b>preferences decision</b> — money, career, and what makes you a functional human all count. Parents are people, too.</p>
+  </div>
+
+  <div class="card">
+    <h3>Day care: quality is interactions, not Mandarin</h3>
+    <p style="font-size:.94rem">The NICHD study followed 1,000+ kids for years. Higher-quality day care correlated with better language and vocabulary (through 6th grade); behavior showed no quality relationship. On average, more time in centers: slightly better cognitive outcomes, slightly worse behavior. All effects are small next to parenting.</p>
+  </div>
+
+  <div class="card">
+    <div class="klabel">Interactive · the researchers' checklist, for your tour</div>
+    <div id="carechecks"></div>
+    <div class="checkscore" id="carescore"></div>
+    <p class="note" style="margin-top:8px">Ask to quietly observe for 10–15 minutes. Are adults on the floor with the babies or on their phones? Do they respond to babbling? ("Gah!" "That's right, that's a hippo!") Warmth is hard to fake — and its absence is easy to spot.</p>
+  </div>
+
+  <div class="card">
+    <h3>Nanny vs. day care</h3>
+    <p style="font-size:.94rem;margin-top:0">Same rule — quality of interaction wins — but a nanny is harder to evaluate. Oster's most useful tricks: call references and judge <b>whether the referrer seems like you</b> (similar needs?), and have candidates answer key questions in writing before the interview. Price correlates with quality, but the core ingredient — warm, responsive attention — is not about price.</p>
+  </div>
+
+  <div class="bottomline">
+    <div class="klabel">The Bottom Line</div>
+    <ul>
+      <li>Babies benefit from some maternity leave; after that, a stay-at-home parent has no proven good or bad effect on children.</li>
+      <li>With any childcare arrangement, quality matters — and you can evaluate it yourself with simple tools.</li>
+      <li>More time in day-care centers: slightly better cognitive outcomes, slightly worse behavior, on average.</li>
+    </ul>
+  </div>
+ `},
+ after(){
+   const items=[
+     "No exposed outlets, cords, or fans; safe cribs",
+     "Written emergency plan; teacher knows infant illnesses",
+     "Eating area away from diaper area; toys washed daily",
+     "Toys reachable by kids; floor space for crawlers",
+     "3+ types of large-muscle materials (balls, rocking horse)",
+     "Music materials and 'special activities' (water play, painting)",
+     "Each infant has own crib and an assigned teacher",
+     "Development formally assessed at least every 6 months",
+     "Toys matched to each child's development level",
+     "Teachers get 1+ hour/week for team planning",
+   ];
+   const box=document.getElementById("carechecks"), score=document.getElementById("carescore");
+   if(!box) return;
+   box.innerHTML=items.map((t,i)=>`<label class="check"><input type="checkbox" data-i="${i}"><span>${t}</span></label>`).join("");
+   const upd=()=>{
+     const n=box.querySelectorAll("input:checked").length;
+     score.textContent=`${n} of ${items.length} checked` + (n>=8?" — looking like a high-quality setup":"");
+   };
+   box.addEventListener("change",upd); upd();
+ }
+},
+});
+
+/* =================================================================
+   MODULE VIEW
+================================================================= */
+function showModule(key){
+  const m=MODULES[key]; if(!m){location.hash="learn";return}
+  const ch=CHAPTERS.find(c=>c.full===key);
+  const host=document.getElementById("view-module");
+  host.innerHTML=`
+    <button class="back" id="backbtn">‹ All chapters</button>
+    <header class="app" style="padding-top:8px">
+      <div class="eyebrow">Chapter ${m.num} · Full module</div>
+      <h1>${esc(m.title)}</h1>
+      <p class="thesis">${esc(m.sub)}</p>
+    </header>
+    ${m.render()}
+    <button class="btn ${read.has(ch.id)?"done":""}" id="markbtn" style="margin:6px 0 24px">
+      ${read.has(ch.id)?"✓ Absorbed":"Mark chapter as absorbed"}</button>`;
+  document.getElementById("backbtn").addEventListener("click",()=>{history.length>1?history.back():location.hash="learn"});
+  document.getElementById("markbtn").addEventListener("click",e=>{
+    read.has(ch.id)?read.delete(ch.id):read.add(ch.id);
+    saveRead();
+    e.target.className="btn "+(read.has(ch.id)?"done":"");
+    e.target.textContent=read.has(ch.id)?"✓ Absorbed":"Mark chapter as absorbed";
+  });
+  wireGuesses(host);
+  if(m.after) m.after();
+  window.scrollTo(0,0);
+}
+
+/* =================================================================
+   QUIZ
+================================================================= */
+let qIdx=0, qScore=0, qOrder=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQuiz(){ qIdx=0; qScore=0; qOrder=shuffle([...QUIZ.keys()]); renderQuiz(); }
+function renderQuiz(){
+  const box=document.getElementById("quizbox");
+  if(qIdx>=qOrder.length){
+    const msg = qScore===qOrder.length ? "Perfect. Emily would be proud."
+      : qScore>=qOrder.length*0.75 ? "Strong — you're reading the data, not the mommy blogs."
+      : qScore>=qOrder.length*0.5 ? "Not bad — the counterintuitive ones get everyone."
+      : "The good news: now you know which instincts to double-check.";
+    box.innerHTML=`<div class="quiz-score">
+      <div class="klabel">Your score</div>
+      <div class="big">${qScore}/${qOrder.length}</div>
+      <p style="margin:6px auto 16px;max-width:40ch">${msg}</p>
+      <button class="btn" style="width:auto;padding:11px 28px" id="qrestart">Play again</button></div>`;
+    document.getElementById("qrestart").addEventListener("click",startQuiz);
+    return;
+  }
+  const q=QUIZ[qOrder[qIdx]];
+  box.innerHTML=`
+    <div class="quiz-meta"><span>Question ${qIdx+1} of ${qOrder.length}</span><span>Score: ${qScore}</span></div>
+    <p class="quiz-q">“${esc(q.q)}”</p>
+    <div class="quiz-btns">
+      <button data-ans="false">✗ Myth</button>
+      <button data-ans="true">✓ Backed by data</button>
+    </div>
+    <div id="qresult"></div>`;
+  box.querySelectorAll(".quiz-btns button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const right=(b.dataset.ans==="true")===q.a;
+      if(right) qScore++;
+      box.querySelectorAll(".quiz-btns button").forEach(x=>x.disabled=true);
+      document.getElementById("qresult").innerHTML=`
+        <div class="quiz-result ${right?"right":"wrong"}">
+          <div class="verdict">${right?"Correct":"Not this time"} — ${q.a?"the data backs this":"this one's a myth"}</div>
+          <div style="margin-top:4px">${esc(q.e)}</div>
+          ${q.m?`<div style="margin-top:6px"><a href="#m/${q.m}">Read the full chapter module ›</a></div>`:""}
+        </div>
+        <button class="btn" style="margin-top:12px" id="qnext">${qIdx+1<qOrder.length?"Next question":"See my score"}</button>`;
+      document.getElementById("qnext").addEventListener("click",()=>{qIdx++;renderQuiz()});
+      document.getElementById("qnext").focus();
+    });
+  });
+}
+
+/* =================================================================
+   DATA TAB
+================================================================= */
+function buildEvidence(){
+  const order=["strong","plaus","weak","none","refuted"];
+  const names={strong:"STRONG",plaus:"PLAUSIBLE",weak:"WEAK",none:"NOT SUPPORTED",refuted:"REFUTED"};
+  const host=document.getElementById("evdash");
+  host.innerHTML=order.map(s=>EVIDENCE.filter(e=>e.s===s).map(e=>`
+    <div class="evrow"><span class="chip ${e.s}">${names[e.s]}</span>
+      <span class="c">${e.m?`<a href="#m/${e.m}" style="text-decoration:none;color:inherit"><b>${esc(e.c)}</b> <span style="color:var(--accent)">›</span></a>`:`<b>${esc(e.c)}</b>`}
+      <small>${esc(e.d)}</small></span></div>`).join("")).join("");
+}
+
+const SCHED=[
+ {to:2, naps:[["Night",50],["Nap",28],["Nap",25],["Nap",28],["Nap",22]], d:"Newborn chaos: sleep comes in scattered stretches around the clock. There is no schedule yet, and that's normal. Longer nighttime sleep starts consolidating around two months."},
+ {to:4, naps:[["Night",70],["Nap",30],["Nap",28],["Nap",26]], d:"Nighttime sleep is lengthening. Daytime sleep is still irregular — regular naps typically haven't organized yet."},
+ {to:9, naps:[["Night",80],["Nap",32],["Nap",30],["Nap",22]], d:"Around four months, most babies settle into three regular naps — morning, midday, late afternoon — with a longer consolidated night."},
+ {to:15, naps:[["Night",85],["Nap",34],["Nap",30]], d:"Around nine months the late-afternoon nap drops: two regular naps, morning and afternoon."},
+ {to:18, naps:[["Night",85],["Nap",38]], d:"Between fifteen and eighteen months, most kids consolidate to a single midday nap."},
+ {to:35, naps:[["Night",85],["Nap",34]], d:"One solid midday nap, typically one to three hours. Enjoy it — this is the golden age of the nap."},
+ {to:99, naps:[["Night",88]], d:"Around age three, napping is dropped altogether (with tremendous variation — some kids nap to five, some quit at two)."},
+];
+function buildSched(){
+  const slider=document.getElementById("ageslider");
+  const upd=()=>{
+    const mo=+slider.value;
+    document.getElementById("ageval").textContent = mo<1?"newborn":(mo===36?"3 years":(mo%12===0?(mo/12)+(mo===12?" year":" years"):mo+" months"));
+    const row=SCHED.find(s=>mo<s.to)||SCHED[SCHED.length-1];
+    document.getElementById("napviz").innerHTML=row.naps.map(([label,h])=>
+      `<div class="napblock ${label==="Night"?"night":"nap"}" style="height:${h}px;flex:${label==="Night"?2:1}"><span>${label}</span></div>`).join("");
+    document.getElementById("agedesc").textContent=row.d;
+  };
+  slider.addEventListener("input",upd); upd();
+}
+
+/* =================================================================
+   DECIDE TAB
+================================================================= */
+const DECISIONS={
+ sleep:{
+  data:"What the data says: cry-it-out works, helps parental mental health, and shows no harm to kids — including at 5-year follow-up. The data is on your side either way; this is about your costs.",
+  sliders:[
+    ["How much is sleep deprivation hurting your family?","We're coping","We're drowning"],
+    ["How hard is listening to crying for you?","Manageable","Unbearable"],
+    ["Can you and your partner hold a consistent plan right now?","Honestly, no","Absolutely"],
+  ],
+  verdict(v){
+    const lean=(v[0]+v[2]-v[1]+100)/3;
+    if(lean>60) return "Your inputs lean toward trying it: the burden on your family is real, you can be consistent, and the evidence says it works with no shown harm. Write the plan down with your partner first — consistency is the one thing the data insists on.";
+    if(lean>40) return "You're genuinely torn — which usually means the crying cost weighs on you as much as the sleep deprivation. Consider a gentler variant (graduated checks, or parental presence) — all three methods work; the best one is the one you can stick to.";
+    return "Your inputs lean against it right now — the cost of crying outweighs your current sleep burden, or you can't be consistent yet. That's a legitimate choice: the data says sleep training works, not that it's mandatory. Revisit if the sleep math changes.";
+  }},
+ bf:{
+  data:"What the data says: real but modest early benefits (less diarrhea, less eczema, plausibly fewer ear infections; likely lower breast-cancer risk for you). No proven long-term IQ or health effects for the child.",
+  sliders:[
+    ["How is breastfeeding actually going?","Miserably","Smoothly"],
+    ["What does pumping/feeding cost you in time and sanity?","Very little","An enormous amount"],
+    ["How much do the early-year benefits matter to your calculus?","Marginal","A lot"],
+  ],
+  verdict(v){
+    const lean=(v[0]-v[1]+v[2]+100)/3;
+    if(lean>60) return "Your inputs lean toward continuing: it's working, the costs are bearable, and the early benefits are worth something to you. Carry on — and drop the guilt if the math ever flips.";
+    if(lean>40) return "Genuinely balanced. Remember the benefits are real but modest and mostly early — a mixed approach (some formula, some nursing) is a fully legitimate answer to exactly this situation.";
+    return "Your inputs lean toward stopping or supplementing: the costs to you are high and the data says formula is not costing your child their future. 'Benefits can be overstated, and costs can be profound.' Your well-being counts in this equation.";
+  }},
+ care:{
+  data:"What the data says: after parental leave, no proven good or bad child outcomes from a parent staying home. In any arrangement, quality of interaction is what matters — and parenting swamps all of it.",
+  sliders:[
+    ["How much do you want to be back at work?","Not at all","Very much"],
+    ["How good are your actual childcare options (quality, not price)?","Weak","Excellent"],
+    ["What does one parent staying home cost (money, career, sanity)?","Little","A lot"],
+  ],
+  verdict(v){
+    const lean=(v[0]+v[1]+v[2])/3;
+    if(lean>60) return "Your inputs lean toward outside childcare: you want to work, your options are good, and staying home is expensive for your family. The data gives you full permission — pick the warmest option you saw on your tour.";
+    if(lean>40) return "Balanced. Since the child-outcome data is roughly neutral, let the tiebreaker be honest preferences: which version of your week makes you the parent you want to be at 6pm?";
+    return "Your inputs lean toward a parent at home for now: you want it, options are weak, and the cost is manageable. The data is comfortable with this too — just make sure it stays a choice, not a default.";
+  }},
+};
+let curDec="sleep";
+function buildDecide(){
+  document.querySelectorAll(".seg button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true");
+      curDec=b.dataset.dec; renderDec();
+    });
+  });
+  renderDec();
+}
+function renderDec(){
+  const d=DECISIONS[curDec];
+  document.getElementById("dec-data").textContent=d.data;
+  document.getElementById("dec-sliders").innerHTML=d.sliders.map((s,i)=>`
+    <div class="slider-row">
+      <label for="dsl${i}">${s[0]}</label>
+      <input type="range" id="dsl${i}" min="0" max="100" value="50">
+      <div class="ends"><span>${s[1]}</span><span>${s[2]}</span></div>
+    </div>`).join("");
+  const upd=()=>{
+    const v=d.sliders.map((_,i)=>+document.getElementById("dsl"+i).value);
+    document.getElementById("dec-verdict").textContent=d.verdict(v);
+  };
+  document.querySelectorAll("#dec-sliders input").forEach(el=>el.addEventListener("input",upd));
+  upd();
+}
+
+/* =================================================================
+   ROUTER
+================================================================= */
+let quizStarted=false;
+function route(){
+  const h=location.hash.replace(/^#/,"")||"learn";
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.classList.remove("on"));
+  if(h.startsWith("m/")){
+    document.getElementById("view-module").classList.add("on");
+    document.getElementById("tab-learn").classList.add("on");
+    showModule(h.slice(2));
+  } else {
+    const v=["learn","quiz","data","decide"].includes(h)?h:"learn";
+    document.getElementById("view-"+v).classList.add("on");
+    document.getElementById("tab-"+v).classList.add("on");
+    if(v==="learn") buildLearn();
+    if(v==="quiz" && !quizStarted){ startQuiz(); quizStarted=true; }
+    window.scrollTo(0,0);
+  }
+}
+window.addEventListener("hashchange",route);
+
+buildLearn(); buildEvidence(); buildSched(); buildDecide(); route();
+
+</script>
+<script src="chrome.js"></script>

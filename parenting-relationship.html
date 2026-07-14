@@ -2,6 +2,7 @@
 <meta charset="utf-8">
 <title>Relationship Companion</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem("pl-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <style>
 :root{
   --ground:#f9f6f5; --card:#ffffff; --card2:#f3efee;
@@ -176,24 +177,6 @@ nav.tabs a.on .ico{transform:translateY(-1px) scale(1.08)}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .note{font-size:.8rem;color:var(--ink3);line-height:1.45}
 
-/* library switcher */
-header.app{padding-right:52px}
-.libbtn{position:fixed;top:12px;right:12px;z-index:20;width:42px;height:42px;border-radius:50%;
-  border:1px solid var(--edge);background:var(--card);box-shadow:var(--shadow-pop);font-size:1.1rem;
-  display:flex;align-items:center;justify-content:center;transition:transform .15s}
-.libbtn:hover{transform:translateY(-1px)} .libbtn:active{transform:scale(.94)}
-.libsheet{position:fixed;inset:0;z-index:30;background:rgba(15,15,15,.45);display:flex;align-items:flex-end;justify-content:center}
-.libsheet[hidden]{display:none}
-.libpanel{background:var(--ground);border-radius:24px 24px 0 0;padding:18px 16px calc(26px + env(safe-area-inset-bottom));
-  max-width:640px;width:100%;animation:libup .3s cubic-bezier(.2,.7,.3,1)}
-@keyframes libup{from{transform:translateY(48px);opacity:0}to{transform:none;opacity:1}}
-.libcard{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:13px 14px;margin:8px 0;
-  text-decoration:none;color:var(--ink);box-shadow:var(--shadow);border:2px solid transparent}
-.libcard.here{border-color:var(--accent)}
-.libcard .em{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.libcard b{display:block;font-size:.95rem}
-.libcard small{color:var(--ink2);font-size:.76rem;font-weight:600}
-.libcard .herechip{margin-left:auto;font-size:.64rem;font-weight:800;letter-spacing:.05em;color:var(--accent);white-space:nowrap}
 </style>
 
 <div class="wrap">
@@ -249,21 +232,12 @@ header.app{padding-right:52px}
     <p class="thesis">Small swaps, big difference. Each one follows the same rule: validate the feeling, define yourself — not the child.</p>
   </header>
   <div id="phraselist"></div>
-  <div class="card" style="text-align:center">
-    <div class="klabel">Your library</div>
-    <p style="margin:6px 0 0"><a href="index.html" style="font-weight:750;text-decoration:none">📖 Cribsheet Companion ›</a><br>
-    <a href="contented-baby.html" style="font-weight:750;text-decoration:none">👶 Contented Baby Companion ›</a></p>
-  </div>
+  
+
 </section>
 
 </div>
 
-<button class="libbtn" id="libbtn" aria-label="Switch book app" aria-expanded="false">📚</button>
-<div class="libsheet" id="libsheet" hidden><div class="libpanel">
-<div class="klabel" style="margin-bottom:8px">Your library — switch books</div>
-<a class="libcard" href="index.html"><span class="em" style="background:color-mix(in srgb,#0fa47e 20%,var(--card2))">📖</span><span><b>Cribsheet Companion</b><small>Emily Oster · the evidence</small></span><span class="herechip" style="color:var(--ink3)">›</span></a><a class="libcard" href="contented-baby.html"><span class="em" style="background:color-mix(in srgb,#7c62d6 20%,var(--card2))">👶</span><span><b>Contented Baby Companion</b><small>Gina Ford · the routines</small></span><span class="herechip" style="color:var(--ink3)">›</span></a><a class="libcard here" href="parenting-relationship.html"><span class="em" style="background:color-mix(in srgb,#c94f74 20%,var(--card2))">💬</span><span><b>Relationship Companion</b><small>Philippa Perry · the connection</small></span><span class="herechip">YOU’RE HERE</span></a>
-<a class="libcard" href="whole-brain.html"><span class="em" style="background:color-mix(in srgb,#b45309 20%,var(--card2))">🧠</span><span><b>Whole-Brain Companion</b><small>Siegel &amp; Bryson · the brain</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
-<a class="libcard" href="baby-sleep-science.html"><span class="em" style="background:color-mix(in srgb,#2481c4 20%,var(--card2))">🌙</span><span><b>Baby Sleep Science</b><small>Helen Ball · the biology</small></span><span class="herechip" style="color:var(--ink3)">›</span></a></div></div>
 <nav class="tabs" aria-label="Main">
   <a href="#practice" id="tab-practice"><span class="ico" aria-hidden="true">💬</span>Practice</a>
   <a href="#learn" id="tab-learn"><span class="ico" aria-hidden="true">📖</span>Learn</a>
@@ -576,12 +550,5 @@ function route(){
 window.addEventListener("hashchange",route);
 buildLearn();buildPhrases();startScen();route();
 
-/* library switcher */
-(function(){
-  const b=document.getElementById("libbtn"),s=document.getElementById("libsheet");
-  const set=o=>{s.hidden=!o;b.setAttribute("aria-expanded",o)};
-  b.addEventListener("click",()=>set(s.hidden));
-  s.addEventListener("click",e=>{if(e.target===s)set(false)});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")set(false)});
-})();
 </script>
+<script src="chrome.js"></script>
