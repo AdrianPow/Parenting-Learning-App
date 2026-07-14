@@ -1,0 +1,550 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Baby Sleep Science Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ground:#f4f8fb; --card:#ffffff; --card2:#eaf1f6;
+  --ink:#1b2530; --ink2:#526170; --ink3:#8695a3;
+  --accent:#2481c4; --accent2:#1a5f93; --accent-ink:#ffffff; --accent-wash:#dcecf8;
+  --hairline:#e3ebf1; --grid:#e8eef3; --baseline:#c3d0da;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --crit:#d03b3b;
+  --quote-bar:#2481c4;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(27,37,48,.07);
+  --shadow:0 6px 20px rgba(27,37,48,.06);
+  --shadow-pop:0 10px 28px rgba(27,37,48,.12);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#0f1620; --card:#182230; --card2:#131c28;
+    --ink:#eaf1f7; --ink2:#a3b1c0; --ink3:#71808f;
+    --accent:#54a8e6; --accent2:#3d8fd0; --accent-ink:#07182a; --accent-wash:#1a2c40;
+    --hairline:#26313f; --grid:#212b38; --baseline:#3a4756;
+    --s1:#3987e5; --s2:#199e70;
+    --good:#0ca30c; --warn:#fab219; --crit:#e05252;
+    --quote-bar:#54a8e6;
+    --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+    --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+    --edge:rgba(255,255,255,.08);
+    --shadow:0 6px 20px rgba(0,0,0,.35);
+    --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="light"]{
+  --ground:#f4f8fb; --card:#ffffff; --card2:#eaf1f6;
+  --ink:#1b2530; --ink2:#526170; --ink3:#8695a3;
+  --accent:#2481c4; --accent2:#1a5f93; --accent-ink:#ffffff; --accent-wash:#dcecf8;
+  --hairline:#e3ebf1; --grid:#e8eef3; --baseline:#c3d0da;
+  --s1:#2a78d6; --s2:#1baf7a;
+  --good:#0ca30c; --warn:#b97f00; --crit:#d03b3b;
+  --quote-bar:#2481c4;
+  --tint-mint:#def4e4; --tint-peach:#ffe9d6; --tint-lav:#e9e6fb;
+  --tint-lemon:#fbf0ce; --tint-sky:#ddf0fb; --tint-rose:#fde4ec;
+  --edge:rgba(27,37,48,.07);
+  --shadow:0 6px 20px rgba(27,37,48,.06);
+  --shadow-pop:0 10px 28px rgba(27,37,48,.12);
+}
+:root[data-theme="dark"]{
+  --ground:#0f1620; --card:#182230; --card2:#131c28;
+  --ink:#eaf1f7; --ink2:#a3b1c0; --ink3:#71808f;
+  --accent:#54a8e6; --accent2:#3d8fd0; --accent-ink:#07182a; --accent-wash:#1a2c40;
+  --hairline:#26313f; --grid:#212b38; --baseline:#3a4756;
+  --s1:#3987e5; --s2:#199e70;
+  --good:#0ca30c; --warn:#fab219; --crit:#e05252;
+  --quote-bar:#54a8e6;
+  --tint-mint:#1e332a; --tint-peach:#38291c; --tint-lav:#272338;
+  --tint-lemon:#332e1a; --tint-sky:#1c2b36; --tint-rose:#33202a;
+  --edge:rgba(255,255,255,.08);
+  --shadow:0 6px 20px rgba(0,0,0,.35);
+  --shadow-pop:0 10px 28px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);
+  font:16px/1.55 ui-rounded,"SF Pro Rounded","Nunito","Quicksand",system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding-bottom:96px}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em}
+h1{font-size:1.75rem;line-height:1.18;margin:0;text-wrap:balance}
+h2{font-size:1.25rem;margin:0 0 .35rem;text-wrap:balance}
+h3{font-size:1.05rem;margin:0 0 .3rem}
+p{margin:.5rem 0;max-width:62ch}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.view.on>*{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.view.on>*:nth-child(2){animation-delay:.05s}
+.view.on>*:nth-child(3){animation-delay:.1s}
+.view.on>*:nth-child(4){animation-delay:.15s}
+.view.on>*:nth-child(n+5){animation-delay:.2s}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+header.app{padding:24px 0 6px;padding-right:52px}
+.eyebrow{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent2);font-weight:800;background:var(--accent-wash);border-radius:99px;padding:4px 12px;margin-bottom:10px}
+.thesis{color:var(--ink2);margin-top:8px}
+.card{background:var(--card);border:1px solid var(--edge);border-radius:22px;padding:18px;margin:14px 0;box-shadow:var(--shadow)}
+.card.wash{background:var(--accent-wash);border-color:transparent}
+.klabel{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:800;margin-bottom:4px}
+blockquote{margin:14px 0;padding:14px 16px;border-left:4px solid var(--quote-bar);
+  background:var(--tint-lemon);border-radius:6px 18px 18px 6px;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  font-size:1.06rem;line-height:1.45;font-style:italic}
+blockquote footer{font:.78rem/1.4 ui-rounded,system-ui,sans-serif;font-style:normal;color:var(--ink2);margin-top:8px;font-weight:600}
+.bottomline{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);
+  border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 30%,transparent)}
+.bottomline .klabel{color:var(--accent-ink);opacity:.8}
+.bottomline ul{margin:6px 0 0;padding-left:18px}
+.bottomline li{margin:6px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.tile{border-radius:18px;padding:14px}
+.tiles .tile:nth-child(4n+1){background:var(--tint-sky)}
+.tiles .tile:nth-child(4n+2){background:var(--tint-mint)}
+.tiles .tile:nth-child(4n+3){background:var(--tint-lav)}
+.tiles .tile:nth-child(4n+4){background:var(--tint-peach)}
+.tile .v{font-size:1.5rem;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.tile .d{font-size:.76rem;color:var(--ink2);margin-top:4px;line-height:1.35;font-weight:550}
+.btn{background:var(--accent);color:var(--accent-ink);border:none;border-radius:99px;padding:13px 18px;font-weight:750;width:100%;
+  box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 35%,transparent);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)} .btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--card);color:var(--accent);border:2px solid var(--accent);box-shadow:none}
+.progress{height:10px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.7,.3,1);
+  background:linear-gradient(90deg,var(--accent),var(--s2))}
+details.acc{background:var(--card);border-radius:18px;margin:10px 0;padding:2px 14px;box-shadow:var(--shadow)}
+details.acc summary{display:flex;align-items:center;gap:12px;padding:13px 2px;cursor:pointer;list-style:none;font-weight:750}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .aic{width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;background:var(--card2)}
+details.acc summary .num{font-size:.68rem;font-weight:800;color:var(--accent2);background:var(--accent-wash);border-radius:99px;padding:2px 8px;flex-shrink:0}
+details.acc summary .chev{margin-left:auto;color:var(--ink3);transition:transform .25s;font-weight:800}
+details.acc[open] summary .chev{transform:rotate(90deg)}
+details.acc .abody{padding:0 2px 14px}
+details.acc .abody>*{animation:rise .4s cubic-bezier(.2,.7,.3,1) both}
+details.acc summary small{display:block;font-weight:600;color:var(--ink2);font-size:.76rem}
+.datap{font-size:.93rem}
+.datap+.datap{margin-top:.7rem}
+
+/* normal-checker */
+.bands{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.bands::-webkit-scrollbar{display:none}
+.bands button{flex-shrink:0;border:none;background:var(--card);color:var(--ink2);border-radius:99px;
+  padding:9px 15px;font-size:.82rem;font-weight:750;box-shadow:var(--shadow);transition:background .2s,color .2s}
+.bands button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.nq{display:flex;flex-direction:column;gap:8px}
+.nq button{text-align:left;border:none;background:var(--card2);border-radius:14px;padding:13px 15px;font-weight:700;font-size:.9rem;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:10px;transition:transform .15s}
+.nq button:hover{transform:translateY(-1px)}
+.nq button .ar{color:var(--accent);font-weight:800}
+.verdict-chip{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:3px 11px;margin-bottom:8px}
+.verdict-chip.normal{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+.verdict-chip.varies{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.nans{animation:pop .3s}
+
+/* debates */
+.debate{background:var(--card);border-radius:18px;margin:10px 0;padding:16px;box-shadow:var(--shadow)}
+.debate h3{margin-bottom:10px}
+.stance{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--hairline)}
+.stance .who{width:74px;flex-shrink:0;font-size:.72rem;font-weight:800}
+.stance .who b{display:block;font-size:.82rem}
+.stance .pos{flex:1;font-size:.88rem}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:1px}
+
+/* quiz */
+.quiz-card{min-height:180px}
+.quiz-q{font-family:"Iowan Old Style",Palatino,Georgia,serif;font-style:italic;font-size:1.28rem;line-height:1.35;margin:10px 0 18px;text-wrap:balance}
+.quiz-btns{display:flex;gap:10px}
+.quiz-btns button{flex:1;padding:14px 8px;border-radius:16px;border:2px solid transparent;color:var(--ink);font-weight:800;transition:transform .15s,border-color .15s}
+.quiz-btns button:first-child{background:var(--tint-rose)}
+.quiz-btns button:last-child{background:var(--tint-mint)}
+.quiz-btns button:hover{border-color:var(--accent);transform:translateY(-1px)}
+.quiz-btns button:disabled{opacity:.6;transform:none}
+.quiz-result{margin-top:14px;padding:14px 16px;border-radius:16px;font-size:.92rem;line-height:1.5;animation:pop .35s cubic-bezier(.2,.7,.3,1)}
+.quiz-result.right{background:color-mix(in srgb,var(--good) 13%,transparent)}
+.quiz-result.wrong{background:color-mix(in srgb,var(--crit) 11%,transparent)}
+.quiz-result .verdict{font-weight:800;letter-spacing:.04em;font-size:.75rem;text-transform:uppercase}
+.quiz-result.right .verdict{color:var(--good)}
+.quiz-result.wrong .verdict{color:var(--crit)}
+.quiz-meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--ink3);font-weight:700}
+.quiz-score{text-align:center;padding:20px 0}
+.quiz-score .big{font-size:3.2rem;font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--accent),var(--s2));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav.tabs{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom));left:14px;right:14px;max-width:612px;margin:0 auto;
+  background:var(--card);border:1px solid var(--edge);border-radius:26px;display:flex;z-index:10;box-shadow:var(--shadow-pop);padding:6px}
+nav.tabs a{flex:1;text-align:center;padding:7px 0 6px;text-decoration:none;color:var(--ink3);font-size:.7rem;font-weight:750;border-radius:20px;transition:background .2s,color .2s}
+nav.tabs a .ico{display:block;font-size:1.25rem;line-height:1.25;transition:transform .2s}
+nav.tabs a.on{color:var(--accent2);background:var(--accent-wash)}
+nav.tabs a.on .ico{transform:translateY(-1px) scale(1.08)}
+.view{display:none}
+.view.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.note{font-size:.8rem;color:var(--ink3);line-height:1.45}
+
+/* library switcher */
+.libbtn{position:fixed;top:12px;right:12px;z-index:20;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--edge);background:var(--card);box-shadow:var(--shadow-pop);font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.libbtn:hover{transform:translateY(-1px)} .libbtn:active{transform:scale(.94)}
+.libsheet{position:fixed;inset:0;z-index:30;background:rgba(15,15,15,.45);display:flex;align-items:flex-end;justify-content:center}
+.libsheet[hidden]{display:none}
+.libpanel{background:var(--ground);border-radius:24px 24px 0 0;padding:18px 16px calc(26px + env(safe-area-inset-bottom));
+  max-width:640px;width:100%;animation:libup .3s cubic-bezier(.2,.7,.3,1)}
+@keyframes libup{from{transform:translateY(48px);opacity:0}to{transform:none;opacity:1}}
+.libcard{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:13px 14px;margin:8px 0;
+  text-decoration:none;color:var(--ink);box-shadow:var(--shadow);border:2px solid transparent}
+.libcard.here{border-color:var(--accent)}
+.libcard .em{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.libcard b{display:block;font-size:.95rem}
+.libcard small{color:var(--ink2);font-size:.76rem;font-weight:600}
+.libcard .herechip{margin-left:auto;font-size:.64rem;font-weight:800;letter-spacing:.05em;color:var(--accent);white-space:nowrap}
+</style>
+
+<div class="wrap">
+
+<!-- ============ LEARN ============ -->
+<section id="view-learn" class="view">
+  <header class="app">
+    <div class="eyebrow">A companion to Helen Ball's <em>How Babies Sleep</em></div>
+    <h1>Your baby isn't broken. The expectations are.</h1>
+    <p class="thesis">Helen Ball runs Durham University's Parent–Infant Sleep Lab. Her core argument: most "baby sleep problems" are a mismatch between how human infants evolved to sleep and what modern Western culture expects of them.</p>
+    <div class="progress" aria-hidden="true"><i id="progbar" style="width:0%"></i></div>
+    <p class="note" id="progtext">0 of 9 chapters absorbed</p>
+  </header>
+
+  <div class="card wash">
+    <div class="klabel">The three-mothers thought experiment</div>
+    <p class="datap" style="margin:4px 0 0">The book opens with three mums of three-month-olds: Kristi (US) anxiously planning to wean and sleep-train before her commute resumes; Lizzie (UK) despairing that her baby won't "self-settle" per her tracking app; Yuki (Japan) sleeping alongside her baby with no sense that anything needs fixing. Same biology, three utterly different ideas of "normal." That gap — between biology and culture — is the whole book.</p>
+  </div>
+
+  <div id="learnlist"></div>
+
+  <blockquote>There is no universal standard for baby sleep, nor a "standard baby" to measure yours against.
+  <footer>— Helen Ball. In the UK and US, 25–30% of parents report a baby "sleep problem." In Japan and Korea, it's 5–7% — same babies, different expectations.</footer></blockquote>
+</section>
+
+<!-- ============ IS THIS NORMAL ============ -->
+<section id="view-normal" class="view">
+  <header class="app">
+    <div class="eyebrow">Is this normal?</div>
+    <h1>Probably. Let's check.</h1>
+    <p class="thesis">Pick your baby's age, then the thing you're worried about. This is a reassurance machine built from the sleep science — not medical advice. Anything about a baby being unwell, always ask a health professional.</p>
+  </header>
+  <div class="bands" id="normalbands" role="group" aria-label="Baby age"></div>
+  <div class="card">
+    <div class="klabel" id="normal-agelabel"></div>
+    <div class="nq" id="normalq"></div>
+    <div id="normal-ans"></div>
+  </div>
+</section>
+
+<!-- ============ DEBATES ============ -->
+<section id="view-debates" class="view">
+  <header class="app">
+    <div class="eyebrow">The library disagrees</div>
+    <h1>Your five books don't agree about sleep</h1>
+    <p class="thesis">This is a feature, not a bug — it's exactly how Emily Oster says to read: see where the experts diverge, understand why, then decide for your family. Here's where they part ways.</p>
+  </header>
+  <div class="card wash">
+    <div class="klabel">The spectrum, roughly</div>
+    <p class="datap" style="margin:4px 0 0"><span class="dot" style="background:#7c62d6"></span><b>Ford</b> (routines/structure) and <span class="dot" style="background:#2481c4"></span><b>Ball</b> (follow-the-biology) sit at opposite ends on sleep. <span class="dot" style="background:#0fa47e"></span><b>Oster</b> weighs the evidence and lands "sleep training is fine if you want it." <span class="dot" style="background:#c94f74"></span><b>Perry</b> and <span class="dot" style="background:#b45309"></span><b>Siegel &amp; Bryson</b> care less about sleep method and more about the emotional connection underneath.</p>
+  </div>
+  <div id="debatelist"></div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="view-quiz" class="view">
+  <header class="app">
+    <div class="eyebrow">Myth or science?</div>
+    <h1>Test yourself on baby sleep</h1>
+    <p class="thesis">Twelve statements — some are the sleep science, some are the cultural myths the book spends 317 pages dismantling.</p>
+  </header>
+  <div class="card quiz-card" id="quizbox"></div>
+</section>
+
+</div>
+
+<button class="libbtn" id="libbtn" aria-label="Switch book app" aria-expanded="false">📚</button>
+<div class="libsheet" id="libsheet" hidden><div class="libpanel">
+<div class="klabel" style="margin-bottom:8px">Your library — switch books</div>
+<a class="libcard" href="index.html"><span class="em" style="background:color-mix(in srgb,#0fa47e 20%,var(--card2))">📖</span><span><b>Cribsheet Companion</b><small>Emily Oster · the evidence</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
+<a class="libcard" href="contented-baby.html"><span class="em" style="background:color-mix(in srgb,#7c62d6 20%,var(--card2))">👶</span><span><b>Contented Baby Companion</b><small>Gina Ford · the routines</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
+<a class="libcard" href="parenting-relationship.html"><span class="em" style="background:color-mix(in srgb,#c94f74 20%,var(--card2))">💬</span><span><b>Relationship Companion</b><small>Philippa Perry · the connection</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
+<a class="libcard" href="whole-brain.html"><span class="em" style="background:color-mix(in srgb,#b45309 20%,var(--card2))">🧠</span><span><b>Whole-Brain Companion</b><small>Siegel &amp; Bryson · the brain</small></span><span class="herechip" style="color:var(--ink3)">›</span></a>
+<a class="libcard here" href="baby-sleep-science.html"><span class="em" style="background:color-mix(in srgb,#2481c4 20%,var(--card2))">🌙</span><span><b>Baby Sleep Science</b><small>Helen Ball · the biology</small></span><span class="herechip">YOU’RE HERE</span></a>
+</div></div>
+
+<nav class="tabs" aria-label="Main">
+  <a href="#learn" id="tab-learn"><span class="ico" aria-hidden="true">🌙</span>Learn</a>
+  <a href="#normal" id="tab-normal"><span class="ico" aria-hidden="true">😴</span>Is it normal?</a>
+  <a href="#debates" id="tab-debates"><span class="ico" aria-hidden="true">⚖️</span>Debates</a>
+  <a href="#quiz" id="tab-quiz"><span class="ico" aria-hidden="true">🎯</span>Quiz</a>
+</nav>
+
+<script>
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+/* ============ LEARN (9 chapters, detailed) ============ */
+const LEARN=[
+ {id:1,icon:"🧬",t:"The helplessness of baby humans",s:"Why milk and big brains made needy babies",
+  html:`<p class="datap">Ball starts deep in evolutionary biology, because everything downstream follows from it. Two ancient traits define us: making milk (a 310-million-year-old mammal trait) and growing enormous brains (barely a million years old, and wildly expensive to run).</p>
+  <p class="datap">The trick evolution pulled: human brains are so big that a fully-developed one couldn't fit through the birth canal. So we're born early, "on the outside," with brains that keep growing at the fast <i>fetal</i> rate for a whole extra year — the inflection point where other primates' brain growth slows down happens at birth for them, but at around twelve months for us. That makes human newborns essentially external fetuses: helpless, immobile, unable to regulate their own temperature, and utterly dependent on a caregiver's body.</p>
+  <p class="datap">Compare mammal milk. Hooded seals nurse for as little as a week on milk so rich (up to 200 calories an ounce) that pups pile on 50lb in days, because mother and pup will be separated when the ice breaks up. Primates are the opposite — "carry" species whose babies cling and nurse constantly on thin, watery milk that's 88% water and low in fat and protein. Human milk is primate milk: designed to be digested fast and topped up often, which is precisely why our babies wake to feed through the night.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Human babies are born "too early" because of brain size — expect fetus-like helplessness for months.</li>
+  <li>Our milk is thin and fast-digesting by evolutionary design; frequent waking to feed is the feature, not the fault.</li>
+  <li>Babies are hardwired to seek a caregiver's body for warmth, safety and food, day and night.</li></ul></div>`},
+ {id:2,icon:"📜",t:"The curious history of babies at night",s:"Solo infant sleep is a recent Western experiment",
+  html:`<p class="datap">Ball's second move is historical, and it's the one that reframes everything: the way middle-class Western families sleep now is a historical blip, not the human norm. For most of history and across most cultures, whole families (and sometimes strangers) slept communally, and babies slept in contact with their mothers at night — full stop. The various baskets, cradles and cradle-boards you see across cultures were <i>daytime</i> "storage," to safely park a baby within arm's reach during work; at night, babies were at the breast.</p>
+  <p class="datap">So where did the crib-in-a-separate-room ideal come from? Ball traces it to a specific stack of Western influences: religious moralizing, industrialization, and — most sharply in the early twentieth century — behavioral psychology and politics. Advice manuals for middle-class mothers and upper-class nannies pushed independence, scheduled feeding and not "spoiling" babies, and those manuals are where a lot of today's "common sense" quietly originates. The point isn't that any of it is evil; it's that ideas we treat as timeless facts about babies are actually recent, local and often driven by adult convenience or ideology rather than infant biology.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Babies sleeping alone in their own room is roughly a 150-year-old Western idea, not a biological baseline.</li>
+  <li>"Don't spoil them / get them independent / into a routine" are inherited cultural scripts, not scientific findings.</li>
+  <li>Knowing where a rule came from lets you decide whether to keep it.</li></ul></div>`},
+ {id:3,icon:"🧠",t:"The sleep biology of babies",s:"Active sleep, short cycles, and a slowly-arriving body clock",
+  html:`<p class="datap">Here's the machinery. Newborn sleep is split almost 50/50 between <b>Active sleep</b> (the infant version of REM) and <b>Quiet sleep</b> — versus under 20% REM in adults. In Active sleep babies twitch, suck, frown and move so much they look awake; the muscle paralysis that keeps adults still in REM doesn't switch on until around the middle of the first year. So much Active sleep exists because that's when the brain is doing its building — synaptogenesis, the frantic wiring of new connections.</p>
+  <p class="datap">Babies' sleep cycles are also short — full arousals every 2–3 hours — and, critically, newborns have <b>no circadian rhythm</b>. The body clock and its melatonin cycle aren't wired at birth; they develop gradually over the first months, which is why a newborn genuinely cannot tell night from day. It arrives in fits and starts, not on a schedule you can impose.</p>
+  <p class="datap">And immediately after birth, if placed skin-to-skin, a newborn runs a built-in program (Widström's 9 Stages) — cry, rest, wake, crawl toward the breast, find the nipple, feed, then sleep — taking roughly 90 minutes. Interrupt it (to clean, weigh, dress) and the baby may have to start over, which is why delivery-room routines that separate mother and baby actively fight the biology.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Half of newborn sleep is Active/REM — the twitchy "is-he-awake?" sleep is the brain building itself.</li>
+  <li>Short 2–3 hour cycles and frequent arousals are normal infant architecture, not disturbances.</li>
+  <li>There's no body clock at birth — day/night confusion is expected and develops over months.</li></ul></div>`},
+ {id:4,icon:"📊",t:"Normal is as normal does",s:"The enormous range of normal, and where anxiety comes from",
+  html:`<p class="datap">This is the reassurance chapter. When parents ask "is my baby's sleep normal?" they usually mean one of two things — "is my baby doing what they should?" or "is my baby like other babies?" — and Ball's answer is that both questions are broken, because there's no gold-standard sleep schedule and no standard baby to compare against.</p>
+  <p class="datap">The killer statistic: 25–30% of parents in the UK, US and Australia report their baby has a "sleep problem," versus 5–7% in Japan and Korea. The babies aren't biologically different — all human infants wake frequently and seek contact. What differs is that in Japan and Korea those behaviours are simply expected, so parents don't perceive them as problems. The "problem" is manufactured by expectation.</p>
+  <p class="datap">She also names a vicious cycle worth knowing: parental anxiety is contagious. A stressed, tense parent is harder for a baby to settle against, which produces more unsettled behaviour, which fuels more anxiety. Often the single most effective intervention is simply reassurance that frequent waking, wanting to be held, and feeding often are normal — which breaks the loop.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>The normal range for infant sleep is enormous — there is no benchmark yours must hit.</li>
+  <li>Most "sleep problems" are expectation problems; the same behaviour isn't a problem in other cultures.</li>
+  <li>Anxiety is contagious to babies — reassurance often does more than any technique.</li></ul></div>`},
+ {id:5,icon:"🍼",t:"Hungry is the night",s:"Why feeding and sleeping can't be separated",
+  html:`<p class="datap">Feeding and sleeping are, in Ball's words, inextricably intertwined — and pretending otherwise causes a lot of grief. Because human milk is thin and fast-digesting, breastfed babies are <i>built</i> to feed little and often, including at night, right through much of the first year.</p>
+  <p class="datap">There's a supply mechanism most parents are never told about: night feeding drives milk production. Prolactin (the milk-making hormone) runs highest overnight, so those night feeds aren't just emptying the tank — they're placing the order for tomorrow's supply. This is why advice that cuts night feeds to "encourage sleep" so often quietly sabotages breastfeeding, and why in the UK "she was feeding all night" is one of the most common reasons mothers stop breastfeeding earlier than they wanted.</p>
+  <p class="datap">It's also why so much bed-sharing is really "breast-sleeping": a mother nursing lying down in the small hours, often falling asleep. The book's point isn't that formula is wrong — it's that the mainstream expectation (feed on a schedule, then sleep long stretches, and breastfeed successfully, all at once) asks for three things that biology has tied together in tension.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Frequent night feeds are normal for breastfed babies well into the first year.</li>
+  <li>Night feeding builds milk supply (prolactin peaks overnight) — cutting it can undermine breastfeeding.</li>
+  <li>"Sleep through / feed on schedule / breastfeed well" pull against each other; something usually gives.</li></ul></div>`},
+ {id:6,icon:"🛏️",t:"A bed of one's own?",s:"How common bed-sharing really is — and the honest evidence",
+  html:`<p class="datap">Ball's own research (she is the bed-sharing researcher) blew open how much of it actually happens. In her north-east England studies, most first-time parents swore before birth they'd never bed-share — "bad habits," "spoiling," "independence" — yet by three months about 70% had done it at least sometimes. Strikingly, many didn't consider themselves bed-sharers: the baby "had a crib," so that's the location they reported, no matter how little time the baby spent there. The cultural taboo was so strong that parents hid it even from themselves, which means official statistics badly underestimated it.</p>
+  <p class="datap">Her honest framing of the evidence: bed-sharing isn't one thing, and lumping all of it together (as blanket "never bed-share" guidance does) obscures the real picture. Some forms are genuinely dangerous and some are relatively low-risk, and parents deserve the detail to make informed choices rather than a flat prohibition they'll ignore and then do unplanned — which is itself less safe.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Bed-sharing is extremely common (~70% at least sometimes) and chronically under-reported — often unplanned.</li>
+  <li>It's especially linked with breastfeeding ("breast-sleeping").</li>
+  <li>Blanket "never" advice backfires; informed, planned safer-sleep decisions beat accidental ones. (See the danger factors in chapter 7.)</li></ul></div>`},
+ {id:7,icon:"🌊",t:"Do not go gentle into that good night",s:"SIDS, safer sleep, and what actually reduces risk",
+  html:`<p class="datap"><b>(This chapter covers infant death.)</b> SIDS, Ball is careful to explain, isn't a cause of death — it's the label given to a Sudden Unexpected Death in Infancy (SUDI) that a full investigation can't explain. In the UK about 300 babies a year die suddenly and unexpectedly (~1 in 2,300 births; ~3,400 a year in the US, ~1 in 1,100). Around a third are explained sleep accidents — suffocation, entrapment, positional asphyxia — and the rest are unexplained. SIDS deaths peak at two-to-four months.</p>
+  <p class="datap">The reassuring part: most of these deaths are avoidable, and safer-sleep guidance produced dramatic falls everywhere it was introduced (UK deaths dropped from ~1,600 in 1988 to a fraction of that). The clearest, best-evidenced risk factor is <b>smoke</b> — at least 40 studies link smoke exposure (in pregnancy or after) to up to a five-fold increase in risk, because nicotine blunts a baby's ability to rouse and gasp when breathing is challenged.</p>
+  <p class="datap">On co-sleeping specifically, Ball's evidence-based distinction: the genuinely <b>hazardous</b> scenarios are sofa-sharing (very dangerous), sharing after alcohol or drugs, sharing where anyone smokes, and premature/low-birth-weight babies. Absent those factors, bed-sharing with a breastfed baby is far lower risk. Her non-negotiable rule: a sober, smoke-free adult must be responsible for the baby all night — and never, ever fall asleep with a baby on a sofa or armchair.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>SIDS is a label for an unexplained death, not a cause; risk peaks at 2–4 months and most SUDI are avoidable.</li>
+  <li>Smoke exposure is the standout risk factor (up to 5× risk). Keeping baby smoke-free matters enormously.</li>
+  <li>The real dangers in co-sleeping are sofas, alcohol/drugs, smoking, and prematurity — not the shared bed per se.</li></ul></div>`},
+ {id:8,icon:"🌑",t:"The darkest nights",s:"Sleep training, exhaustion, and what 'works' really means",
+  html:`<p class="datap">This is Ball's critique of sleep training, and she's precise about it. First, a reframe from evolutionary biology: parent–infant conflict is normal and universal. It's in a baby's survival interest to demand maximum investment (feed often, resist separation, protest being put down); it's in a parent's interest to spread their energy. Feeling bored, overwhelmed or even resentful isn't a failure — it's the predictable friction of mammalian parenting.</p>
+  <p class="datap">On the methods: sleep training means extinction (unmodified — "cry it out," no response) or graduated extinction (Ferber-style timed check-ins). Ball makes a sharp technical point parents rarely hear — what these methods actually extinguish isn't <i>night-waking</i>, it's <i>signalling</i>. The baby still wakes; they've learned to stop calling out. Whether that's "solved" depends on what you were actually worried about.</p>
+  <p class="datap">And the evidence is weaker than the manuals imply. A review of the trials behind the guidelines found the vast majority studied children over six months (mostly ages one to five), with barely any evidence supporting extinction methods in babies <b>under six months</b> — despite guidebooks pushing "start early." Studies of gentler, responsive methods produce comparable results. Her bottom line isn't "never" — it's that the confident claims of quick, easy, side-effect-free success outrun the actual data, and that under six months there's little evidence base at all.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Feeling overwhelmed or resentful is normal — parent–baby conflict is biologically built in.</li>
+  <li>Sleep training suppresses <i>signalling</i>, not waking — the baby still wakes, but stops calling for you.</li>
+  <li>The evidence barely covers under-6-months; responsive methods work about as well as extinction.</li></ul></div>`},
+ {id:9,icon:"🌅",t:"The sun also rises",s:"Surviving it, and doing what works for your family",
+  html:`<p class="datap">The closing chapter turns practical and kind. Baby-related sleep disruption is real and can genuinely harm parental health — this isn't just meme material — so the goal isn't to hit some ideal but to get your family through the first year intact. Ball's throughline: work <i>with</i> your baby's biology rather than against it, and choose the arrangement that lets the most people sleep the most safely.</p>
+  <p class="datap">That means matching the approach to your actual situation rather than an app's schedule: safer co-sleeping if you're breastfeeding and it gets everyone more rest, shared night duty with a partner, adjusting expectations to the wide normal range, and dropping the guilt that you're "making a rod for your own back." Responsiveness in the early months doesn't create bad habits — it's laying the foundation, and babies consolidate sleep on their own developmental timeline regardless.</p>
+  <div class="bottomline"><div class="klabel">The takeaway</div><ul>
+  <li>Parental exhaustion is a real health issue — optimize for everyone's safe sleep, not an ideal.</li>
+  <li>Work with the biology; the "right" method is the one that fits your family and keeps your baby safe.</li>
+  <li>Responding to your baby in the early months builds security — it doesn't spoil them.</li></ul></div>`},
+];
+const read=new Set(JSON.parse(localStorage.getItem("bs-read")||"[]"));
+function updProgress(){
+  document.getElementById("progbar").style.width=(read.size/9*100)+"%";
+  document.getElementById("progtext").textContent=`${read.size} of 9 chapters absorbed`;
+}
+function buildLearn(){
+  const host=document.getElementById("learnlist");
+  host.innerHTML="";
+  LEARN.forEach(m=>{
+    const d=document.createElement("details");
+    d.className="acc";
+    d.innerHTML=`<summary><span class="aic" aria-hidden="true">${m.icon}</span>
+      <span>${esc(m.t)}<small>${esc(m.s)}</small></span><span class="num">${m.id}</span><span class="chev">›</span></summary>
+      <div class="abody">${m.html}
+      <button class="btn ghost" style="width:auto;padding:7px 16px;font-size:.8rem" data-m="${m.id}">
+      ${read.has(m.id)?"✓ Absorbed":"Mark as absorbed"}</button></div>`;
+    d.querySelector("[data-m]").addEventListener("click",e=>{
+      read.has(m.id)?read.delete(m.id):read.add(m.id);
+      localStorage.setItem("bs-read",JSON.stringify([...read]));
+      e.target.textContent=read.has(m.id)?"✓ Absorbed":"Mark as absorbed";
+      updProgress();
+    });
+    host.appendChild(d);
+  });
+  updProgress();
+}
+
+/* ============ IS THIS NORMAL ============ */
+const NORMAL=[
+ {age:"0–3 months",qs:[
+   {q:"Wakes every 2–3 hours, all night",v:"normal",a:"Completely expected. Newborn sleep cycles run 2–3 hours with full arousals between them, and thin, fast-digesting human milk means frequent feeds are built in. There is no biological expectation of longer stretches yet."},
+   {q:"Only sleeps on me / won't be put down",v:"normal",a:"This is a 'carry species' baby doing exactly what primate infants do — seeking a caregiver's body for warmth, safety and food. Contact-seeking is hardwired, not a manipulation or a bad habit."},
+   {q:"Twitches, grunts and looks half-awake asleep",v:"normal",a:"That's Active sleep — about half of a newborn's sleep, and where the brain does its wiring. The stillness of mature REM (muscle paralysis) doesn't switch on until around the middle of the first year."},
+   {q:"Has no day/night pattern at all",v:"normal",a:"There's no body clock at birth. The circadian rhythm and its melatonin cycle develop gradually over the first months — a newborn genuinely can't yet tell night from day."},
+   {q:"Feeds constantly in the evening ('cluster feeding')",v:"normal",a:"Very common and normal, especially for breastfed babies — it helps drive milk supply and often precedes the longest sleep stretch of the night."}]},
+ {age:"3–6 months",qs:[
+   {q:"Still waking 2–3 times a night",v:"normal",a:"Sleep begins to consolidate somewhat after three months, but when and how much is hugely variable. Plenty of breastfed babies keep waking to feed — night waking through the first year is within the normal range."},
+   {q:"Was sleeping longer, now waking more again",v:"varies",a:"Very common and usually developmental — bursts of brain development, and the arrival of adult-type sleep stages around this age, often temporarily fragment sleep. Sleep matures in fits and starts, not a smooth line."},
+   {q:"Won't 'self-settle' / falls asleep feeding",v:"normal",a:"Falling asleep at the breast is biologically normal (there are sleep-inducing compounds in milk). 'Self-settling' is a cultural expectation, not a developmental milestone every baby must hit on schedule."},
+   {q:"Naps are short and unpredictable",v:"normal",a:"Daytime sleep is variable and hasn't fully organized. Short naps at this age are common and not a sign anything is wrong."}]},
+ {age:"6–12 months",qs:[
+   {q:"Still waking for night feeds",v:"normal",a:"Many babies, especially breastfed ones, continue waking to feed through the first year — and night feeds still support milk supply. 'Should be sleeping through by now' is a cultural benchmark, not a biological deadline."},
+   {q:"Woke up more when teething / ill / after a leap",v:"normal",a:"Expected. Illness, teething and developmental surges all disrupt sleep temporarily. Sleep consolidation isn't linear — regressions around change are normal."},
+   {q:"Wants to be near you at night",v:"normal",a:"Separation resistance is biologically normal — object permanence is developing, and being near a caregiver is where a baby feels safe. It doesn't mean you've built a bad habit."},
+   {q:"Every other baby seems to sleep better",v:"varies",a:"Beware the comparison — parents massively under-report waking and bed-sharing (even to themselves). And remember: 25–30% of Western parents report a 'problem' vs 5–7% in Japan/Korea for the same behaviour. The yardstick is the issue."}]},
+];
+let curNorm=0;
+function buildNormal(){
+  const host=document.getElementById("normalbands");
+  host.innerHTML=NORMAL.map((n,i)=>`<button aria-pressed="${i===0}">${n.age}</button>`).join("");
+  host.querySelectorAll("button").forEach((b,i)=>b.addEventListener("click",()=>{curNorm=i;renderNorm()}));
+  renderNorm();
+}
+function renderNorm(){
+  const n=NORMAL[curNorm];
+  document.querySelectorAll("#normalbands button").forEach((b,i)=>b.setAttribute("aria-pressed",i===curNorm));
+  document.getElementById("normal-agelabel").textContent="What's worrying you at "+n.age+"?";
+  document.getElementById("normal-ans").innerHTML="";
+  document.getElementById("normalq").innerHTML=n.qs.map((x,i)=>`<button data-i="${i}">${esc(x.q)}<span class="ar">›</span></button>`).join("");
+  document.querySelectorAll("#normalq button").forEach(b=>b.addEventListener("click",()=>{
+    const x=n.qs[+b.dataset.i];
+    document.getElementById("normal-ans").innerHTML=`<div class="card nans" style="margin:14px 0 0">
+      <span class="verdict-chip ${x.v}">${x.v==="normal"?"✓ Normal":"Usually normal"}</span>
+      <p class="datap" style="margin:0">${esc(x.a)}</p></div>`;
+    document.getElementById("normal-ans").scrollIntoView({behavior:"smooth",block:"nearest"});
+  }));
+}
+
+/* ============ DEBATES ============ */
+const AUTH={
+ ball:["#2481c4","Ball","Biology"],
+ ford:["#7c62d6","Ford","Routines"],
+ oster:["#0fa47e","Oster","Evidence"],
+ perry:["#c94f74","Perry","Connection"],
+ sb:["#b45309","Siegel","Brain"],
+};
+function stance(key,text){
+  const a=AUTH[key];
+  return `<div class="stance"><div class="who" style="color:${a[0]}"><b>${a[1]}</b>${a[2]}</div><div class="pos">${text}</div></div>`;
+}
+const DEBATES=[
+ {t:"Should you sleep train?",link:{href:"index.html",label:"Oster's full take in Cribsheet ›"},rows:[
+   ["ford","Yes — structure from the early weeks teaches self-settling and is the whole method. Consistency is everything."],
+   ["oster","Fine if you want to. The RCTs show cry-it-out works and finds no harm to children, including 5-year follow-ups — but you don't have to."],
+   ["ball","Skeptical, especially under six months where evidence barely exists. It suppresses signalling, not waking, and fights the biology. Prefers responsive, gradual methods."],
+   ["perry","Cares less about the method than the feeling underneath — offers 'sleep nudging' in small steps from a comfort baseline, never outside the child's tolerance."]]},
+ {t:"Is bed-sharing safe?",link:null,rows:[
+   ["ball","Not one thing. Genuinely dangerous with sofas, alcohol/drugs, smoking or prematurity — but low-risk for a breastfed baby absent those factors. Blanket 'never' backfires; give parents the detail."],
+   ["oster","Weighs the data: a small absolute risk increase even done 'safely' (≈0.08 vs 0.22 SIDS deaths per 1,000), rising sharply with smoking/alcohol. Your call with eyes open."],
+   ["ford","Against — babies should learn to sleep in their own crib; bed-sharing risks dependence."]]},
+ {t:"Do routines help babies sleep?",link:{href:"contented-baby.html",label:"Ford's routines in the Contented Baby app ›"},rows:[
+   ["ford","Yes — the CLB routines structure feeds and naps by the clock so the longest sleep lands at night. The backbone of good sleep."],
+   ["ball","Babies have no body clock at birth and mature on their own timeline — rigid schedules fight biology and manufacture 'problems.' Follow the baby, not the clock."],
+   ["oster","Schedules aren't magic, but there's no harm if a routine suits your family. Preferences matter."]]},
+ {t:"Does responding at night spoil a baby?",link:null,rows:[
+   ["ball","No. Contact-seeking and night waking are hardwired survival behaviour; responding builds security and doesn't create bad habits."],
+   ["perry","No — a cry is communication, never manipulation. Answering it lays the foundation for security."],
+   ["sb","No — responsiveness wires the brain for connection; early security is the platform everything else is built on."],
+   ["ford","Cautious — feeding or rocking to sleep every time can create 'wrong sleep associations' the baby then depends on."]]},
+ {t:"Should babies feed on a schedule at night?",link:null,rows:[
+   ["ball","Breastfed babies are built to feed little and often, and night feeds drive milk supply (prolactin peaks overnight). Cutting them can undermine breastfeeding."],
+   ["ford","Structure night feeds and gradually reduce them so the baby sleeps longer stretches."],
+   ["oster","Evidence on breastfeeding benefits is real but often overstated; the feeding-vs-sleep tradeoff is a genuine preference call."]]},
+];
+function buildDebates(){
+  document.getElementById("debatelist").innerHTML=DEBATES.map(d=>`
+    <div class="debate"><h3>${esc(d.t)}</h3>
+      ${d.rows.map(r=>stance(r[0],esc(r[1]))).join("")}
+      ${d.link?`<div style="margin-top:12px"><a href="${d.link.href}" style="font-weight:750;text-decoration:none;font-size:.85rem">${esc(d.link.label)}</a></div>`:""}
+    </div>`).join("");
+}
+
+/* ============ QUIZ ============ */
+const QUIZ=[
+ {q:"Waking every 2–3 hours all night is a sleep problem that needs fixing.",a:false,e:"It's the normal architecture of newborn sleep — short cycles, full arousals, and thin fast-digesting milk that needs topping up. Normal, not a malfunction."},
+ {q:"Newborns have no functioning body clock at birth.",a:true,e:"The circadian rhythm and its melatonin cycle develop gradually over the first months. A newborn genuinely can't tell night from day — you can't schedule what isn't wired yet."},
+ {q:"Babies sleeping alone in their own room is the natural human default.",a:false,e:"It's roughly a 150-year-old Western idea. Across history and most cultures, babies slept in contact with their mothers at night; cradles and baskets were daytime 'storage.'"},
+ {q:"About half of a newborn's sleep is Active (REM-like) sleep.",a:true,e:"Versus under 20% in adults. All that twitchy, grunty, half-awake-looking sleep is when the brain does its wiring — and the muscle stillness of mature REM doesn't arrive until mid–first-year."},
+ {q:"25–30% of parents report a baby 'sleep problem' in the UK/US, but only 5–7% in Japan/Korea.",a:true,e:"Same babies, biologically — different expectations. Frequent waking and contact-seeking are simply expected in Japan and Korea, so they aren't perceived as problems."},
+ {q:"Night feeds are pointless calories you should cut to encourage sleep.",a:false,e:"Night feeding drives milk supply — prolactin peaks overnight. Cutting night feeds is a common way breastfeeding quietly fails."},
+ {q:"Sleep training mainly stops babies from waking.",a:false,e:"It suppresses signalling (crying out), not waking. The baby still wakes — they've learned not to call for you. Whether that 'solves' anything depends on what you were worried about."},
+ {q:"There's strong evidence that cry-it-out works safely for babies under six months.",a:false,e:"The trials behind the guidelines overwhelmingly studied children over six months (mostly 1–5 years). Evidence for extinction methods under six months barely exists, despite manuals urging 'start early.'"},
+ {q:"Smoke exposure is one of the strongest risk factors for sudden infant death.",a:true,e:"At least 40 studies link it to up to a five-fold risk increase — nicotine blunts a baby's ability to rouse and gasp. Keeping babies smoke-free is one of the highest-impact things you can do."},
+ {q:"Falling asleep with a baby on a sofa is roughly as safe as in a bed.",a:false,e:"Sofa-sharing is one of the most dangerous scenarios in the whole literature. Ball's firm rule: never fall asleep with a baby on a sofa or armchair."},
+ {q:"Responding to your baby at night creates bad habits and spoils them.",a:false,e:"Contact-seeking and night waking are hardwired survival behaviour. Responsiveness in the early months builds security — it doesn't spoil. 'Making a rod for your own back' is a myth the book dismantles."},
+ {q:"Feeling bored, overwhelmed or resentful as a new parent means something's wrong with you.",a:false,e:"Parent–infant conflict is biologically universal — baby's interest is maximum investment, yours is spreading your energy. The friction is built in; the feelings are normal."},
+];
+let qIdx=0,qScore=0,qOrder=[];
+function startQuiz(){qIdx=0;qScore=0;qOrder=shuffle([...QUIZ.keys()]);renderQuiz()}
+function renderQuiz(){
+  const box=document.getElementById("quizbox");
+  if(qIdx>=qOrder.length){
+    const msg=qScore===qOrder.length?"Perfect. Helen Ball would give you a lab coat."
+      :qScore>=9?"Strong — you've internalized the biology-vs-culture split."
+      :qScore>=6?"Decent — the 'signalling not waking' and under-six-months ones catch people."
+      :"The cultural myths run deep — that's the book's whole point. Try the Learn tab.";
+    box.innerHTML=`<div class="quiz-score"><div class="klabel">Your score</div>
+      <div class="big">${qScore}/${qOrder.length}</div>
+      <p style="margin:6px auto 16px;max-width:40ch">${msg}</p>
+      <button class="btn" style="width:auto;padding:11px 28px" id="qrestart">Play again</button></div>`;
+    document.getElementById("qrestart").addEventListener("click",startQuiz);
+    return;
+  }
+  const q=QUIZ[qOrder[qIdx]];
+  box.innerHTML=`<div class="quiz-meta"><span>Question ${qIdx+1} of ${qOrder.length}</span><span>Score: ${qScore}</span></div>
+    <p class="quiz-q">“${esc(q.q)}”</p>
+    <div class="quiz-btns">
+      <button data-ans="false">✗ Myth</button>
+      <button data-ans="true">✓ Science</button>
+    </div><div id="qresult"></div>`;
+  box.querySelectorAll(".quiz-btns button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const right=(b.dataset.ans==="true")===q.a;
+      if(right)qScore++;
+      box.querySelectorAll(".quiz-btns button").forEach(x=>x.disabled=true);
+      document.getElementById("qresult").innerHTML=`
+        <div class="quiz-result ${right?"right":"wrong"}">
+          <div class="verdict">${right?"Correct":"Not quite"} — ${q.a?"this is the science":"this is a myth"}</div>
+          <div style="margin-top:4px">${esc(q.e)}</div></div>
+        <button class="btn" style="margin-top:12px" id="qnext">${qIdx+1<qOrder.length?"Next question":"See my score"}</button>`;
+      document.getElementById("qnext").addEventListener("click",()=>{qIdx++;renderQuiz()});
+      document.getElementById("qnext").focus();
+    });
+  });
+}
+
+/* ============ LIBRARY SWITCHER ============ */
+(function(){
+  const b=document.getElementById("libbtn"),s=document.getElementById("libsheet");
+  const set=o=>{s.hidden=!o;b.setAttribute("aria-expanded",o)};
+  b.addEventListener("click",()=>set(s.hidden));
+  s.addEventListener("click",e=>{if(e.target===s)set(false)});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")set(false)});
+})();
+
+/* ============ ROUTER ============ */
+let quizStarted=false;
+function route(){
+  const h=location.hash.replace(/^#/,"")||"learn";
+  const v=["learn","normal","debates","quiz"].includes(h)?h:"learn";
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.classList.remove("on"));
+  document.getElementById("view-"+v).classList.add("on");
+  document.getElementById("tab-"+v).classList.add("on");
+  if(v==="quiz"&&!quizStarted){startQuiz();quizStarted=true}
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+buildLearn();buildNormal();buildDebates();route();
+</script>
